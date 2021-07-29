@@ -1,0 +1,47 @@
+.pagination .previous {
+
+}
+
+.pagination {
+    margin: 2rem auto 0px;
+    max-width: 800px;
+    justify-content: center;
+}
+
+.pagination ul {
+    display: inline-block;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+  
+.pagination li {
+    display: inline-block;
+    margin: 0px 10px;
+}
+
+.pagination li.active {
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 35px;
+    height: 35px;
+    width: 35px;
+    line-height: 32px;
+}
+
+.is-dark .pagination li a {
+    color: white;
+}
+
+
+.pagination li a {
+    color: #999;
+}
+
+@media screen and (max-width: 768px) {
+    .pagination li {
+        margin: 0px 5px;
+    }
+    .pagination li.active {
+        padding: 0.2rem 0.65rem;
+    }
+}

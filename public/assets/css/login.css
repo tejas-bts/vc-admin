@@ -1,0 +1,24 @@
+.login-button
+{
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    width: 269px;
+    color: white;
+    border-radius: 10px;
+}
+
+.login-button:hover
+{
+    color:white;
+}
+
+.share__buttons__item--facebook 
+{
+    background-color: #4267B2;
+}
+
+.share__buttons__item--google 
+{
+    background-color: #DB4437;
+}

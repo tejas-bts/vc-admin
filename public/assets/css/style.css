@@ -1,0 +1,28 @@
+.play-button-custom {
+  position: absolute;
+  top: 25%;
+  left: calc(50% - 20px);
+  height: 40px;
+  width: 40px;
+}
+
+.inbox-wrapper
+  .inbox-wrapper-inner
+  .inbox-center-container
+  .inbox-center-container-inner
+  .inbox-messages {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 60px;
+  height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+  right: 50%;
+}
+
+.inbox-wrapper .inbox-wrapper-inner .inbox-center-container.is-both-opened {
+  width: 100% !important;
+  left: 0% !important;
+  right: 50% !important;
+}

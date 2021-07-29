@@ -1,0 +1,23 @@
+.content-wrapper {
+    padding: 30px;
+    width: 100%;
+    margin: unset !important;
+}
+
+.dummy-card {
+    height: 40rem;
+}
+
+.card {
+    margin-bottom:unset;
+    padding: 1.5rem;
+}
+
+.card-table {
+    /* background-color: red; */
+}
+
+.card-table th, td {
+    border-bottom: 1px solid #d8d8d8;
+    padding: 1rem;  
+}
