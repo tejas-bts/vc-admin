@@ -4,3 +4,13 @@
     flex-direction: row-reverse;
     margin-bottom: 2rem;
 }
+
+
+
+h1.admin-title {
+    font-size: 30px;
+}
+
+.is-dark h1.admin-title {
+    color:white;
+}

@@ -3,21 +3,25 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { getAllCategories } from '../../services/category.service'
 import { createNewOrganisation, getOrganisationById } from '../../services/organisations.services'
+import Spinner from '../../components/core/Spinner';
 
 function EditOrganisation() {
 
   const { orgId } = useParams();
   console.log('Org ID',orgId)
 
+  const [ loading, setLoading ] = useState(true);
+  const [ submitting, setSubmitting ] = useState(false);
   const [ categoryOptions, setOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "INSERT"});
+  const [ orgDetails, setOrganisation ] = useState({requestType: "UPDATE"});
 
   const handleInput = (e) => {
     const key = e.target.name;
     const value = e.target.value;
+    console.log(key,value)
     const newOrg = {...orgDetails}
     newOrg[key] = value;
-    setOrganisation(newOrg);
+    setOrganisation({...orgDetails, newOrg});
   }
 
   const handleSubmit = () => {
@@ -25,26 +29,33 @@ function EditOrganisation() {
     createNewOrganisation(orgDetails);
   }
   
-  useEffect(() => {
-    getAllCategories()
-      .then((response) => setOptions(response.data));
+  useEffect((e) => {
+    setLoading(true);
     getOrganisationById(orgId)
       .then((org) => {
         console.log('Tejas',org);
         setOrganisation({
+          orgId: orgId,
           orgName: org.OrgName,
           email: org.Email,
           phone: org.PhoneNo,
           city: org.City,
           state: org.State,
           zipCode: org.Zipcode,
+          fedtaxid: org.FedTaxId,
+          website: org.Website,
+          address: org.Address,
+          country: org.Country,
         })
+        setLoading(false);
       })
   }, [])
 
-  useEffect(() => {
-    console.log('Org Details',orgDetails);
-  }, [orgDetails])
+  // useEffect(() => {
+  //   getAllCategories()
+  //     .then((response) => setOptions(response.data));
+  // },[])
+
 
   return (
     <div className="settings-wrapper">
@@ -57,6 +68,7 @@ function EditOrganisation() {
             <h2>Edit Organisation</h2>
           </div>
           <div className="settings-form-wrapper">
+          {loading ? <Spinner /> : 
             <form className="settings-form">
               <div className="columns is-multiline">
                 <div className="column is-6">
@@ -69,7 +81,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="orgName"
                         onChange={handleInput}
-                        value={orgDetails.orgName}
+                        value={orgDetails.orgName || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="user" />
@@ -85,7 +98,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="email"
                         onChange={handleInput}
-                        value={orgDetails.email}
+                        value={orgDetails.email || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="mail" />
@@ -101,7 +115,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="phone"
                         onChange={handleInput}
-                        value={orgDetails.phone}
+                        value={orgDetails.phone || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="phone" />
@@ -119,7 +134,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="website"
                         onChange={handleInput}
-                        value={orgDetails.website}
+                        value={orgDetails.website || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="link" />
@@ -135,7 +151,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="facebook"
                         onChange={handleInput}
-                        value={orgDetails.facebook}
+                        value={orgDetails.facebook || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="facebook" />
@@ -151,7 +168,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="instagram"
                         onChange={handleInput}
-                        value={orgDetails.instagram}
+                        value={orgDetails.instagram || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="instagram" />
@@ -172,7 +190,8 @@ function EditOrganisation() {
                         style={{height: '70px'}}
                         name="address"
                         onChange={handleInput}
-                        value={orgDetails.address}
+                        value={orgDetails.address || ""}
+                        required
                       />
                     </div>
                   </div>
@@ -187,7 +206,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="city"
                         onChange={handleInput}
-                        value={orgDetails.city}
+                        value={orgDetails.city || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="map-pin" />
@@ -203,7 +223,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="state"
                         onChange={handleInput}
-                        value={orgDetails.state}
+                        value={orgDetails.state || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="flag" />
@@ -220,7 +241,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="country"
                         onChange={handleInput}
-                        value={orgDetails.country}
+                        value={orgDetails.country || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="globe" />
@@ -238,7 +260,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="zipCode"
                         onChange={handleInput}
-                        value={orgDetails.zipCode}
+                        value={orgDetails.zipCode || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="flag" />
@@ -255,7 +278,8 @@ function EditOrganisation() {
                         className="input is-fade"
                         name="fedtaxid"
                         onChange={handleInput}
-                        value={orgDetails.fedtaxid}
+                        value={orgDetails.fedtaxid || ""}
+                        required
                       />
                       <div className="form-icon">
                         <i data-feather="dollar-sign" />
@@ -264,14 +288,15 @@ function EditOrganisation() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Category</label>
+                    <label>Organisation Type</label>
                     <div className="control has-icon">
                       <select
                         type="text"
                         className="input is-fade"
                         name="orgtype"
                         onChange={handleInput}
-                        value={orgDetails.orgtype}
+                        value={orgDetails.orgtype || ""}
+                        required
                       >
                         <option disabled selected value> --  Select a Category  -- </option>
                         {categoryOptions.map((item) => <option value={item.CategoryId} key={map.key}>{item.CategoryName}</option>)}
@@ -290,7 +315,7 @@ function EditOrganisation() {
                   </div>
                 </div>
               </div>
-            </form>
+            </form>}
           </div>
         </div>
       </div>}

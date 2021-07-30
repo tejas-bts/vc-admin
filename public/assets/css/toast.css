@@ -1,0 +1,27 @@
+.toast {
+    position: fixed;
+    max-width: 300px;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 99999999999999999;
+    background: white;
+    border: 1px solid #5b5d7e;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.success .toast {
+    border: 1px solid #82dd55;
+}
+
+.success .toast-header strong {
+    color: #82dd55;
+}
+
+.fail .toast {
+    border: 1px solid #e23636;
+}
+
+.fail .toast-header strong {
+    color: #e23636;
+}

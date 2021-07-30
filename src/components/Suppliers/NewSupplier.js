@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { createNewOrganisation, getAllOrganisationType } from '../../services/organisations.services'
 import Toast, { ToastStates } from '../core/Toast';
 
-function NewOrganisation() {
+function NewSupplier() {
 
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
@@ -69,7 +69,7 @@ function NewOrganisation() {
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Add new Organisation</h2>
+            <h2>Add a new Supplier</h2>
           </div>
           <div className="settings-form-wrapper">
             <form className="settings-form" onSubmit={handleSubmit}>
@@ -318,4 +318,4 @@ function NewOrganisation() {
   )
 }
 
-export default NewOrganisation
+export default NewSupplier;

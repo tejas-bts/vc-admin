@@ -7,6 +7,8 @@ import authContext from "./Context/authContext";
 import NavBar from "./components/core/NavBar/NavBar";
 
 import Organisations from "./components/Organisations";
+import Suppliers from "./components/Suppliers";
+import Stores from "./components/Stores";
 
 function App() {
   let initialState = {
@@ -35,6 +37,9 @@ function App() {
             <Route exact path="/adminAbout" component={AdminAbout} />
             <Route exact path="/search" component={SearchResults} />
             <Route path="/organisations" component={Organisations} />
+            <Route path="/suppliers" component={Suppliers} />
+            <Route path="/stores" component={Stores} />
+            
           </authContext.Provider>
         </Switch>
       </div>  

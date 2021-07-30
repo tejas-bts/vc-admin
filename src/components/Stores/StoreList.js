@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate';
-import OrganisationListItem from './Organisation.ListItem';
+import StoreListItem from './Store.ListItem';
 import { Link } from 'react-router-dom';
 import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
@@ -71,7 +71,7 @@ function OrganisationList({match}) {
         <div className="settings-wrapper">
             <div className="list-controls">
                 <Link to={`${match.path}new`} style={{float:'right'}}>
-                        <button className="button is-solid accent-button">New Organisation</button>
+                        <button className="button is-solid accent-button">New Store</button>
                 </Link>
             </div>
             <div className="list-controls">
@@ -164,7 +164,7 @@ function OrganisationList({match}) {
                     </span>
                     <span class="edit sort-column" column="IsActive" >Edit</span>
                 </div>
-                {loading ? <Spinner /> : displayList.map((item) => <OrganisationListItem organisation={item} key={item.OrgId} match={match} />)}
+                {loading ? <Spinner /> : displayList.map((item) => <StoreListItem organisation={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate
                 previousLabel={'Prev'}

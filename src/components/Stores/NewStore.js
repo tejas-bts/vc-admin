@@ -69,7 +69,7 @@ function NewOrganisation() {
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Add new Organisation</h2>
+            <h2>Add new Store</h2>
           </div>
           <div className="settings-form-wrapper">
             <form className="settings-form" onSubmit={handleSubmit}>

@@ -1,78 +1,75 @@
 import { map } from 'async';
 import React, { useEffect, useState } from 'react'
-import { createNewOrganisation, getAllOrganisationType } from '../../services/organisations.services'
-import Toast, { ToastStates } from '../core/Toast';
+import { useParams } from 'react-router';
+import { getAllCategories } from '../../services/category.service'
+import { createNewOrganisation, getOrganisationById } from '../../services/organisations.services'
+import Spinner from '../../components/core/Spinner';
 
-function NewOrganisation() {
+function EditSupplier() {
 
+  const { orgId } = useParams();
+  console.log('Org ID',orgId)
+
+  const [ loading, setLoading ] = useState(true);
   const [ submitting, setSubmitting ] = useState(false);
-  const [ showToast, setShowToast ] = useState(false);
-  const [ toastAttr, setToastAttr ] = useState({});
-  const [ orgTypeOptions, setOrgTypeOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "INSERT"});
+  const [ categoryOptions, setOptions ] = useState([]);
+  const [ orgDetails, setOrganisation ] = useState({requestType: "UPDATE"});
 
   const handleInput = (e) => {
     const key = e.target.name;
     const value = e.target.value;
+    console.log(key,value)
     const newOrg = {...orgDetails}
     newOrg[key] = value;
-    setOrganisation(newOrg);
+    setOrganisation({...orgDetails, newOrg});
   }
 
-  const onToastHide = () => {
-    setShowToast(false);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     console.log('Submit');
-    setSubmitting(true);
-    createNewOrganisation(orgDetails)
-      .then((response) =>{
-        console.log('Ansadas Error', response.data.error);
-        if(response.data.error) {
-          console.log("errororor")
-          setToastAttr({...toastAttr, title:'Opps!', message: response.data.data[0], state: ToastStates.FAIL});
-          setShowToast(true);
-        }
-        else {
-          setToastAttr({...toastAttr, title:'Great!', message: 'Organisation added successfully', state: ToastStates.SUCCESS});
-          setShowToast(true);
-          e.target.reset();
-        }
-      })
-      .catch((error) => {
-        setToastAttr({...toastAttr, title:'Oops!', message: 'Something went wrong. Please try again after sometime', state: ToastStates.FAIL})
-        setShowToast(true);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      })
+    createNewOrganisation(orgDetails);
   }
   
-  useEffect(() => {
-    getAllOrganisationType()
-      .then((response) => setOrgTypeOptions(response.data));
+  useEffect((e) => {
+    setLoading(true);
+    getOrganisationById(orgId)
+      .then((org) => {
+        console.log('Tejas',org);
+        setOrganisation({
+          orgId: orgId,
+          orgName: org.OrgName,
+          email: org.Email,
+          phone: org.PhoneNo,
+          city: org.City,
+          state: org.State,
+          zipCode: org.Zipcode,
+          fedtaxid: org.FedTaxId,
+          website: org.Website,
+          address: org.Address,
+          country: org.Country,
+        })
+        setLoading(false);
+      })
   }, [])
 
-  useEffect(() => {
-    console.log(orgDetails);
-  }, [orgDetails])
+  // useEffect(() => {
+  //   getAllCategories()
+  //     .then((response) => setOptions(response.data));
+  // },[])
+
 
   return (
-    <>
-    <Toast toastState={toastAttr.state} title={toastAttr.title} message={toastAttr.message} show={showToast} onClose={onToastHide}/>
     <div className="settings-wrapper">
-      <div id="general-settings" className="settings-section is-active">
+      {orgDetails && <div id="general-settings" className="settings-section is-active">
         <div className="settings-panel">
           <div className="title-wrap">
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Add new Organisation</h2>
+            <h2>Edit Organisation</h2>
           </div>
           <div className="settings-form-wrapper">
-            <form className="settings-form" onSubmit={handleSubmit}>
+          {loading ? <Spinner /> : 
+            <form className="settings-form">
               <div className="columns is-multiline">
                 <div className="column is-6">
                   {/*Field*/}
@@ -84,6 +81,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="orgName"
                         onChange={handleInput}
+                        value={orgDetails.orgName || ""}
                         required
                       />
                       <div className="form-icon">
@@ -100,6 +98,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="email"
                         onChange={handleInput}
+                        value={orgDetails.email || ""}
                         required
                       />
                       <div className="form-icon">
@@ -116,6 +115,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="phone"
                         onChange={handleInput}
+                        value={orgDetails.phone || ""}
                         required
                       />
                       <div className="form-icon">
@@ -134,6 +134,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="website"
                         onChange={handleInput}
+                        value={orgDetails.website || ""}
                         required
                       />
                       <div className="form-icon">
@@ -150,6 +151,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="facebook"
                         onChange={handleInput}
+                        value={orgDetails.facebook || ""}
                         required
                       />
                       <div className="form-icon">
@@ -166,6 +168,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="instagram"
                         onChange={handleInput}
+                        value={orgDetails.instagram || ""}
                         required
                       />
                       <div className="form-icon">
@@ -187,6 +190,7 @@ function NewOrganisation() {
                         style={{height: '70px'}}
                         name="address"
                         onChange={handleInput}
+                        value={orgDetails.address || ""}
                         required
                       />
                     </div>
@@ -202,6 +206,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="city"
                         onChange={handleInput}
+                        value={orgDetails.city || ""}
                         required
                       />
                       <div className="form-icon">
@@ -218,6 +223,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="state"
                         onChange={handleInput}
+                        value={orgDetails.state || ""}
                         required
                       />
                       <div className="form-icon">
@@ -235,6 +241,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="country"
                         onChange={handleInput}
+                        value={orgDetails.country || ""}
                         required
                       />
                       <div className="form-icon">
@@ -253,6 +260,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="zipCode"
                         onChange={handleInput}
+                        value={orgDetails.zipCode || ""}
                         required
                       />
                       <div className="form-icon">
@@ -270,6 +278,7 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="fedtaxid"
                         onChange={handleInput}
+                        value={orgDetails.fedtaxid || ""}
                         required
                       />
                       <div className="form-icon">
@@ -286,10 +295,11 @@ function NewOrganisation() {
                         className="input is-fade"
                         name="orgtype"
                         onChange={handleInput}
+                        value={orgDetails.orgtype || ""}
                         required
                       >
-                        <option disabled selected value> --  Select a Organisation type  -- </option>
-                        {orgTypeOptions.map((item) => <option value={item.OrgTypeId} key={map.key}>{item.OrgType}</option>)}
+                        <option disabled selected value> --  Select a Category  -- </option>
+                        {categoryOptions.map((item) => <option value={item.CategoryId} key={map.key}>{item.CategoryName}</option>)}
                       </select>
                       <div className="form-icon">
                         <i data-feather="settings" />
@@ -299,23 +309,18 @@ function NewOrganisation() {
                 </div>  
                 <div className="column is-12">
                   <div className="buttons">
-                    <button 
-                      type="submit"
-                      className="button is-solid accent-button form-button"
-                      disabled={submitting}
-                    >
-                    { submitting ? 'Adding...' : 'Add'}
-                    </button> 
+                    <button className="button is-solid accent-button form-button" onClick={handleSubmit}>
+                      Save changes
+                    </button>
                   </div>
                 </div>
               </div>
-            </form>
+            </form>}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
-    </>
   )
 }
 
-export default NewOrganisation
+export default EditSupplier;
