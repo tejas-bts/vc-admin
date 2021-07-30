@@ -4,7 +4,7 @@ import NewStore from './NewStore';
 import EditStore from './EditStore';
 import { Switch, Route } from 'react-router';
 
-function Organisations({match}) {
+function Stores({match}) {
     return (
         <Switch>
             <Route path={`${match.path}/new`} component={NewStore} />
@@ -14,4 +14,4 @@ function Organisations({match}) {
     )
 }
 
-export default Organisations
+export default Stores;

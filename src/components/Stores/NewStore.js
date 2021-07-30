@@ -1,6 +1,6 @@
 import { map } from 'async';
 import React, { useEffect, useState } from 'react'
-import { createNewOrganisation, getAllOrganisationType } from '../../services/organisations.services'
+import { createNewStore, getAllStoreType } from '../../services/stores.services'
 import Toast, { ToastStates } from '../core/Toast';
 
 function NewOrganisation() {
@@ -8,15 +8,16 @@ function NewOrganisation() {
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
-  const [ orgTypeOptions, setOrgTypeOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "INSERT"});
+  const [ storeTypeOptions, setStoreTypeOptions ] = useState([]);
+  const [ storeDetails, setStore ] = useState({requestType: "INSERT", loggedInUserId : "2"
+});
 
   const handleInput = (e) => {
     const key = e.target.name;
     const value = e.target.value;
-    const newOrg = {...orgDetails}
+    const newOrg = {...storeDetails}
     newOrg[key] = value;
-    setOrganisation(newOrg);
+    setStore(newOrg);
   }
 
   const onToastHide = () => {
@@ -27,7 +28,7 @@ function NewOrganisation() {
     e.preventDefault();
     console.log('Submit');
     setSubmitting(true);
-    createNewOrganisation(orgDetails)
+    createNewStore(storeDetails)
       .then((response) =>{
         console.log('Ansadas Error', response.data.error);
         if(response.data.error) {
@@ -36,7 +37,7 @@ function NewOrganisation() {
           setShowToast(true);
         }
         else {
-          setToastAttr({...toastAttr, title:'Great!', message: 'Organisation added successfully', state: ToastStates.SUCCESS});
+          setToastAttr({...toastAttr, title:'Great!', message: 'Store added successfully', state: ToastStates.SUCCESS});
           setShowToast(true);
           e.target.reset();
         }
@@ -51,13 +52,16 @@ function NewOrganisation() {
   }
   
   useEffect(() => {
-    getAllOrganisationType()
-      .then((response) => setOrgTypeOptions(response.data));
+    getAllStoreType()
+      .then((response) => {
+        console.log("Store Type Options",storeTypeOptions)
+        setStoreTypeOptions(response.data);
+      });
   }, [])
 
   useEffect(() => {
-    console.log(orgDetails);
-  }, [orgDetails])
+    console.log(storeDetails);
+  }, [storeDetails])
 
   return (
     <>
@@ -77,12 +81,12 @@ function NewOrganisation() {
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Name</label>
+                    <label>Store Name</label>
                     <div className="control has-icon">
                       <input
                         type="text"
                         className="input is-fade"
-                        name="orgName"
+                        name="storeName"
                         onChange={handleInput}
                         required
                       />
@@ -93,12 +97,12 @@ function NewOrganisation() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Email</label>
+                    <label>Store Code</label>
                     <div className="control has-icon">
                       <input
                         type="text"
                         className="input is-fade"
-                        name="email"
+                        name="storeCode"
                         onChange={handleInput}
                         required
                       />
@@ -107,32 +111,16 @@ function NewOrganisation() {
                       </div>
                     </div>
                   </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Phone Number</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="phone"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="phone" />
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Website</label>
+                    <label>License Number</label>
                     <div className="control has-icon">
                       <input
                         type="text"
                         className="input is-fade"
-                        name="website"
+                        name="licenceNumber"
                         onChange={handleInput}
                         required
                       />
@@ -143,33 +131,17 @@ function NewOrganisation() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Facebook Page Address</label>
+                    <label>EDI ID</label>
                     <div className="control has-icon">
                       <input
                         type="text"
                         className="input is-fade"
-                        name="facebook"
+                        name="ediid"
                         onChange={handleInput}
                         required
                       />
                       <div className="form-icon">
-                        <i data-feather="facebook" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Instagram Page Address</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="instagram"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="instagram" />
+                        <i data-feather="phone" />
                       </div>
                     </div>
                   </div>
@@ -185,7 +157,7 @@ function NewOrganisation() {
                         rows={1}
                         placeholder= "Fill in your address..."
                         style={{height: '70px'}}
-                        name="address"
+                        name="address1"
                         onChange={handleInput}
                         required
                       />
@@ -260,36 +232,19 @@ function NewOrganisation() {
                       </div>
                     </div>
                   </div>
-                  
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Fed Tax ID</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="fedtaxid"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="dollar-sign" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Organisation Type</label>
+                    <label>Store Type</label>
                     <div className="control has-icon">
                       <select
                         type="text"
                         className="input is-fade"
-                        name="orgtype"
+                        name="storeTypeId"
                         onChange={handleInput}
                         required
                       >
-                        <option disabled selected value> --  Select a Organisation type  -- </option>
-                        {orgTypeOptions.map((item) => <option value={item.OrgTypeId} key={map.key}>{item.OrgType}</option>)}
+                        <option disabled selected value> --  Select a Store type  -- </option>
+                        {storeTypeOptions.map((item) => <option value={item.StoreTypeId} key={map.key}>{item.StoreType}</option>)}
                       </select>
                       <div className="form-icon">
                         <i data-feather="settings" />

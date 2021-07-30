@@ -2,30 +2,30 @@ import { map } from 'async';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { getAllCategories } from '../../services/category.service'
-import { updateOrg, getOrganisationById } from '../../services/organisations.services'
+import { updateOrg, getOrganizationById } from '../../services/organizations.services'
 import Spinner from '../../components/core/Spinner';
 import Toast, { ToastStates } from '../core/Toast';
 
-function EditOrganisation() {
+function EditOrganization() {
 
   const { orgId } = useParams();
   console.log('Org ID',orgId)
 
   const [ loading, setLoading ] = useState(true);
   const [ categoryOptions, setOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "UPDATE", orgId});
+  const [ orgDetails, setOrganization ] = useState({requestType: "UPDATE", orgId});
 
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
 
-  
+
   const onToastHide = () => {
     setShowToast(false);
   }
 
   const handleInput = (e) => {
-    setOrganisation({ ...orgDetails, [e.target.name]: e.target.value });
+    setOrganization({ ...orgDetails, [e.target.name]: e.target.value });
   }
 
   const handleSubmit = (e) => {
@@ -57,10 +57,10 @@ function EditOrganisation() {
   
   useEffect((e) => {
     setLoading(true);
-    getOrganisationById(orgId)
+    getOrganizationById(orgId)
       .then((org) => {
         console.log('Tejas',org);
-        setOrganisation({
+        setOrganization({
           orgId: orgId,
           orgName: org.OrgName,
           email: org.Email,
@@ -73,14 +73,10 @@ function EditOrganisation() {
           address: org.Address,
           country: org.Country,
         })
+        getAllCategories().then((response) => setOptions(response.data));
         setLoading(false);
       })
   }, [])
-
-  useEffect(() => {
-    getAllCategories()
-      .then((response) => setOptions(response.data));
-  },[])
 
 
   return (
@@ -92,7 +88,7 @@ function EditOrganisation() {
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Edit Organisation</h2>
+            <h2>Edit Organization</h2>
           </div>
           <div className="settings-form-wrapper">
           {loading ? <Spinner /> : 
@@ -101,7 +97,7 @@ function EditOrganisation() {
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Name</label>
+                    <label>Organization Name</label>
                     <div className="control has-icon">
                       <input
                         type="text"
@@ -315,7 +311,7 @@ function EditOrganisation() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Type</label>
+                    <label>Organization Type</label>
                     <div className="control has-icon">
                       <select
                         type="text"
@@ -354,4 +350,4 @@ function EditOrganisation() {
   )
 }
 
-export default EditOrganisation
+export default EditOrganization

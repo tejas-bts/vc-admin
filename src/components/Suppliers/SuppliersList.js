@@ -28,10 +28,10 @@ function SuppliersList({match}) {
         .then((response) => setOptions(response.data));
         getAllSuppliers()
         .then((response) => {
-          const organisations = response.data
-          setSuppliers(organisations);
+          const organizations = response.data
+          setSuppliers(organizations);
           const newListAttributes = {...listAttributes};
-          newListAttributes.pageCount = Math.ceil(organisations.length/listAttributes.pageSize);
+          newListAttributes.pageCount = Math.ceil(organizations.length/listAttributes.pageSize);
           setListAttributes(newListAttributes);
           setLoading(false);
         })

@@ -1,22 +1,22 @@
 import { map } from 'async';
 import React, { useEffect, useState } from 'react'
-import { createNewOrganisation, getAllOrganisationType } from '../../services/organisations.services'
+import { createNewOrganization, getAllOrganizationType } from '../../services/organizations.services'
 import Toast, { ToastStates } from '../core/Toast';
 
-function NewOrganisation() {
+function NewOrganization() {
 
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
   const [ orgTypeOptions, setOrgTypeOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "INSERT"});
+  const [ orgDetails, setOrganization ] = useState({requestType: "INSERT"});
 
   const handleInput = (e) => {
     const key = e.target.name;
     const value = e.target.value;
     const newOrg = {...orgDetails}
     newOrg[key] = value;
-    setOrganisation(newOrg);
+    setOrganization(newOrg);
   }
 
   const onToastHide = () => {
@@ -27,7 +27,7 @@ function NewOrganisation() {
     e.preventDefault();
     console.log('Submit');
     setSubmitting(true);
-    createNewOrganisation(orgDetails)
+    createNewOrganization(orgDetails)
       .then((response) =>{
         console.log('Ansadas Error', response.data.error);
         if(response.data.error) {
@@ -36,7 +36,7 @@ function NewOrganisation() {
           setShowToast(true);
         }
         else {
-          setToastAttr({...toastAttr, title:'Great!', message: 'Organisation added successfully', state: ToastStates.SUCCESS});
+          setToastAttr({...toastAttr, title:'Great!', message: 'Organization added successfully', state: ToastStates.SUCCESS});
           setShowToast(true);
           e.target.reset();
         }
@@ -51,7 +51,7 @@ function NewOrganisation() {
   }
   
   useEffect(() => {
-    getAllOrganisationType()
+    getAllOrganizationType()
       .then((response) => setOrgTypeOptions(response.data));
   }, [])
 
@@ -69,7 +69,7 @@ function NewOrganisation() {
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Add new Organisation</h2>
+            <h2>Add new Organization</h2>
           </div>
           <div className="settings-form-wrapper">
             <form className="settings-form" onSubmit={handleSubmit}>
@@ -77,7 +77,7 @@ function NewOrganisation() {
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Name</label>
+                    <label>Organization Name</label>
                     <div className="control has-icon">
                       <input
                         type="text"
@@ -279,7 +279,7 @@ function NewOrganisation() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Type</label>
+                    <label>Organization Type</label>
                     <div className="control has-icon">
                       <select
                         type="text"
@@ -288,7 +288,7 @@ function NewOrganisation() {
                         onChange={handleInput}
                         required
                       >
-                        <option disabled selected value> --  Select a Organisation type  -- </option>
+                        <option disabled selected value> --  Select a Organization type  -- </option>
                         {orgTypeOptions.map((item) => <option value={item.OrgTypeId} key={map.key}>{item.OrgType}</option>)}
                       </select>
                       <div className="form-icon">
@@ -318,4 +318,4 @@ function NewOrganisation() {
   )
 }
 
-export default NewOrganisation
+export default NewOrganization

@@ -8,7 +8,7 @@ function CreateNew() {
             <a className="mobile-sidebar-trigger">
               <i data-feather="menu" />
             </a>
-            <h2>Add new Organisation</h2>
+            <h2>Add new Organization</h2>
           </div>
           <div className="settings-form-wrapper">
             <div className="settings-form">
@@ -16,7 +16,7 @@ function CreateNew() {
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Name</label>
+                    <label>Organization Name</label>
                     <div className="control has-icon">
                       <input
                         type="text"

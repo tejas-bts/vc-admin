@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const createNewOrganisation = async (data) => {
+export const createNewOrganization = async (data) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/CreateUpdateOrgs?code=nNLRBK8Rv4LQs1IF2AqVLXQOH129BTn1wWI/a/uRi6wv0GLHhlUyGQ=="
     return new Promise((resolve, reject) => {
         axios.post(url,data)
@@ -18,7 +18,7 @@ export const updateOrg = async (data) => {
     })
 }
 
-export const getAllOrganisations = async () => {
+export const getAllOrganizations = async () => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchOrgs?code=aQb815GaeZ/PFkzgw0cc9Vo/Pst3EUVFOgkeDF0bgh0V2ahJLo1e2g=="
     return new Promise((resolve, reject) => {
         axios.get(url)
@@ -27,7 +27,7 @@ export const getAllOrganisations = async () => {
     })
 }
 
-export const getOrganisationById = async (orgId) => {
+export const getOrganizationById = async (orgId) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchOrgs?code=aQb815GaeZ/PFkzgw0cc9Vo/Pst3EUVFOgkeDF0bgh0V2ahJLo1e2g=="
     return new Promise((resolve, reject) => {
         axios.get(url,{ params : { orgId }})
@@ -39,7 +39,7 @@ export const getOrganisationById = async (orgId) => {
     })
 }
 
-export const getAllOrganisationType = async () => {
+export const getAllOrganizationType = async () => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchOrgTypes?code=gnwS2jeEhQt1oukayKt7WyOyklXufKEiCvrkF0EbXBDgZgyT9PXebQ=="
     return new Promise((resolve, reject) => {
         axios.get(url)

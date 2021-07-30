@@ -6,7 +6,7 @@ import { Fragment, useState } from "react";
 import authContext from "./Context/authContext";
 import NavBar from "./components/core/NavBar/NavBar";
 
-import Organisations from "./components/Organisations";
+import Organizations from "./components/Organizations";
 import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
 
@@ -36,7 +36,7 @@ function App() {
             <Route exact path="/adminProfile" component={AdminProfile} />
             <Route exact path="/adminAbout" component={AdminAbout} />
             <Route exact path="/search" component={SearchResults} />
-            <Route path="/organisations" component={Organisations} />
+            <Route path="/organizations" component={Organizations} />
             <Route path="/suppliers" component={Suppliers} />
             <Route path="/stores" component={Stores} />
             

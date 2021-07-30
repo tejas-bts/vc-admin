@@ -2,7 +2,7 @@ import { map } from 'async';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { getSuppliersById, updateSupplier } from '../../services/suppliers.services'
-import { getAllOrganisations} from '../../services/organisations.services'
+import { getAllOrganizations} from '../../services/organizations.services'
 import Spinner from '../../components/core/Spinner';
 import Toast, { ToastStates } from '../core/Toast';
 
@@ -59,7 +59,7 @@ function EditSupplier() {
   
   useEffect((e) => {
     setLoading(true);
-    getAllOrganisations().then((response) => setOrgOptions(response.data));
+    getAllOrganizations().then((response) => setOrgOptions(response.data));
     getSuppliersById(supplierId)
       .then((supplier) => {
         console.log('Supplier',supplier);
@@ -206,7 +206,7 @@ function EditSupplier() {
                 </div>
                 {/*Field*/}
                 <div className="field field-group">
-                  <label>Organisation</label>
+                  <label>Organization</label>
                   <div className="control has-icon">
                     <select
                       type="text"
@@ -215,7 +215,7 @@ function EditSupplier() {
                       onChange={handleInput}
                       required
                     >
-                      <option disabled selected value> --  Select a Organisation  -- </option>
+                      <option disabled selected value> --  Select an Organization  -- </option>
                       {orgOptions.map((item) => <option value={item.OrgId} key={map.key}>{item.OrgName}</option>)}
                     </select>
                     <div className="form-icon">

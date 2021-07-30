@@ -1,7 +1,7 @@
 import { map } from 'async';
 import React, { useEffect, useState } from 'react'
 import { createNewSupplier } from '../../services/suppliers.services'
-import { getAllOrganisations } from '../../services/organisations.services'
+import { getAllOrganizations } from '../../services/organizations.services'
 import Toast, { ToastStates } from '../core/Toast';
 
 function NewSupplier() {
@@ -52,7 +52,7 @@ function NewSupplier() {
   }
   
   useEffect(() => {
-    getAllOrganisations()
+    getAllOrganizations()
       .then((response) => setOrgOptions(response.data));
   }, [])
 

@@ -4,16 +4,18 @@ import StoreListItem from './Store.ListItem';
 import { Link } from 'react-router-dom';
 import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
-import { getAllOrganisations } from '../../services/organisations.services';
+import { getAllStores } from '../../services/stores.services';
 import Spinner from '../../components/core/Spinner';
 
-function OrganisationList({match}) {
+function StoreList({match}) {
 
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
-    const [ organisations, setOrganisations ] = useState([]);
+    const [ stores, setStores ] = useState([]);
     const [ displayList, setDisplayList ] = useState([]);
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
+
+  
 
     const handleSort = (e) => {
       console.log(e.target.getAttribute('column'));
@@ -26,12 +28,12 @@ function OrganisationList({match}) {
     useEffect(() => {
       getAllCategories()
         .then((response) => setOptions(response.data));
-      getAllOrganisations()
+      getAllStores()
         .then((response) => {
-          const organisations = response.data
-          setOrganisations(organisations);
+          const stores = response.data
+          setStores(stores);
           const newListAttributes = {...listAttributes};
-          newListAttributes.pageCount = Math.ceil(organisations.length/listAttributes.pageSize);
+          newListAttributes.pageCount = Math.ceil(stores.length/listAttributes.pageSize);
           setListAttributes(newListAttributes);
           setLoading(false);
         })
@@ -45,27 +47,27 @@ function OrganisationList({match}) {
       console.log('List Attributes',listAttributes)
       const start = parseInt(listAttributes.pageNumber) * parseInt(listAttributes.pageSize);
       const end = start + listAttributes.pageSize;
-      let orgList = [...organisations];
+      let storeList = [...stores];
 
       if(listAttributes.sortBy !== undefined) {
         const column = listAttributes.sortBy;
 
-        if(listAttributes.sortDirection) orgList.sort((a,b) => {
+        if(listAttributes.sortDirection) storeList.sort((a,b) => {
           if (a[column] < b[column]) return -1;
           if (a[column] > b[column]) return 1;
           return 0;
         })
-        else orgList.sort((a,b) => {
+        else storeList.sort((a,b) => {
           if (a[column] < b[column]) return 1;
           if (a[column] > b[column]) return -1;
           return 0;
         })
       }
 
-      const displayList = [...orgList.slice(start,end)];
+      const displayList = [...storeList.slice(start,end)];
       setDisplayList(displayList);
 
-    }, [listAttributes,organisations])
+    }, [listAttributes,stores])
 
     return (
         <div className="settings-wrapper">
@@ -73,6 +75,7 @@ function OrganisationList({match}) {
                 <Link to={`${match.path}new`} style={{float:'right'}}>
                         <button className="button is-solid accent-button">New Store</button>
                 </Link>
+                <h1 className="admin-title">Stores</h1>
             </div>
             <div className="list-controls">
                 <div className="small-input">
@@ -120,38 +123,31 @@ function OrganisationList({match}) {
             </div>
             <div class="flex-table">
                 <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="OrgName">
+                    <span class="name sort-column" onClick={handleSort} column="StoreName">
                       Name
                       {
-                        listAttributes.sortBy === "OrgName" && 
+                        listAttributes.sortBy === "StoreName" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="location sort-column" onClick={handleSort} column="City">
-                      City
+                    <span class="location sort-column" onClick={handleSort} column="TotalStores">
+                      Store Count
                       {
-                        listAttributes.sortBy === "City" && 
+                        listAttributes.sortBy === "TotalStores" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="type sort-column" onClick={handleSort} column="OrgType">
-                      Type
+                    <span class="type sort-column" onClick={handleSort} column="StoreCode">
+                      Store Code
                       {
-                        listAttributes.sortBy === "OrgType" && 
+                        listAttributes.sortBy === "StoreCode" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="category sort-column" onClick={handleSort} column="Email">
-                      Email
+                    <span class="category sort-column" onClick={handleSort} column="StoreType">
+                      Store Type
                       {
-                        listAttributes.sortBy === "Email" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="Zipcode">
-                      Zip Code
-                      {
-                        listAttributes.sortBy === "Zipcode" && 
+                        listAttributes.sortBy === "StoreType" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
@@ -164,7 +160,7 @@ function OrganisationList({match}) {
                     </span>
                     <span class="edit sort-column" column="IsActive" >Edit</span>
                 </div>
-                {loading ? <Spinner /> : displayList.map((item) => <StoreListItem organisation={item} key={item.OrgId} match={match} />)}
+                {loading ? <Spinner /> : displayList.map((item) => <StoreListItem store={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate
                 previousLabel={'Prev'}
@@ -182,4 +178,4 @@ function OrganisationList({match}) {
     )
 }
 
-export default OrganisationList
+export default StoreList

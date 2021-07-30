@@ -4,7 +4,7 @@ import NewSupplier from './NewSupplier';
 import EditSupplier from './EditSupplier';
 import { Switch, Route } from 'react-router';
 
-function Organisations({match}) {
+function Suppliers({match}) {
     return (
         <Switch>
             <Route path={`${match.path}/new`} component={NewSupplier} />
@@ -14,4 +14,4 @@ function Organisations({match}) {
     )
 }
 
-export default Organisations
+export default Suppliers;
