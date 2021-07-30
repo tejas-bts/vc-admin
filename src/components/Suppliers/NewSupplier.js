@@ -1,6 +1,7 @@
 import { map } from 'async';
 import React, { useEffect, useState } from 'react'
-import { createNewOrganisation, getAllOrganisationType } from '../../services/organisations.services'
+import { createNewSupplier } from '../../services/suppliers.services'
+import { getAllOrganisations } from '../../services/organisations.services'
 import Toast, { ToastStates } from '../core/Toast';
 
 function NewSupplier() {
@@ -8,15 +9,15 @@ function NewSupplier() {
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
-  const [ orgTypeOptions, setOrgTypeOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "INSERT"});
+  const [ orgOptions, setOrgOptions ] = useState([]);
+  const [ supplierDetails, setSupplier ] = useState({requestType: "INSERT"});
 
   const handleInput = (e) => {
     const key = e.target.name;
     const value = e.target.value;
-    const newOrg = {...orgDetails}
-    newOrg[key] = value;
-    setOrganisation(newOrg);
+    const newSupplier = {...supplierDetails}
+    newSupplier[key] = value;
+    setSupplier(newSupplier);
   }
 
   const onToastHide = () => {
@@ -27,16 +28,16 @@ function NewSupplier() {
     e.preventDefault();
     console.log('Submit');
     setSubmitting(true);
-    createNewOrganisation(orgDetails)
+    createNewSupplier(supplierDetails)
       .then((response) =>{
-        console.log('Ansadas Error', response.data.error);
+        console.log('Error', response.data.error);
         if(response.data.error) {
           console.log("errororor")
           setToastAttr({...toastAttr, title:'Opps!', message: response.data.data[0], state: ToastStates.FAIL});
           setShowToast(true);
         }
         else {
-          setToastAttr({...toastAttr, title:'Great!', message: 'Organisation added successfully', state: ToastStates.SUCCESS});
+          setToastAttr({...toastAttr, title:'Great!', message: 'Supplier added successfully', state: ToastStates.SUCCESS});
           setShowToast(true);
           e.target.reset();
         }
@@ -51,13 +52,13 @@ function NewSupplier() {
   }
   
   useEffect(() => {
-    getAllOrganisationType()
-      .then((response) => setOrgTypeOptions(response.data));
+    getAllOrganisations()
+      .then((response) => setOrgOptions(response.data));
   }, [])
 
   useEffect(() => {
-    console.log(orgDetails);
-  }, [orgDetails])
+    console.log(supplierDetails);
+  }, [supplierDetails])
 
   return (
     <>
@@ -77,12 +78,27 @@ function NewSupplier() {
                 <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation Name</label>
+                    <label>Supplier Name</label>
                     <div className="control has-icon">
                       <input
                         type="text"
                         className="input is-fade"
-                        name="orgName"
+                        name="supplierName"
+                        onChange={handleInput}
+                        required
+                      />
+                      <div className="form-icon">
+                        <i data-feather="user" />
+                      </div>
+                    </div>
+                  </div>{/*Field*/}
+                  <div className="field field-group">
+                    <label>Contact Name</label>
+                    <div className="control has-icon">
+                      <input
+                        type="text"
+                        className="input is-fade"
+                        name="contactName"
                         onChange={handleInput}
                         required
                       />
@@ -142,90 +158,6 @@ function NewSupplier() {
                     </div>
                   </div>
                   {/*Field*/}
-                  <div className="field field-group">
-                    <label>Facebook Page Address</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="facebook"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="facebook" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Instagram Page Address</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="instagram"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="instagram" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="column is-12">
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Address</label>
-                    <div className="control">
-                      <textarea
-                        type="text"
-                        className="textarea is-fade"
-                        rows={1}
-                        placeholder= "Fill in your address..."
-                        style={{height: '70px'}}
-                        name="address"
-                        onChange={handleInput}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="column is-6">
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>City</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="city"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="map-pin" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>State</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="state"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="flag" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
                   <div className="field field-group is-autocomplete">
                     <label>Country</label>
                     <div className="control has-icon">
@@ -242,54 +174,40 @@ function NewSupplier() {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="column is-6">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Zip Code</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="zipCode"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="flag" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Fed Tax ID</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="fedtaxid"
-                        onChange={handleInput}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="dollar-sign" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Organisation Type</label>
+                    <label>Organisation</label>
                     <div className="control has-icon">
                       <select
                         type="text"
                         className="input is-fade"
-                        name="orgtype"
+                        name="orgId"
                         onChange={handleInput}
                         required
                       >
-                        <option disabled selected value> --  Select a Organisation type  -- </option>
-                        {orgTypeOptions.map((item) => <option value={item.OrgTypeId} key={map.key}>{item.OrgType}</option>)}
+                        <option disabled selected value> --  Select a Organisation  -- </option>
+                        {orgOptions.map((item) => <option value={item.OrgId} key={map.key}>{item.OrgName}</option>)}
+                      </select>
+                      <div className="form-icon">
+                        <i data-feather="settings" />
+                      </div>
+                    </div>
+                  </div>
+                  {/*Field*/}
+                  <div className="field field-group">
+                    <label>Retailer Type</label>
+                    <div className="control has-icon">
+                      <select
+                        type="text"
+                        className="input is-fade"
+                        name="supplierType"
+                        onChange={handleInput}
+                        required
+                      >
+                        <option disabled selected value> --  Select Type of Retailer  -- </option>
+                        <option value="Retailer"> Retailer </option>
+                        <option value="Manufacturer"> Manufacturer </option>
+                        <option value="Distributor"> Distributor </option>
                       </select>
                       <div className="form-icon">
                         <i data-feather="settings" />

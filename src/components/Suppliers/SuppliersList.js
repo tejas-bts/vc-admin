@@ -142,17 +142,10 @@ function SuppliersList({match}) {
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="Zipcode">
-                      Zip Code
+                    <span class="events-count sort-column" onClick={handleSort} column="TotalSupplier">
+                      Suppliers Count
                       {
-                        listAttributes.sortBy === "Zipcode" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="status sort-column" onClick={handleSort} column="IsActive">
-                      Active
-                      {
-                        listAttributes.sortBy === "IsActive" && 
+                        listAttributes.sortBy === "TotalSupplier" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>

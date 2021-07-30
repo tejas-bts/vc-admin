@@ -2,8 +2,9 @@ import { map } from 'async';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { getAllCategories } from '../../services/category.service'
-import { createNewOrganisation, getOrganisationById } from '../../services/organisations.services'
+import { updateOrg, getOrganisationById } from '../../services/organisations.services'
 import Spinner from '../../components/core/Spinner';
+import Toast, { ToastStates } from '../core/Toast';
 
 function EditOrganisation() {
 
@@ -11,22 +12,47 @@ function EditOrganisation() {
   console.log('Org ID',orgId)
 
   const [ loading, setLoading ] = useState(true);
-  const [ submitting, setSubmitting ] = useState(false);
   const [ categoryOptions, setOptions ] = useState([]);
-  const [ orgDetails, setOrganisation ] = useState({requestType: "UPDATE"});
+  const [ orgDetails, setOrganisation ] = useState({requestType: "UPDATE", orgId});
 
-  const handleInput = (e) => {
-    const key = e.target.name;
-    const value = e.target.value;
-    console.log(key,value)
-    const newOrg = {...orgDetails}
-    newOrg[key] = value;
-    setOrganisation({...orgDetails, newOrg});
+  const [ submitting, setSubmitting ] = useState(false);
+  const [ showToast, setShowToast ] = useState(false);
+  const [ toastAttr, setToastAttr ] = useState({});
+
+  
+  const onToastHide = () => {
+    setShowToast(false);
   }
 
-  const handleSubmit = () => {
+  const handleInput = (e) => {
+    setOrganisation({ ...orgDetails, [e.target.name]: e.target.value });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log('Submit');
-    createNewOrganisation(orgDetails);
+    setSubmitting(true);
+    updateOrg(orgDetails)
+      .then((response) =>{
+        console.log('Error', response.data.error);
+        if(response.data.error) {
+          console.log("errororor")
+          setToastAttr({...toastAttr, title:'Opps!', message: response.data.data[0], state: ToastStates.FAIL});
+          setShowToast(true);
+        }
+        else {
+          setToastAttr({...toastAttr, title:'Great!', message: 'Supplier updated successfully', state: ToastStates.SUCCESS});
+          setShowToast(true);
+          e.target.reset();
+        }
+      })
+      .catch((error) => {
+        setToastAttr({...toastAttr, title:'Oops!', message: 'Something went wrong. Please try again after sometime', state: ToastStates.FAIL})
+        setShowToast(true);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      })
   }
   
   useEffect((e) => {
@@ -51,14 +77,15 @@ function EditOrganisation() {
       })
   }, [])
 
-  // useEffect(() => {
-  //   getAllCategories()
-  //     .then((response) => setOptions(response.data));
-  // },[])
+  useEffect(() => {
+    getAllCategories()
+      .then((response) => setOptions(response.data));
+  },[])
 
 
   return (
     <div className="settings-wrapper">
+      <Toast toastState={toastAttr.state} title={toastAttr.title} message={toastAttr.message} show={showToast} onClose={onToastHide}/>
       {orgDetails && <div id="general-settings" className="settings-section is-active">
         <div className="settings-panel">
           <div className="title-wrap">
@@ -69,7 +96,7 @@ function EditOrganisation() {
           </div>
           <div className="settings-form-wrapper">
           {loading ? <Spinner /> : 
-            <form className="settings-form">
+            <form className="settings-form" onSubmit={handleSubmit}>
               <div className="columns is-multiline">
                 <div className="column is-6">
                   {/*Field*/}
@@ -309,8 +336,12 @@ function EditOrganisation() {
                 </div>  
                 <div className="column is-12">
                   <div className="buttons">
-                    <button className="button is-solid accent-button form-button" onClick={handleSubmit}>
-                      Save changes
+                    <button 
+                      type="submit"
+                      className="button is-solid accent-button form-button"
+                      disabled={submitting}
+                    >
+                    { submitting ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </div>

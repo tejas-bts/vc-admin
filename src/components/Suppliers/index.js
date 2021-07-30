@@ -9,7 +9,7 @@ function Organisations({match}) {
         <Switch>
             <Route path={`${match.path}/new`} component={NewSupplier} />
             <Route exact path={`${match.path}/`} component={SuppliersList} />
-            <Route exact path={`${match.path}/edit/:orgId`} component={EditSupplier} />
+            <Route exact path={`${match.path}/edit/:supplierId`} component={EditSupplier} />
         </Switch>
     )
 }

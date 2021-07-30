@@ -15,10 +15,7 @@ function SupplierListItem({supplier, match}) {
                     <span>{supplier.OrgName}</span>
                 </div>
                 <div className="events-count">
-                    <span>{supplier.Zipcode}</span>
-                </div>
-                <div className="status">
-                    <span>{supplier.IsActive ? "Active" : "Inactive"}</span>
+                    <span>{supplier.TotalSupplier}</span>
                 </div>
                 <div className="edit" style={{display: 'flex', alignItems: 'center'}}>
                 <Link to={`${match.url}/edit/${supplier.SupplierID}`} key={supplier.SupplierID}>

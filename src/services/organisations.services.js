@@ -9,6 +9,15 @@ export const createNewOrganisation = async (data) => {
     })
 }
 
+export const updateOrg = async (data) => {
+    const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/CreateUpdateOrgs?code=nNLRBK8Rv4LQs1IF2AqVLXQOH129BTn1wWI/a/uRi6wv0GLHhlUyGQ=="
+    return new Promise((resolve, reject) => {
+        axios.post(url,data)
+        .then((res) => resolve(res))
+        .catch((err) => reject(err))
+    })
+}
+
 export const getAllOrganisations = async () => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchOrgs?code=aQb815GaeZ/PFkzgw0cc9Vo/Pst3EUVFOgkeDF0bgh0V2ahJLo1e2g=="
     return new Promise((resolve, reject) => {
