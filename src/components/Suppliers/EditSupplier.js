@@ -225,7 +225,7 @@ function EditSupplier() {
                 </div>
                 {/*Field*/}
                 <div className="field field-group">
-                  <label>Retailer Type</label>
+                  <label>Supplier Type</label>
                   <div className="control has-icon">
                     <select
                       type="text"
@@ -234,7 +234,7 @@ function EditSupplier() {
                       onChange={handleInput}
                       required
                     >
-                      <option disabled selected value> --  Select Type of Retailer  -- </option>
+                      <option disabled selected value> --  Select Type of Supplier  -- </option>
                       <option value="Retailer" selected={supplierDetails.supplierType == "Retailer"} > Retailer </option>
                       <option value="Manufacturer" selected={supplierDetails.supplierType == "Manufacturer"}> Manufacturer </option>
                       <option value="Distributor" selected={supplierDetails.supplierType == "Distributor"}> Distributor </option>
