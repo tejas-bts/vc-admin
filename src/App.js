@@ -1,4 +1,4 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import SearchResults from "./components/SearchResults";
 import AdminProfile from "./components/Profile/AdminProfile";
 import AdminAbout from "./components/Profile/AdminAbout";
@@ -11,6 +11,7 @@ import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
 import Events from "./components/Events";
 import Contacts from "./components/Contacts";
+import Home from "./components/Home/Home";
 
 function App() {
   let initialState = {
@@ -32,7 +33,7 @@ function App() {
   return (
     <Fragment>
       <NavBar />
-      <div class="view-wrapper is-full">
+      <div className="view-wrapper is-full">
         <Switch>
           <authContext.Provider value={{ allData, setAllData }}>
             <Route exact path="/adminProfile" component={AdminProfile} />
@@ -43,9 +44,13 @@ function App() {
             <Route path="/stores" component={Stores} />
             <Route path="/events" component={Events} />
             <Route path="/contacts" component={Contacts} />
+            <Route path="/home" component={Home} />
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
           </authContext.Provider>
         </Switch>
-      </div>  
+      </div>
     </Fragment>
   );
 }
