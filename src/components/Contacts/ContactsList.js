@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate';
-import SuppliersListItem from './Supplier.ListItem';
+import ContactItem from './Contacts.ListItem';
 import { Link } from 'react-router-dom';
 import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
-import { getAllSuppliers } from '../../services/suppliers.services';
+import { getAllContacts } from '../../services/contacts.services';
 import Spinner from '../../components/core/Spinner';
 
-function SuppliersList({match}) {
+const initalSearchParams = {
+  "supplierId" : "1",
+  "firstName" : "",
+  "lastName" : "",
+  "storeId" : "",
+  "contactTypeId" : "2",
+  "email" : "",
+  "limit" : "",
+  "offset" : "",
+  "sortCol" : "FirstName",
+  "sortOrder" : "DESC"
+}
+
+function EventList({match}) {
 
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
-    const [ suppliers, setSuppliers ] = useState([]);
+    const [ contacts, setContacts ] = useState([]);
     const [ displayList, setDisplayList ] = useState([]);
+    const [ searchParams, setSearchParams ] = useState(initalSearchParams);
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
 
     const handleSort = (e) => {
@@ -26,12 +40,13 @@ function SuppliersList({match}) {
     useEffect(() => {
       getAllCategories()
         .then((response) => setOptions(response.data));
-        getAllSuppliers()
+      getAllContacts(searchParams)
         .then((response) => {
-          const organizations = response.data
-          setSuppliers(organizations);
+          console.log("Events List",response)
+          const contacts = response.data
+          setContacts(contacts);
           const newListAttributes = {...listAttributes};
-          newListAttributes.pageCount = Math.ceil(organizations.length/listAttributes.pageSize);
+          newListAttributes.pageCount = Math.ceil(contacts.length/listAttributes.pageSize);
           setListAttributes(newListAttributes);
           setLoading(false);
         })
@@ -45,7 +60,7 @@ function SuppliersList({match}) {
       console.log('List Attributes',listAttributes)
       const start = parseInt(listAttributes.pageNumber) * parseInt(listAttributes.pageSize);
       const end = start + listAttributes.pageSize;
-      let orgList = [...suppliers];
+      let orgList = [...contacts];
 
       if(listAttributes.sortBy !== undefined) {
         const column = listAttributes.sortBy;
@@ -65,15 +80,15 @@ function SuppliersList({match}) {
       const displayList = [...orgList.slice(start,end)];
       setDisplayList(displayList);
 
-    }, [listAttributes,suppliers])
+    }, [listAttributes,contacts])
 
     return (
         <div className="settings-wrapper">
             <div className="list-controls">
                 <Link to={`${match.path}new`} style={{float:'right'}}>
-                        <button className="button is-solid accent-button">New Supplier</button>
+                        <button className="button is-solid accent-button">New Contact</button>
                 </Link>
-                <h1 className="admin-title">Suppliers</h1>
+                <h1 className="admin-title">Contacts</h1>
             </div>
             <div className="list-controls">
                 <div className="small-input">
@@ -121,37 +136,44 @@ function SuppliersList({match}) {
             </div>
             <div class="flex-table">
                 <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="SupplierName">
-                      Name
-                      {
-                        listAttributes.sortBy === "SupplierName" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="type sort-column" onClick={handleSort} column="OrgType">
-                      Type
-                      {
-                        listAttributes.sortBy === "OrgType" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="category sort-column" onClick={handleSort} column="OrgName">
-                      Organization
+                    <span class="name sort-column" onClick={handleSort} column="OrgName">
+                      First Name
                       {
                         listAttributes.sortBy === "OrgName" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="TotalSupplier">
-                      Suppliers Count
+                    <span class="location sort-column" onClick={handleSort} column="EventStartDateTime">
+                      Last Name
                       {
-                        listAttributes.sortBy === "TotalSupplier" && 
+                        listAttributes.sortBy === "EventStartDateTime" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="edit sort-column" column="IsActive" >Edit</span>
+                    <span class="type sort-column" onClick={handleSort} column="OrgType">
+                      Role
+                      {
+                        listAttributes.sortBy === "OrgType" && 
+                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                      }
+                    </span>
+                    <span class="category sort-column" onClick={handleSort} column="PresenterType">
+                      Email
+                      {
+                        listAttributes.sortBy === "PresenterType" && 
+                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                      }
+                    </span>
+                    <span class="events-count sort-column" onClick={handleSort} column="EventNature">
+                      Store
+                      {
+                        listAttributes.sortBy === "EventNature" && 
+                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                      }
+                    </span>
+                    <span class="edit sort-column" column="PresenterType" >Edit</span>
                 </div>
-                {loading ? <Spinner /> : displayList.map((item) => <SuppliersListItem supplier={item} key={item.OrgId} match={match} />)}
+                {loading ? <Spinner /> : displayList.map((item) => <ContactItem contact={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate
                 previousLabel={'Prev'}
@@ -169,4 +191,4 @@ function SuppliersList({match}) {
     )
 }
 
-export default SuppliersList;
+export default EventList;

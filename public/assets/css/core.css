@@ -56158,3 +56158,8 @@ body.is-dark .elements-wrap .element-block code {
 .sort-column {
 	cursor: pointer;
 }
+
+.admin-search-button {
+	background: #5596e6 !important;
+    color: white !important;
+}

@@ -176,7 +176,7 @@ function NewSupplier() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Organisation</label>
+                    <label>Organization</label>
                     <div className="control has-icon">
                       <select
                         type="text"
@@ -185,7 +185,7 @@ function NewSupplier() {
                         onChange={handleInput}
                         required
                       >
-                        <option disabled selected value> --  Select a Organisation  -- </option>
+                        <option disabled selected value> --  Select a Organization  -- </option>
                         {orgOptions.map((item) => <option value={item.OrgId} key={map.key}>{item.OrgName}</option>)}
                       </select>
                       <div className="form-icon">

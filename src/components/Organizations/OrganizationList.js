@@ -78,7 +78,7 @@ function OrganizationList({match}) {
             </div>
             <div className="list-controls">
                 <div className="small-input">
-                  <button className="input is-rounded" placeholder="Type" > <FiSearch className="mr-2"/>Search</button>
+                  <button className="input is-rounded admin-search-button" placeholder="Type" > <FiSearch className="mr-2"/>Search</button>
                 </div>
                 <div className="small-input">
                     <input className="input is-rounded" type="text" placeholder="Name" />

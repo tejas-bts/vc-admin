@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate';
-import SuppliersListItem from './Supplier.ListItem';
+import EventItem from './Event.ListItem';
 import { Link } from 'react-router-dom';
 import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
-import { getAllSuppliers } from '../../services/suppliers.services';
+import { getAllEvents } from '../../services/events.services';
 import Spinner from '../../components/core/Spinner';
 
-function SuppliersList({match}) {
+const initalSearchParams = {
+    "eventTitle" : "",
+    "eventStartDate" : "",
+    "eventCategoryId" : "",
+    "eventType" : "",
+    "eventNature" : "",
+    "hostType" : "",
+    "hostId" : "",
+    "presenterType" : "",
+    "presenterId" : "",
+    "limit" : "",
+    "offset" : "",
+    "sortCol" : "",
+    "sortOrder" : ""
+  }
+
+function EventList({match}) {
 
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
-    const [ suppliers, setSuppliers ] = useState([]);
+    const [ organizations, setOrganizations ] = useState([]);
     const [ displayList, setDisplayList ] = useState([]);
+    const [ searchParams, setSearchParams ] = useState(initalSearchParams);
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
 
     const handleSort = (e) => {
@@ -26,10 +43,11 @@ function SuppliersList({match}) {
     useEffect(() => {
       getAllCategories()
         .then((response) => setOptions(response.data));
-        getAllSuppliers()
+      getAllEvents(searchParams)
         .then((response) => {
+          console.log("Events List",response)
           const organizations = response.data
-          setSuppliers(organizations);
+          setOrganizations(organizations);
           const newListAttributes = {...listAttributes};
           newListAttributes.pageCount = Math.ceil(organizations.length/listAttributes.pageSize);
           setListAttributes(newListAttributes);
@@ -45,7 +63,7 @@ function SuppliersList({match}) {
       console.log('List Attributes',listAttributes)
       const start = parseInt(listAttributes.pageNumber) * parseInt(listAttributes.pageSize);
       const end = start + listAttributes.pageSize;
-      let orgList = [...suppliers];
+      let orgList = [...organizations];
 
       if(listAttributes.sortBy !== undefined) {
         const column = listAttributes.sortBy;
@@ -65,15 +83,15 @@ function SuppliersList({match}) {
       const displayList = [...orgList.slice(start,end)];
       setDisplayList(displayList);
 
-    }, [listAttributes,suppliers])
+    }, [listAttributes,organizations])
 
     return (
         <div className="settings-wrapper">
             <div className="list-controls">
                 <Link to={`${match.path}new`} style={{float:'right'}}>
-                        <button className="button is-solid accent-button">New Supplier</button>
+                        <button className="button is-solid accent-button">New Event</button>
                 </Link>
-                <h1 className="admin-title">Suppliers</h1>
+                <h1 className="admin-title">Events</h1>
             </div>
             <div className="list-controls">
                 <div className="small-input">
@@ -121,10 +139,17 @@ function SuppliersList({match}) {
             </div>
             <div class="flex-table">
                 <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="SupplierName">
+                    <span class="name sort-column" onClick={handleSort} column="OrgName">
                       Name
                       {
-                        listAttributes.sortBy === "SupplierName" && 
+                        listAttributes.sortBy === "OrgName" && 
+                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                      }
+                    </span>
+                    <span class="location sort-column" onClick={handleSort} column="EventStartDateTime">
+                      Date
+                      {
+                        listAttributes.sortBy === "EventStartDateTime" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
@@ -135,23 +160,30 @@ function SuppliersList({match}) {
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="category sort-column" onClick={handleSort} column="OrgName">
-                      Organization
+                    <span class="category sort-column" onClick={handleSort} column="PresenterType">
+                      Presenter Type
                       {
-                        listAttributes.sortBy === "OrgName" && 
+                        listAttributes.sortBy === "PresenterType" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="TotalSupplier">
-                      Suppliers Count
+                    <span class="events-count sort-column" onClick={handleSort} column="EventNature">
+                      Event Nature
                       {
-                        listAttributes.sortBy === "TotalSupplier" && 
+                        listAttributes.sortBy === "EventNature" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="edit sort-column" column="IsActive" >Edit</span>
+                    <span class="status sort-column" onClick={handleSort} column="PresenterType">
+                    Presenter Type
+                      {
+                        listAttributes.sortBy === "PresenterType" && 
+                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                      }
+                    </span>
+                    <span class="edit sort-column" column="PresenterType" >Edit</span>
                 </div>
-                {loading ? <Spinner /> : displayList.map((item) => <SuppliersListItem supplier={item} key={item.OrgId} match={match} />)}
+                {loading ? <Spinner /> : displayList.map((item) => <EventItem event={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate
                 previousLabel={'Prev'}
@@ -169,4 +201,4 @@ function SuppliersList({match}) {
     )
 }
 
-export default SuppliersList;
+export default EventList;

@@ -9,6 +9,8 @@ import NavBar from "./components/core/NavBar/NavBar";
 import Organizations from "./components/Organizations";
 import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
+import Events from "./components/Events";
+import Contacts from "./components/Contacts";
 
 function App() {
   let initialState = {
@@ -39,7 +41,8 @@ function App() {
             <Route path="/organizations" component={Organizations} />
             <Route path="/suppliers" component={Suppliers} />
             <Route path="/stores" component={Stores} />
-            
+            <Route path="/events" component={Events} />
+            <Route path="/contacts" component={Contacts} />
           </authContext.Provider>
         </Switch>
       </div>  
