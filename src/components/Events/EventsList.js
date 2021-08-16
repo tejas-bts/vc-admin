@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { getAllEvents } from "../../services/events.services";
 import Spinner from "../../components/core/Spinner";
+import Menu from "../core/Menu";
 
 const initalSearchParams = {
   eventTitle: "",
@@ -55,7 +56,6 @@ function EventList({ match }) {
   };
 
   useEffect(() => {
-    getAllCategories().then((response) => setOptions(response.data));
     getAllEvents(searchParams).then((response) => {
       // console.log("Events List",response)
       const organizations = response.data;
@@ -66,6 +66,8 @@ function EventList({ match }) {
       );
       setListAttributes(newListAttributes);
       setLoading(false);
+
+      getAllCategories().then((response) => setOptions(response.data));
     });
   }, []);
 
@@ -102,170 +104,193 @@ function EventList({ match }) {
   }, [listAttributes, organizations]);
 
   return (
-    <div className="settings-wrapper">
-      <div className="list-controls">
-        <Link to={`${match.path}new`} style={{ float: "right" }}>
-          <button className="button is-solid accent-button">New Event</button>
-        </Link>
-        <h1 className="admin-title">Events</h1>
+    <div>
+      <Menu page={"events"} />
+      <div className="settings-wrapper">
+        <div className="list-controls">
+          <Link to={`${match.path}new`} style={{ float: "right" }}>
+            <button className="button is-solid accent-button">New Event</button>
+          </Link>
+          <h1 className="admin-title">Events</h1>
+        </div>
+        <div className="list-controls">
+          <div className="small-input">
+            <button
+              className="input is-rounded admin-search-button"
+              placeholder="Type">
+              {" "}
+              <FiSearch className="mr-2" />
+              Search
+            </button>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="Name"
+            />
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="Email"
+            />
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="City"
+            />
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="State"
+            />
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="Type"
+            />
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <select
+              className="input is-rounded"
+              type="text"
+              style={{ paddingLeft: "30px", textAlign: "center" }}>
+              <option disabled selected value>
+                Select Category
+              </option>
+              {categoryOptions.map((item) => (
+                <option>{item.CategoryName}</option>
+              ))}
+            </select>
+            <div className="search-icon">
+              <FiChevronDown />
+            </div>
+          </div>
+        </div>
+        <div class="flex-table">
+          <div class="flex-table-header">
+            <span
+              class="name sort-column"
+              onClick={handleSort}
+              column="eventTitle">
+              Name
+              {listAttributes.sortBy === "eventTitle" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span
+              class="location sort-column"
+              onClick={handleSort}
+              column="EventStartDateTime">
+              Date
+              {listAttributes.sortBy === "EventStartDateTime" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span
+              class="type sort-column"
+              onClick={handleSort}
+              column="eventTitle">
+              Type
+              {listAttributes.sortBy === "eventTitle" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span
+              class="category sort-column"
+              onClick={handleSort}
+              column="PresenterType">
+              Presenter Type
+              {listAttributes.sortBy === "PresenterType" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span
+              class="events-count sort-column"
+              onClick={handleSort}
+              column="EventNature">
+              Event Nature
+              {listAttributes.sortBy === "EventNature" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span
+              class="status sort-column"
+              onClick={handleSort}
+              column="PresenterType">
+              Presenter Type
+              {listAttributes.sortBy === "PresenterType" &&
+                (listAttributes.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
+            <span class="edit sort-column" column="PresenterType">
+              Edit
+            </span>
+          </div>
+          {loading ? (
+            <Spinner />
+          ) : (
+            displayList.map((item) => (
+              <EventItem event={item} key={item.EventId} match={match} />
+            ))
+          )}
+        </div>
+        <ReactPaginate
+          previousLabel={"Prev"}
+          nextLabel={"Next"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          pageCount={listAttributes.pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={(x) =>
+            setListAttributes({ ...listAttributes, pageNumber: x.selected })
+          }
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        />
       </div>
-      <div className="list-controls">
-        <div className="small-input">
-          <button
-            className="input is-rounded admin-search-button"
-            placeholder="Type">
-            {" "}
-            <FiSearch className="mr-2" />
-            Search
-          </button>
-        </div>
-        <div className="small-input">
-          <input className="input is-rounded" type="text" placeholder="Name" />
-          <div className="search-icon">
-            <FiSearch />
-          </div>
-        </div>
-        <div className="small-input">
-          <input className="input is-rounded" type="text" placeholder="Email" />
-          <div className="search-icon">
-            <FiSearch />
-          </div>
-        </div>
-        <div className="small-input">
-          <input className="input is-rounded" type="text" placeholder="City" />
-          <div className="search-icon">
-            <FiSearch />
-          </div>
-        </div>
-        <div className="small-input">
-          <input className="input is-rounded" type="text" placeholder="State" />
-          <div className="search-icon">
-            <FiSearch />
-          </div>
-        </div>
-        <div className="small-input">
-          <input className="input is-rounded" type="text" placeholder="Type" />
-          <div className="search-icon">
-            <FiSearch />
-          </div>
-        </div>
-        <div className="small-input">
-          <select
-            className="input is-rounded"
-            type="text"
-            style={{ paddingLeft: "30px", textAlign: "center" }}>
-            <option disabled selected value>
-              Select Category
-            </option>
-            {categoryOptions.map((item) => (
-              <option>{item.CategoryName}</option>
-            ))}
-          </select>
-          <div className="search-icon">
-            <FiChevronDown />
-          </div>
-        </div>
-      </div>
-      <div class="flex-table">
-        <div class="flex-table-header">
-          <span
-            class="name sort-column"
-            onClick={handleSort}
-            column="eventTitle">
-            Name
-            {listAttributes.sortBy === "eventTitle" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span
-            class="location sort-column"
-            onClick={handleSort}
-            column="EventStartDateTime">
-            Date
-            {listAttributes.sortBy === "EventStartDateTime" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span
-            class="type sort-column"
-            onClick={handleSort}
-            column="eventTitle">
-            Type
-            {listAttributes.sortBy === "eventTitle" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span
-            class="category sort-column"
-            onClick={handleSort}
-            column="PresenterType">
-            Presenter Type
-            {listAttributes.sortBy === "PresenterType" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span
-            class="events-count sort-column"
-            onClick={handleSort}
-            column="EventNature">
-            Event Nature
-            {listAttributes.sortBy === "EventNature" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span
-            class="status sort-column"
-            onClick={handleSort}
-            column="PresenterType">
-            Presenter Type
-            {listAttributes.sortBy === "PresenterType" &&
-              (listAttributes.sortDirection ? (
-                <FiArrowUp className="ml-2" />
-              ) : (
-                <FiArrowDown className="ml-2" />
-              ))}
-          </span>
-          <span class="edit sort-column" column="PresenterType">
-            Edit
-          </span>
-        </div>
-        {loading ? (
-          <Spinner />
-        ) : (
-          displayList.map((item) => (
-            <EventItem event={item} key={item.EventId} match={match} />
-          ))
-        )}
-      </div>
-      <ReactPaginate
-        previousLabel={"Prev"}
-        nextLabel={"Next"}
-        breakLabel={"..."}
-        breakClassName={"break-me"}
-        pageCount={listAttributes.pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={3}
-        onPageChange={(x) =>
-          setListAttributes({ ...listAttributes, pageNumber: x.selected })
-        }
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-      />
     </div>
   );
 }
