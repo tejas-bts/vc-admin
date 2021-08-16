@@ -131,10 +131,10 @@ function EditEvent() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Phone Number</label>
+                    <label>Date of Birth</label>
                     <div className="control has-icon">
                       <input
-                        type="text"
+                        type="date"
                         className="input is-fade"
                         name="phone"
                         onChange={handleInput}
@@ -143,6 +143,23 @@ function EditEvent() {
                       />
                       <div className="form-icon">
                         <i data-feather="phone" />
+                      </div>
+                    </div>
+                  </div>
+                  {/*Field*/}
+                  <div className="field field-group">
+                    <label>Password</label>
+                    <div className="control has-icon">
+                      <input
+                        type="password"
+                        className="input is-fade"
+                        name="password"
+                        onChange={handleInput}
+                        value={orgDetails.instagram || ""}
+                        required
+                      />
+                      <div className="form-icon">
+                        <i data-feather="instagram" />
                       </div>
                     </div>
                   </div>
@@ -167,7 +184,7 @@ function EditEvent() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Facebook Page Address</label>
+                    <label>Phone Number</label>
                     <div className="control has-icon">
                       <input
                         type="text"
@@ -184,10 +201,10 @@ function EditEvent() {
                   </div>
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Instagram Page Address</label>
+                    <label>Zip Code</label>
                     <div className="control has-icon">
                       <input
-                        type="text"
+                        type="number"
                         className="input is-fade"
                         name="instagram"
                         onChange={handleInput}
@@ -199,137 +216,24 @@ function EditEvent() {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="column is-12">
                   {/*Field*/}
                   <div className="field field-group">
-                    <label>Address</label>
-                    <div className="control">
-                      <textarea
-                        type="text"
-                        className="textarea is-fade"
-                        rows={1}
-                        placeholder= "Fill in your address..."
-                        style={{height: '70px'}}
-                        name="address"
-                        onChange={handleInput}
-                        value={orgDetails.address || ""}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="column is-6">
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>City</label>
+                    <label>Confirm Password</label>
                     <div className="control has-icon">
                       <input
-                        type="text"
+                        type="password"
                         className="input is-fade"
-                        name="city"
+                        name="cpassword"
                         onChange={handleInput}
-                        value={orgDetails.city || ""}
+                        value={orgDetails.instagram || ""}
                         required
                       />
                       <div className="form-icon">
-                        <i data-feather="map-pin" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>State</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="state"
-                        onChange={handleInput}
-                        value={orgDetails.state || ""}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="flag" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group is-autocomplete">
-                    <label>Country</label>
-                    <div className="control has-icon">
-                      <input
-                        id="country-autocpl"
-                        type="text"
-                        className="input is-fade"
-                        name="country"
-                        onChange={handleInput}
-                        value={orgDetails.country || ""}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="globe" />
+                        <i data-feather="instagram" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="column is-6">
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Zip Code</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="zipCode"
-                        onChange={handleInput}
-                        value={orgDetails.zipCode || ""}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="flag" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Fed Tax ID</label>
-                    <div className="control has-icon">
-                      <input
-                        type="text"
-                        className="input is-fade"
-                        name="fedtaxid"
-                        onChange={handleInput}
-                        value={orgDetails.fedtaxid || ""}
-                        required
-                      />
-                      <div className="form-icon">
-                        <i data-feather="dollar-sign" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*Field*/}
-                  <div className="field field-group">
-                    <label>Organization Type</label>
-                    <div className="control has-icon">
-                      <select
-                        type="text"
-                        className="input is-fade"
-                        name="orgtype"
-                        onChange={handleInput}
-                        value={orgDetails.orgtype || ""}
-                        required
-                      >
-                        <option disabled selected value> --  Select a Category  -- </option>
-                        {categoryOptions.map((item) => <option value={item.CategoryId} key={map.key}>{item.CategoryName}</option>)}
-                      </select>
-                      <div className="form-icon">
-                        <i data-feather="settings" />
-                      </div>
-                    </div>
-                  </div>
-                </div>  
                 <div className="column is-12">
                   <div className="buttons">
                     <button 
