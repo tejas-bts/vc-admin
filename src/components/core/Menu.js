@@ -1,9 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Menu({ page }) {
+function Menu(props) {
+  const path = props.location.pathname;
+  console.log("Menu Props");
+  const { page } = props;
   return (
-    <div className="view-wrapper is-full">
+    // <div className="view-wrapper is-full">
       <div className="videos-wrapper is-home">
         <div className="videos-sidebar is-active">
           <div className="videos-sidebar-inner">
@@ -39,37 +42,30 @@ function Menu({ page }) {
               <div className="user-menu-inner has-slimscroll">
                 <div className="menu-block">
                   <ul>
-                    <li className={page === "home" ? "is-active" : null}>
-                      <a>
-                        <i data-feather="home" />
-                        <span>Home</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="separator" />
-                <div className="menu-block">
-                  <ul>
-                    <li className={page === "users" ? "is-active" : null}>
-                      <Link to="/events">
-                        <i data-feather="users" />
+                    <li className={path.includes("contacts") ? "is-active" : null}>
+                      <Link to="/home/contacts">
                         <span>User Management</span>
                       </Link>
                     </li>
-
-                    <li className={page === "events" ? "is-active" : null}>
-                      <Link to="/events">
-                        <i data-feather="youtube" />
+                    <li className={path.includes("events") ? "is-active" : null}>
+                      <Link to="/home/events">
                         <span>Event Management</span>
                       </Link>
                     </li>
-
-                    <li>
-                      <a>
-                        <i data-feather="copy" />
-                        <span>Relations</span>
-                      </a>
+                    <li className={path.includes("suppliers") ? "is-active" : null}>
+                      <Link to="/home/suppliers">
+                        <span>Suppliers Management</span>
+                      </Link>
+                    </li>
+                    <li className={path.includes("organizations") ? "is-active" : null}>
+                      <Link to="/home/organizations">
+                        <span>Organizations Management</span>
+                      </Link>
+                    </li>
+                    <li className={path.includes("stores") ? "is-active" : null}>
+                      <Link to="/home/stores">
+                        <span>Stores Management</span>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -96,7 +92,7 @@ function Menu({ page }) {
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
 

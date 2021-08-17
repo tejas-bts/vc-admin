@@ -1,0 +1,3 @@
+export const register = "https://dev-vcata-webapi-eus.azurewebsites.net/api/SignupEndUser?code=2IXrtV7m1wuNAlH7h3VwdbMaMeb1G4Kn/BWH99sa5p91lfaZQSzWxw==";
+export const login = "https://dev-vcata-webapi-eus.azurewebsites.net/api/LoginEndUsers?code=umgaGUg6i/zd2629l0eMVglfSYofdn4BuxtHMEK9JeufP/dH3W6sqg==";
+export const verifyEmail = "https://dev-vcata-webapi-eus.azurewebsites.net/api/ValidateEmailToken?code=c4q9cwx6XmCgZcqMQG4QfdYJgxV3Fn5eMX2a78s750ji1xTaYLW3AA==";

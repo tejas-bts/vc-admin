@@ -14,7 +14,12 @@ export const createOrUpdateContact = async (eventParams) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/CreateUpdateContact?code=f5pGfslX12UhdKrV3FSrUzSgbIbxCtXqfZ93J6PQZtPBhi6gg82K9w=="
     return new Promise((resolve, reject) => {
         axios.post(url, JSON.stringify(eventParams)) 
-        .then((res) => resolve(res.data))
+        .then((res) => {
+            if(res.data.error)
+                reject(new Error(res.data.data))
+            else
+                resolve(res.data)
+        })
         .catch((err) => reject(err))
     })
 }

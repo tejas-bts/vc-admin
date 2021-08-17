@@ -62,13 +62,13 @@ function NewContact() {
           setShowToast(true);
         }
         else {
-          setToastAttr({...toastAttr, title:'Great!', message: 'Store added successfully', state: ToastStates.SUCCESS});
+          setToastAttr({...toastAttr, title:'Great!', message: 'User added successfully', state: ToastStates.SUCCESS});
           setShowToast(true);
           e.target.reset();
         }
       })
       .catch((error) => {
-        setToastAttr({...toastAttr, title:'Oops!', message: 'Something went wrong. Please try again after sometime', state: ToastStates.FAIL})
+        setToastAttr({...toastAttr, title:'Oops!', message: error.message, state: ToastStates.FAIL})
         setShowToast(true);
       })
       .finally(() => {
@@ -158,7 +158,7 @@ function NewContact() {
                 </div>
                 {/*Field*/}
                 <div className="field field-group">
-                    <label>Event Type</label>
+                    <label>Contact Type</label>
                     <div className="control has-icon">
                       <select
                         type="text"

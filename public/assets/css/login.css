@@ -22,3 +22,15 @@
 {
     background-color: #DB4437;
 }
+
+.error,
+body.is-dark .error {
+    border-color: #DB4437 !important;
+}
+
+.login-error-text, 
+body.is-dark .login-error-text {
+    color: #DB4437;
+    font-size: 0.95rem;
+    text-align: center;
+}

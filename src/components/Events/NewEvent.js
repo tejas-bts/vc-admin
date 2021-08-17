@@ -316,6 +316,31 @@ function NewEvent() {
                       </div>
                     </div>
                     {/*Field*/}
+                    <div className="field field-group">
+                      <label>Select Yes/No</label>
+                      <div className="control has-icon">
+                        <div
+                          className="switch-block mb-3"
+                          style={{ justifyContent: "space-between" }}>
+                          <label className="mr-5 pl-5 ml-4">
+                            Should event be availble to view after live stream
+                          </label>
+                          <label className="f-switch is-accent">
+                            <input
+                              type="checkbox"
+                              name="isEvenAvailableToView"
+                              className="is-switch"
+                              onChange={handleSwitch}
+                            />
+                            <i></i>
+                          </label>
+                        </div>
+                        <div className="form-icon">
+                          <i data-feather="settings" />
+                        </div>
+                      </div>
+                    </div>
+                    {/*Field*/}
                     {/* <div className="field field-group">
                       <label>Select Yes/No</label>
                       <div className="control has-icon">
@@ -367,85 +392,7 @@ function NewEvent() {
                         </div>
                       </div>
                     </div> */}
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Do you want to collect feedbacks?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isCollectFeedback"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Slould user be necessarily registered to attend the
-                            event?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isCollectFeedback"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Should event be availble to view after live stream
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isEvenAvailableToView"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="column is-6">
                     {/*Field*/}
                     <div className="field field-group">
                       <label>Presenter Type</label>
@@ -505,6 +452,63 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
+
+
+                    {/*Field*/}
+                    <div className="field field-group">
+                      <label>Select Yes/No</label>
+                      <div className="control has-icon">
+                        <div
+                          className="switch-block mb-3"
+                          style={{ justifyContent: "space-between" }}>
+                          <label className="mr-5 pl-5 ml-4">
+                            Do you want to collect feedbacks?
+                          </label>
+                          <label className="f-switch is-accent">
+                            <input
+                              type="checkbox"
+                              name="isCollectFeedback"
+                              className="is-switch"
+                              onChange={handleSwitch}
+                            />
+                            <i></i>
+                          </label>
+                        </div>
+                        <div className="form-icon">
+                          <i data-feather="settings" />
+                        </div>
+                      </div>
+                    </div>
+                    {/*Field*/}
+                    <div className="field field-group">
+                      <label>Select Yes/No</label>
+                      <div className="control has-icon">
+                        <div
+                          className="switch-block mb-3"
+                          style={{ justifyContent: "space-between" }}>
+                          <label className="mr-5 pl-5 ml-4">
+                            Slould user be necessarily registered to attend the
+                            event?
+                          </label>
+                          <label className="f-switch is-accent">
+                            <input
+                              type="checkbox"
+                              name="isCollectFeedback"
+                              className="is-switch"
+                              onChange={handleSwitch}
+                            />
+                            <i></i>
+                          </label>
+                        </div>
+                        <div className="form-icon">
+                          <i data-feather="settings" />
+                        </div>
+                      </div>
+                    </div>
+                  {/* </div>
+
+                  <div className="column is-6"> */}
+                    
                   </div>
 
                   <div className="column is-12">

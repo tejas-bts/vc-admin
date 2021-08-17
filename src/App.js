@@ -6,14 +6,21 @@ import { Fragment, useState } from "react";
 import authContext from "./Context/authContext";
 import NavBar from "./components/core/NavBar/NavBar";
 
+
+import User from "./components/User";
+
+import PreviewPage from "./components/Preview/preview";
+
 import Organizations from "./components/Organizations";
 import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
 import Events from "./components/Events";
 import Contacts from "./components/Contacts";
-import Home from "./components/Home/Home";
+// import Home from "./components/Home/Home";
 
-function App() {
+import Home from './components/Home'
+
+function Application() {
   let initialState = {
     isAuthenticated: false,
     token: "",
@@ -32,11 +39,12 @@ function App() {
 
   return (
     <Fragment>
-      <NavBar />
-      <div className="view-wrapper is-full">
         <Switch>
           <authContext.Provider value={{ allData, setAllData }}>
+            
+            {/* <Route path="/app" component={App} /> */}
             <Route exact path="/adminProfile" component={AdminProfile} />
+            <Route path="/user" component={User} />
             <Route exact path="/adminAbout" component={AdminAbout} />
             <Route exact path="/search" component={SearchResults} />
             <Route path="/organizations" component={Organizations} />
@@ -45,14 +53,14 @@ function App() {
             <Route path="/events" component={Events} />
             <Route path="/contacts" component={Contacts} />
             <Route path="/home" component={Home} />
+            <Route path="/preview/:id" component={PreviewPage} />
             <Route exact path="/">
               <Redirect to="/home" />
             </Route>
           </authContext.Provider>
         </Switch>
-      </div>
     </Fragment>
   );
 }
 
-export default App;
+export default Application;

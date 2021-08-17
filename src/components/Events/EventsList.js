@@ -11,7 +11,6 @@ import {
 } from "react-icons/fi";
 import { getAllEvents } from "../../services/events.services";
 import Spinner from "../../components/core/Spinner";
-import Menu from "../core/Menu";
 
 const initalSearchParams = {
   eventTitle: "",
@@ -105,7 +104,6 @@ function EventList({ match }) {
 
   return (
     <div>
-      <Menu page={"events"} />
       <div className="settings-wrapper">
         <div className="list-controls">
           <Link to={`${match.path}new`} style={{ float: "right" }}>
@@ -272,7 +270,9 @@ function EventList({ match }) {
             <Spinner />
           ) : (
             displayList.map((item) => (
-              <EventItem event={item} key={item.EventId} match={match} />
+              <Link to={`../preview/${item.EventId}`}>
+                <EventItem event={item} key={item.EventId} match={match} />
+              </Link>
             ))
           )}
         </div>

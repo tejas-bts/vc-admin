@@ -22,7 +22,13 @@ function ContactListItem({contact, match}) {
                 <span>{contact.StoreName}</span>
             </div>
             <div className="edit" style={{display: 'flex', alignItems: 'center'}}>
-            <Link to={`${match.url}/edit/${contact.ContactId}`} key={contact.ContactId}>
+            <Link 
+                key={contact.ContactId}
+                to={{
+                    pathname: `${match.url}/edit/${contact.ContactId}`,
+                    state: contact
+                }}
+            >
                 <span style={{fontSize:'20px'}}><FiEdit /></span>    
             </Link>
             </div>
