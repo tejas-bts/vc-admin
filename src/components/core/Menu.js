@@ -16,7 +16,7 @@ function Menu(props) {
               </a>
               <div className="avatar-wrap">
                 <img
-                  src="https://via.placeholder.com/150x150"
+                  src="https://pbs.twimg.com/profile_images/857713360527216640/g02lZ85F_400x400.jpg"
                   data-demo-src="assets/img/avatars/jenna.png"
                   data-user-popover={0}
                   alt=""
@@ -25,8 +25,8 @@ function Menu(props) {
                   <i data-feather="check" />
                 </div>
               </div>
-              <h4>Whole Foods</h4>
-              <p>Melbourne, AU</p>
+              <h4>Tradewinds Speciality</h4>
+              <p>Washington, DC</p>
               {/* <div className="user-stats">
                   <div className="stat-block">
                     <span>Videos</span>

@@ -30,32 +30,23 @@ function EventList({match}) {
     const [ contactTypes, setContactTypes ] = useState([]);
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
 
-    const handleSort = (e) => {
-      console.log(e.target.getAttribute('column'));
-      const column = e.target.getAttribute('column');
-      let currentListAttributes = listAttributes;
-      if(currentListAttributes.sortBy === column) currentListAttributes = {...currentListAttributes, sortDirection: !listAttributes.sortDirection };
-      setListAttributes({...currentListAttributes, sortBy:column})
+    const handleSort = async (e) => {
+      const column = e.target.getAttribute("column");
+      if(searchParams.sortCol === column) 
+        setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "DESC" ? "ASC" : "DESC")});
+      else
+        setSearchParams({...searchParams, sortCol: column, sortOrder :"ASC"  })
+      await fetchAllData();
+    }    
+
+    const handleSearch = () => {
+      console.log("Search")
+      fetchAllData();
     }
 
     const fetchAllData = async () => {
       setLoading(true);
-      const options = await getAllCategories();
-      setOptions(options);
-      const contacts = await getAllContacts(searchParams);
-      console.log("Conatctfs" , contacts.data);
-      setContacts(contacts.data);
-      const newListAttributes = {...listAttributes};
-      newListAttributes.pageCount = Math.ceil(contacts.length/listAttributes.pageSize);
-      setListAttributes(newListAttributes);
-      setLoading(false);
-    }
-
-    useEffect(() => {
-      // fetchAllData();
-
       getAllContacts(searchParams).then((response) => {
-        // console.log("Events List",response)
         const organizations = response.data;
         setContacts(organizations);
         const newListAttributes = { ...listAttributes };
@@ -63,16 +54,16 @@ function EventList({match}) {
           organizations.length / listAttributes.pageSize
         );
         setListAttributes(newListAttributes);
-        getAllCategories().then((response) => setOptions(response.data));
         setLoading(false);
-  
       });
-
-    }, [])
+    }
 
     useEffect(() => {
-      console.log('Display List', displayList);
-    },[displayList])
+        getAllCategories().then((response) => {
+          setOptions(response.data);
+          fetchAllData().then(() => setLoading(false))
+        });
+    }, [])
 
     useEffect(() => {
       fetchContactTypes()
@@ -113,9 +104,25 @@ function EventList({match}) {
                 </Link>
                 <h1 className="admin-title">Contacts</h1>
             </div>
-            <div className="list-controls">
+            <div className="list-controls">          
                 <div className="small-input">
-                  <button className="input is-rounded admin-search-button" placeholder="Type" > <FiSearch className="mr-2"/>Search</button>
+                  <button
+                    className="input is-rounded admin-search-button"
+                    placeholder="Type"
+                    onClick={handleSearch}
+                  >
+                    <FiSearch className="mr-2"/>
+                    Search
+                  </button>
+                </div>
+                <div className="small-input">
+                    <select className="input is-rounded" type="text" style={{paddingLeft:'30px', textAlign: 'center'}}>
+                      <option disabled selected value>Select Type</option>
+                      {contactTypes.map((item) => <option>{item.ContactType}</option>)}
+                    </select>
+                    <div className="search-icon">
+                        <FiChevronDown />
+                    </div>
                 </div>
                 <div className="small-input">
                     <input className="input is-rounded" type="text" placeholder="Name" />
@@ -130,68 +137,77 @@ function EventList({match}) {
                     </div>
                 </div>
                 <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="City" />
+                  <input 
+                      className="input is-rounded"
+                      type="text"
+                      placeholder="Email"
+                      name="email"
+                      onChange={(e) => setSearchParams({...searchParams, [e.target.name]: e.target.value })}
+                    />
                     <div className="search-icon">
                         <FiSearch />
                     </div>
                 </div>
                 <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="State" />
+                    <input 
+                      className="input is-rounded"
+                      type="text"
+                      placeholder="Last Name"
+                      name="lastName"
+                      onChange={(e) => setSearchParams({...searchParams, [e.target.name]: e.target.value })}
+                    />
                     <div className="search-icon">
                         <FiSearch />
                     </div>
                 </div>
                 <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Type" />
+                    <input 
+                      className="input is-rounded"
+                      type="text"
+                      placeholder="First Name"
+                      name="firstName"
+                      onChange={(e) => setSearchParams({...searchParams, [e.target.name]: e.target.value })}
+                    />
                     <div className="search-icon">
                         <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <select className="input is-rounded" type="text" style={{paddingLeft:'30px', textAlign: 'center'}}>
-                      <option disabled selected value>Select Type</option>
-                      {contactTypes.map((item) => <option>{item.ContactType}</option>)}
-                    </select>
-                    <div className="search-icon">
-                        <FiChevronDown />
                     </div>
                 </div>
             </div>
             <div class="flex-table">
                 <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="OrgName">
+                    <span class="name sort-column" onClick={handleSort} column="FirstName">
                       First Name
                       {
-                        listAttributes.sortBy === "OrgName" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                        searchParams.sortCol === "FirstName" && 
+                        (searchParams.sortOrder === "ASC" ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="location sort-column" onClick={handleSort} column="EventStartDateTime">
+                    <span class="location sort-column" onClick={handleSort} column="LastName">
                       Last Name
                       {
-                        listAttributes.sortBy === "EventStartDateTime" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                        searchParams.sortCol === "LastName" && 
+                        (searchParams.sortOrder === "ASC" ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="type sort-column" onClick={handleSort} column="OrgType">
+                    <span class="type sort-column" onClick={handleSort} column="ContactType">
                       Role
                       {
-                        listAttributes.sortBy === "OrgType" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                        searchParams.sortCol === "ContactType" && 
+                        (searchParams.sortOrder === "ASC" ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="category sort-column" onClick={handleSort} column="PresenterType">
+                    <span class="category sort-column" onClick={handleSort} column="Email">
                       Email
                       {
-                        listAttributes.sortBy === "PresenterType" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                        searchParams.sortCol === "Email" && 
+                        (searchParams.sortOrder === "ASC" ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="EventNature">
+                    <span class="events-count sort-column" onClick={handleSort} column="StoreName">
                       Store
                       {
-                        listAttributes.sortBy === "EventNature" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                        searchParams.sortCol === "StoreName" && 
+                        (searchParams.sortOrder === "ASC" ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
                     <span class="edit sort-column" column="PresenterType" >Edit</span>

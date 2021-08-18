@@ -19,11 +19,16 @@ export const getAllEvents = async (searchParams) => {
     })
 }
 
-export const getEventDetail = async (eventId, eventGuid) => {
+export const getEventDetail = async (eventId) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchEventDetails?code=GwsgVTnkgaDuzSJ4nFHRYPSyhmkhIfPFh0ajFTASGky0Yqb1zqFWew=="
     return new Promise((resolve, reject) => {
-        axios.post(url, JSON.stringify({ eventId, eventGuid }))
-        .then((res) => resolve(res.data))
+        axios.post(url, JSON.stringify({ eventId }))
+        .then((res) => {
+            if(res.data.error)
+                reject(res.data.data);
+            else
+                resolve(res.data.data);
+        })
         .catch((err) => reject(err))
     })
 }

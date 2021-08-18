@@ -9,7 +9,7 @@ import {
   FiChevronDown,
   FiSearch,
 } from "react-icons/fi";
-import { getAllEvents } from "../../services/events.services";
+import { getAllEvents, getAllEventsFields } from "../../services/events.services";
 import Spinner from "../../components/core/Spinner";
 
 const initalSearchParams = {
@@ -28,12 +28,15 @@ const initalSearchParams = {
   sortOrder: "",
 };
 
+const initialEventFields = { eventNature: [], eventStatus:[], eventLevel:[], eventType:[] }
+
 function EventList({ match }) {
   const [loading, setLoading] = useState(true);
   const [categoryOptions, setOptions] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [displayList, setDisplayList] = useState([]);
   const [searchParams, setSearchParams] = useState(initalSearchParams);
+  const [eventFields, setEventFields] = useState(initialEventFields)
   const [listAttributes, setListAttributes] = useState({
     pageNumber: 0,
     pageSize: 5,
@@ -41,6 +44,25 @@ function EventList({ match }) {
     sortBy: "Zipcode",
     sortDirection: true,
   });
+
+  const fetchEvents = () => {
+    setLoading(true);
+    getAllEvents(searchParams).then((response) => {
+      // console.log("Events List",response)
+      const organizations = response.data;
+      setOrganizations(organizations);
+      const newListAttributes = { ...listAttributes };
+      newListAttributes.pageCount = Math.ceil(
+        organizations.length / listAttributes.pageSize
+      );
+      setListAttributes(newListAttributes);
+      setLoading(false);
+    });
+  }
+
+  const handleSearch = (e) => {
+    fetchEvents();
+  } 
 
   const handleSort = (e) => {
     // console.log(e.target.getAttribute('column'));
@@ -55,19 +77,20 @@ function EventList({ match }) {
   };
 
   useEffect(() => {
-    getAllEvents(searchParams).then((response) => {
-      // console.log("Events List",response)
-      const organizations = response.data;
-      setOrganizations(organizations);
-      const newListAttributes = { ...listAttributes };
-      newListAttributes.pageCount = Math.ceil(
-        organizations.length / listAttributes.pageSize
-      );
-      setListAttributes(newListAttributes);
-      setLoading(false);
+    console.log("searchParams", searchParams);
+  }, [searchParams])
 
-      getAllCategories().then((response) => setOptions(response.data));
-    });
+  useEffect(() => {
+    getAllEventsFields()
+      .then((eventFields) => {
+        setEventFields(eventFields);
+        console.log("Event Field",eventFields);
+        getAllCategories()
+        .then((response) => {
+          setOptions(response.data.filter((item) => item.ParentCategoryId === 0))
+          fetchEvents();
+        });
+    })
   }, []);
 
   useEffect(() => {
@@ -115,7 +138,9 @@ function EventList({ match }) {
           <div className="small-input">
             <button
               className="input is-rounded admin-search-button"
-              placeholder="Type">
+              placeholder="Type"
+              onClick={handleSearch}
+            >
               {" "}
               <FiSearch className="mr-2" />
               Search
@@ -123,50 +148,31 @@ function EventList({ match }) {
           </div>
           <div className="small-input">
             <input
+              type="datetime-local"
               className="input is-rounded"
-              type="text"
-              placeholder="Name"
-            />
-            <div className="search-icon">
-              <FiSearch />
-            </div>
-          </div>
-          <div className="small-input">
-            <input
-              className="input is-rounded"
-              type="text"
+              name="eventStartDate"
               placeholder="Email"
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
             />
             <div className="search-icon">
               <FiSearch />
             </div>
           </div>
           <div className="small-input">
-            <input
-              className="input is-rounded"
-              type="text"
-              placeholder="City"
-            />
-            <div className="search-icon">
-              <FiSearch />
-            </div>
-          </div>
-          <div className="small-input">
-            <input
-              className="input is-rounded"
-              type="text"
-              placeholder="State"
-            />
-            <div className="search-icon">
-              <FiSearch />
-            </div>
-          </div>
-          <div className="small-input">
-            <input
-              className="input is-rounded"
-              type="text"
-              placeholder="Type"
-            />
+            <select
+                className="input is-rounded"
+                type="text"
+                name="eventStatus"
+                style={{ paddingLeft: "30px", textAlign: "center" }}
+                onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+              >
+                <option disabled selected value>
+                  Select Status
+                </option>
+                {eventFields.eventStatus.map((item) => (
+                  <option value={item.EventStatus}>{item.EventStatus}</option>
+                ))}
+            </select>
             <div className="search-icon">
               <FiSearch />
             </div>
@@ -175,16 +181,69 @@ function EventList({ match }) {
             <select
               className="input is-rounded"
               type="text"
-              style={{ paddingLeft: "30px", textAlign: "center" }}>
+              name="eventNature"
+              style={{ paddingLeft: "30px", textAlign: "center" }}
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+            >
+              <option disabled selected value>
+                Select Nature
+              </option>
+              {eventFields.eventNature.map((item) => (
+                <option value={item.EventNature}>{item.EventNature}</option>
+              ))}
+            </select>
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>
+          <div className="small-input">
+            <select
+                className="input is-rounded"
+                type="text"
+                name="eventType"
+                style={{ paddingLeft: "30px", textAlign: "center" }}
+                onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+                >
+                <option disabled selected value>
+                  Select Type
+                </option>
+                {eventFields.eventType.map((item) => (
+                  <option value={item.EventType}>{item.EventType}</option>
+                ))}
+            </select>
+            <div className="search-icon">
+              <FiSearch />
+            </div>
+          </div>          
+          <div className="small-input">
+            <select
+              className="input is-rounded"
+              type="text"
+              name="eventCategoryId"
+              style={{ paddingLeft: "30px", textAlign: "center" }}
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+              >
               <option disabled selected value>
                 Select Category
               </option>
               {categoryOptions.map((item) => (
-                <option>{item.CategoryName}</option>
+                <option value={item.CategoryId}>{item.CategoryName}</option>
               ))}
             </select>
             <div className="search-icon">
               <FiChevronDown />
+            </div>
+          </div>
+          <div className="small-input">
+            <input
+              className="input is-rounded"
+              name="eventTitle"
+              type="text"
+              placeholder="Title"
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+            />
+            <div className="search-icon">
+              <FiSearch />
             </div>
           </div>
         </div>
@@ -193,9 +252,9 @@ function EventList({ match }) {
             <span
               class="name sort-column"
               onClick={handleSort}
-              column="eventTitle">
+              column="EventTitle">
               Name
-              {listAttributes.sortBy === "eventTitle" &&
+              {listAttributes.sortBy === "EventTitle" &&
                 (listAttributes.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
@@ -270,9 +329,9 @@ function EventList({ match }) {
             <Spinner />
           ) : (
             displayList.map((item) => (
-              <Link to={`../preview/${item.EventId}`}>
+              <a href={`https://dev.virtualcata.com/landing/${item.EventId}`}>
                 <EventItem event={item} key={item.EventId} match={match} />
-              </Link>
+              </a>
             ))
           )}
         </div>

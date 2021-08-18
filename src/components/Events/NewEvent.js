@@ -24,6 +24,8 @@ function NewEvent() {
     eventSatusId: 1,
     hostType: "Retailer",
     hostId: 1,
+    eventCategoryId: 1,
+    eventThumbnail: 'https://via.placeholder.com/920x600',
   });
 
   const [eventLevel, setEventLevel] = useState([]);
@@ -56,9 +58,9 @@ function NewEvent() {
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
     createOrUpdateEvent(eventDetails)
       .then((response) => {
-        console.log("Error", response);
-        if (response.data) {
-          console.log("errororor");
+        console.log("Error", response.error);
+        if (response.error) {
+          console.log("errororor",response);
           setToastAttr({
             ...toastAttr,
             title: "Opps!",
@@ -70,7 +72,7 @@ function NewEvent() {
           setToastAttr({
             ...toastAttr,
             title: "Great!",
-            message: "Store added successfully",
+            message: "Event added successfully",
             state: ToastStates.SUCCESS,
           });
           setShowToast(true);
@@ -78,13 +80,13 @@ function NewEvent() {
         }
       })
       .catch((error) => {
-        setToastAttr({
-          ...toastAttr,
-          title: "Oops!",
-          message: "Something went wrong. Please try again after sometime",
-          state: ToastStates.FAIL,
-        });
-        setShowToast(true);
+        // setToastAttr({
+        //   ...toastAttr,
+        //   title: "Oops!",
+        //   message: "Something went wrong. Please try again after sometime",
+        //   state: ToastStates.FAIL,
+        // });
+        // setShowToast(true);
       })
       .finally(() => {
         setSubmitting(false);
@@ -188,7 +190,7 @@ function NewEvent() {
                       <label>Date & Time</label>
                       <div className="control has-icon">
                         <input
-                          type="datetime"
+                          type="datetime-local"
                           className="input is-fade"
                           name="eventStartDateTime"
                           onChange={handleInput}
@@ -487,7 +489,7 @@ function NewEvent() {
                           className="switch-block mb-3"
                           style={{ justifyContent: "space-between" }}>
                           <label className="mr-5 pl-5 ml-4">
-                            Slould user be necessarily registered to attend the
+                            Should user be necessarily registered to attend the
                             event?
                           </label>
                           <label className="f-switch is-accent">
