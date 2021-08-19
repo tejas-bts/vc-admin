@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi'
 
 function ContactListItem({contact, match}) {
-    console.log("Item",contact)
     return (
         <div class="flex-table-item">
             <div className="name">

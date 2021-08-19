@@ -9,35 +9,76 @@ import Spinner from '../../components/core/Spinner';
 
 function StoreList({match}) {
 
+    const initalSearchParams = {
+      "storeId" : "",
+      "storeName" : "",
+      "supplierId" : "",
+      "storeCode" : "",
+      "ediId" : "",
+      "licenseNumber" : "",
+      "firstRow" : "",
+      "lastRow" : "",
+      "sortColumn" : "SupplierId",
+      "sortOrder" : "DESC",
+  }
+
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
     const [ stores, setStores ] = useState([]);
     const [ displayList, setDisplayList ] = useState([]);
+    const [ searchParams, setSearchParams ] = useState(initalSearchParams);  
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
 
   
 
-    const handleSort = (e) => {
-      console.log(e.target.getAttribute('column'));
-      const column = e.target.getAttribute('column');
-      let currentListAttributes = listAttributes;
-      if(currentListAttributes.sortBy === column) currentListAttributes = {...currentListAttributes, sortDirection: !listAttributes.sortDirection };
-      setListAttributes({...currentListAttributes, sortBy:column})
+    const handleSort = async (e) => {
+      const column = e.target.getAttribute("column");
+      if(searchParams.sortCol === column) {
+        setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
+      }
+      else setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
     }
 
-    useEffect(() => {
-      getAllCategories()
-        .then((response) => setOptions(response.data));
-      getAllStores()
-        .then((response) => {
-          const stores = response.data
+    const fetchAllData = async () => {
+      try {
+        setLoading(true);
+        const categories = await getAllCategories();
+        setOptions(categories.data);
+        const response = await getAllStores();
+        const stores = response.data
           setStores(stores);
           const newListAttributes = {...listAttributes};
           newListAttributes.pageCount = Math.ceil(stores.length/listAttributes.pageSize);
           setListAttributes(newListAttributes);
           setLoading(false);
-        })
+      }
+      catch(error) {
+        console.log(error);
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+
+    useEffect(() => {
+      // getAllCategories()
+      //   .then((response) => setOptions(response.data));
+      // getAllStores()
+      //   .then((response) => {
+      //     const stores = response.data
+      //     setStores(stores);
+      //     const newListAttributes = {...listAttributes};
+      //     newListAttributes.pageCount = Math.ceil(stores.length/listAttributes.pageSize);
+      //     setListAttributes(newListAttributes);
+      //     setLoading(false);
+      //   })
+      fetchAllData();
     }, [])
+
+    
+    useEffect(() => {
+      fetchAllData();
+    }, [searchParams]);
 
     useEffect(() => {
       console.log('Display List', displayList);

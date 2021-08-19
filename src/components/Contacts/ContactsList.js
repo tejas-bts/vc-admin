@@ -32,69 +32,49 @@ function EventList({match}) {
 
     const handleSort = async (e) => {
       const column = e.target.getAttribute("column");
-      if(searchParams.sortCol === column) 
-        setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "DESC" ? "ASC" : "DESC")});
-      else
-        setSearchParams({...searchParams, sortCol: column, sortOrder :"ASC"  })
-      await fetchAllData();
-    }    
+      if(searchParams.sortCol === column) {
+        setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
+      }
+      else setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
+    }
+
+    useEffect(() => {
+      fetchAllData();
+    }, [searchParams]);
 
     const handleSearch = () => {
-      console.log("Search")
       fetchAllData();
     }
 
     const fetchAllData = async () => {
-      setLoading(true);
-      getAllContacts(searchParams).then((response) => {
-        const organizations = response.data;
-        setContacts(organizations);
-        const newListAttributes = { ...listAttributes };
-        newListAttributes.pageCount = Math.ceil(
-          organizations.length / listAttributes.pageSize
-        );
-        setListAttributes(newListAttributes);
+      try {
+        setLoading(true);
+
+        const contactTypes = await fetchContactTypes();
+        const categories = await getAllCategories();
+        const allContacts = await getAllContacts(searchParams);
+
+
+        console.log("contactTypes", contactTypes);
+        console.log("categories", categories);
+        console.log("allContacts", allContacts);
+
+        
+        setContactTypes(contactTypes);
+        setOptions(categories.data);
+        setContacts(allContacts);
+      }
+      catch (error) {
+        console.log(error.message);
+      }
+      finally {
         setLoading(false);
-      });
+      }
     }
 
-    useEffect(() => {
-        getAllCategories().then((response) => {
-          setOptions(response.data);
-          fetchAllData().then(() => setLoading(false))
-        });
+    useEffect( () => {
+      fetchAllData();
     }, [])
-
-    useEffect(() => {
-      fetchContactTypes()
-        .then((contactTypes) => setContactTypes(contactTypes))
-    }, [])
-
-    useEffect(() => {
-      console.log('List Attributes',listAttributes)
-      const start = parseInt(listAttributes.pageNumber) * parseInt(listAttributes.pageSize);
-      const end = start + listAttributes.pageSize;
-      let orgList = [...contacts];
-
-      if(listAttributes.sortBy !== undefined) {
-        const column = listAttributes.sortBy;
-
-        if(listAttributes.sortDirection) orgList.sort((a,b) => {
-          if (a[column] < b[column]) return -1;
-          if (a[column] > b[column]) return 1;
-          return 0;
-        })
-        else orgList.sort((a,b) => {
-          if (a[column] < b[column]) return 1;
-          if (a[column] > b[column]) return -1;
-          return 0;
-        })
-      }
-
-      const displayList = [...orgList.slice(start,end)];
-      setDisplayList(displayList);
-
-    }, [listAttributes,contacts])
 
     return (
         <div className="settings-wrapper">
@@ -116,24 +96,18 @@ function EventList({match}) {
                   </button>
                 </div>
                 <div className="small-input">
-                    <select className="input is-rounded" type="text" style={{paddingLeft:'30px', textAlign: 'center'}}>
+                    <select
+                      className="input is-rounded"
+                      type="text"
+                      name="contactTypeId"
+                      onChange={(e) => setSearchParams({...searchParams, [e.target.name]: e.target.value })}
+                      style={{paddingLeft:'30px', textAlign: 'center'}}
+                    >
                       <option disabled selected value>Select Type</option>
-                      {contactTypes.map((item) => <option>{item.ContactType}</option>)}
+                      {contactTypes.map((item) => <option value={item.ContactTypeId}>{item.ContactType}</option>)}
                     </select>
                     <div className="search-icon">
                         <FiChevronDown />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Name" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Email" />
-                    <div className="search-icon">
-                        <FiSearch />
                     </div>
                 </div>
                 <div className="small-input">
@@ -212,7 +186,7 @@ function EventList({match}) {
                     </span>
                     <span class="edit sort-column" column="PresenterType" >Edit</span>
                 </div>
-                {loading ? <Spinner /> : displayList.map((item) => <ContactItem contact={item} key={item.OrgId} match={match} />)}
+                {loading ? <Spinner /> : contacts.map((item) => <ContactItem contact={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate
                 previousLabel={'Prev'}

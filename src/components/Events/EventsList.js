@@ -64,17 +64,13 @@ function EventList({ match }) {
     fetchEvents();
   } 
 
-  const handleSort = (e) => {
-    // console.log(e.target.getAttribute('column'));
+  const handleSort = async (e) => {
     const column = e.target.getAttribute("column");
-    let currentListAttributes = listAttributes;
-    if (currentListAttributes.sortBy === column)
-      currentListAttributes = {
-        ...currentListAttributes,
-        sortDirection: !listAttributes.sortDirection,
-      };
-    setListAttributes({ ...currentListAttributes, sortBy: column });
-  };
+    if(searchParams.sortCol === column) {
+      setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
+    }
+    else setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
+  }
 
   useEffect(() => {
     console.log("searchParams", searchParams);
