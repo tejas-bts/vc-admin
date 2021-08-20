@@ -1,9 +1,6 @@
 import { map } from "async";
 import React, { useEffect, useState } from "react";
-import {
-  createNewStore,
-  getAllStoreType,
-} from "../../services/stores.services";
+
 import { getAllSuppliers } from "../../services/suppliers.services";
 import {
   createOrUpdateEvent,
@@ -24,14 +21,14 @@ function NewEvent() {
     eventSatusId: 1,
     hostType: "Retailer",
     hostId: 1,
-    eventCategoryId: 1,
-    eventThumbnail: 'https://via.placeholder.com/920x600',
+    eventThumbnail: "https://via.placeholder.com/920x600",
   });
 
   const [eventLevel, setEventLevel] = useState([]);
   const [eventNature, setEventNature] = useState([]);
   const [eventStatus, setEventStatus] = useState([]);
   const [eventType, setEventType] = useState([]);
+  const [eventCategory, setEventCategory] = useState([]);
   const [suppliersList, setSuppliersList] = useState([]);
   const [suppliersContacts, setSuppliersContacts] = useState([]);
 
@@ -60,7 +57,7 @@ function NewEvent() {
       .then((response) => {
         console.log("Error", response.error);
         if (response.error) {
-          console.log("errororor",response);
+          console.log("errororor", response);
           setToastAttr({
             ...toastAttr,
             title: "Opps!",
@@ -95,14 +92,22 @@ function NewEvent() {
 
   const handleSupplier = (e) => {
     let values = JSON.parse(e.target.value);
-    setEvent({ ...eventDetails, presenterType: values.supplierType });
+    setEvent({
+      ...eventDetails,
+      presenterType: values.supplierType,
+      presenterSupplierId: values.supplierId,
+    });
 
     let dataToSend = { supplierId: values.supplierId };
 
     console.log("Data to Send :: ", dataToSend);
     getAllContacts({ supplierId: values.supplierId }).then(
       (supplierContacts) => {
-        setSuppliersContacts(supplierContacts.data);
+        if (supplierContacts.length >= 1) {
+          setSuppliersContacts(supplierContacts.data);
+        } else {
+          setSuppliersContacts([{ FirstName: "No Contacts" }]);
+        }
       }
     );
   };
@@ -114,6 +119,7 @@ function NewEvent() {
       setEventNature(data.eventNature);
       setEventStatus(data.eventStatus);
       setEventType(data.eventType);
+      setEventCategory(data.eventMainCategory);
     });
 
     getAllSuppliers().then((suppliersReturned) => {
@@ -455,7 +461,6 @@ function NewEvent() {
                       </div>
                     </div>
 
-
                     {/*Field*/}
                     <div className="field field-group">
                       <label>Select Yes/No</label>
@@ -507,10 +512,32 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
-                  {/* </div>
 
-                  <div className="column is-6"> */}
-                    
+                    <div className="field field-group">
+                      <label>Event Category</label>
+                      <div className="control has-icon">
+                        <select
+                          type="text"
+                          className="input is-fade"
+                          name="eventCategoryId"
+                          onChange={handleInput}
+                          required>
+                          <option disabled selected value>
+                            {" "}
+                            -- Select a Event Category --{" "}
+                          </option>
+
+                          {eventCategory.map((ecat) => (
+                            <option value={ecat.CategoryId} key={map.key}>
+                              {ecat.CategoryName}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="form-icon">
+                          <i data-feather="settings" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="column is-12">

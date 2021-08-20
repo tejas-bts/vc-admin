@@ -39,7 +39,7 @@ function EventList({ match }) {
   const [eventFields, setEventFields] = useState(initialEventFields)
   const [listAttributes, setListAttributes] = useState({
     pageNumber: 0,
-    pageSize: 5,
+    pageSize: 10,
     pageCount: 0,
     sortBy: "Zipcode",
     sortDirection: true,

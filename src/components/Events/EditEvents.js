@@ -1,9 +1,6 @@
 import { map } from "async";
 import React, { useEffect, useState } from "react";
-import {
-  createNewStore,
-  getAllStoreType,
-} from "../../services/stores.services";
+
 import { getAllSuppliers } from "../../services/suppliers.services";
 import {
   createOrUpdateEvent,
@@ -17,7 +14,6 @@ import Toast, { ToastStates } from "../core/Toast";
 import { useParams } from "react-router-dom";
 
 function NewEvent() {
-
   const { eventId } = useParams();
 
   const [submitting, setSubmitting] = useState(false);
@@ -30,13 +26,14 @@ function NewEvent() {
     hostType: "Retailer",
     hostId: 1,
     eventCategoryId: 1,
-    eventThumbnail: 'https://i.stack.imgur.com/y9DpT.jpg',
+    eventThumbnail: "https://i.stack.imgur.com/y9DpT.jpg",
   });
 
   const [eventLevel, setEventLevel] = useState([]);
   const [eventNature, setEventNature] = useState([]);
   const [eventStatus, setEventStatus] = useState([]);
   const [eventType, setEventType] = useState([]);
+  const [eventCategory, setEventCategory] = useState([]);
   const [initialValues, setInitialValues] = useState({});
   const [suppliersList, setSuppliersList] = useState([]);
   const [suppliersContacts, setSuppliersContacts] = useState([]);
@@ -66,7 +63,7 @@ function NewEvent() {
       .then((response) => {
         console.log("Error", response.error);
         if (response.error) {
-          console.log("errororor",response);
+          console.log("errororor", response);
           setToastAttr({
             ...toastAttr,
             title: "Opps!",
@@ -119,6 +116,7 @@ function NewEvent() {
       setEventNature(data.eventNature);
       setEventStatus(data.eventStatus);
       setEventType(data.eventType);
+      setEventCategory(data.eventMainCategory);
 
       getAllSuppliers().then((suppliersReturned) => {
         console.log(":: Resp Suppliers ::", suppliersReturned.data);
@@ -142,12 +140,12 @@ function NewEvent() {
             isRegistrationRequired: values.IsRegistrationRequired,
             isEvenAvailableToView: values.IsEvenAvailableToView,
             isCollectFeedback: values.IsCollectFeedback,
-          })
+            presenterSupplierId: values.PresenterSupplierId,
+          });
           setInitialValues(values);
-        })
+        });
       });
     });
-
   }, []);
 
   useEffect(() => {
@@ -375,7 +373,6 @@ function NewEvent() {
                       </div>
                     </div>
                     {/*Field*/}
-    
                   </div>
                   <div className="column is-6">
                     {/*Field*/}
@@ -413,6 +410,7 @@ function NewEvent() {
                           className="input is-fade"
                           name="presenterType"
                           onChange={handleSupplier}
+                          value={eventDetails.presenterSupplierId}
                           required>
                           <option disabled selected>
                             {" "}
@@ -421,7 +419,9 @@ function NewEvent() {
 
                           {suppliersList.map((sup) => (
                             <option
-                            selected={eventDetails.presenterId == sup.SupplierID}
+                              selected={
+                                eventDetails.presenterId == sup.SupplierID
+                              }
                               value={JSON.stringify({
                                 supplierId: sup.SupplierID,
                                 supplierType: sup.SupplierType,
@@ -464,7 +464,6 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
-
 
                     {/*Field*/}
                     <div className="field field-group">
@@ -519,10 +518,9 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
-                  {/* </div>
+                    {/* </div>
 
                   <div className="column is-6"> */}
-                    
                   </div>
 
                   <div className="column is-12">
