@@ -25,10 +25,9 @@ function EventList({match}) {
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
     const [ contacts, setContacts ] = useState([]);
-    const [ displayList, setDisplayList ] = useState([]);
     const [ searchParams, setSearchParams ] = useState(initalSearchParams);  
     const [ contactTypes, setContactTypes ] = useState([]);
-    const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
+    const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, totalPages: 0 })
 
     const handleSort = async (e) => {
       const column = e.target.getAttribute("column");
@@ -46,6 +45,10 @@ function EventList({match}) {
       fetchAllData();
     }
 
+    useEffect(() => {
+      console.log("Contacts", contacts);
+    }, [contacts])
+
     const fetchAllData = async () => {
       try {
         setLoading(true);
@@ -53,16 +56,23 @@ function EventList({match}) {
         const contactTypes = await fetchContactTypes();
         const categories = await getAllCategories();
         const allContacts = await getAllContacts(searchParams);
+        const paginationData = allContacts.pageDetails;
 
 
         console.log("contactTypes", contactTypes);
         console.log("categories", categories);
         console.log("allContacts", allContacts);
+        console.log("paginationData", paginationData);
 
         
         setContactTypes(contactTypes);
         setOptions(categories.data);
-        setContacts(allContacts);
+        setContacts(allContacts.data);
+        setListAttributes({ 
+          pageNumber : paginationData.pageNumber,
+          pageSize: paginationData.pageSize,
+          pageCount: paginationData.totalPages
+        })
       }
       catch (error) {
         console.log(error.message);
@@ -188,7 +198,7 @@ function EventList({match}) {
                 </div>
                 {loading ? <Spinner /> : contacts.map((item) => <ContactItem contact={item} key={item.OrgId} match={match} />)}
             </div>
-            <ReactPaginate
+            {(listAttributes.totalPages > 1) && <ReactPaginate
                 previousLabel={'Prev'}
                 nextLabel={'Next'}
                 breakLabel={'...'}
@@ -199,7 +209,7 @@ function EventList({match}) {
                 onPageChange={(x) => setListAttributes({...listAttributes, pageNumber: x.selected})}
                 containerClassName={'pagination'}
                 activeClassName={'active'}
-            />
+            />}
         </div>
     )
 }

@@ -10,7 +10,7 @@ function NewContact() {
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
-  const [ contactDetails, setContact ] = useState({profileType: "native"});
+  const [ contactDetails, setContact ] = useState({profileType: "staff", storeId: 9, supplierId: 2, firstName: 'Tejas', lastName: 'Dadhe' });
   const [ contactTypes, setContactTypes ] = useState([]);
 
 
@@ -94,22 +94,6 @@ function NewContact() {
               <div className="column is-6">
                 {/*Field*/}
                 <div className="field field-group">
-                  <label>First Name</label>
-                  <div className="control has-icon">
-                    <input
-                      type="text"
-                      className="input is-fade"
-                      name="firstName"
-                      onChange={handleInput}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="user" />
-                    </div>
-                  </div>
-                </div>
-                {/*Field*/}
-                <div className="field field-group">
                   <label>Email</label>
                   <div className="control has-icon">
                     <input
@@ -136,63 +120,12 @@ function NewContact() {
                       required
                     />
                     <div className="form-icon">
-                      <i data-feather="phone" />
+                      <i data-feather="calendar" />
                     </div>
                   </div>
                 </div>
-                {/*Field*/}
-                <div className="field field-group">
-                  <label>Password</label>
-                  <div className="control has-icon">
-                    <input
-                      type="password"
-                      className="input is-fade"
-                      name="password"
-                      onChange={handleInput}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="instagram" />
-                    </div>
-                  </div>
-                </div>
-                {/*Field*/}
-                <div className="field field-group">
-                    <label>Contact Type</label>
-                    <div className="control has-icon">
-                      <select
-                        type="text"
-                        className="input is-fade"
-                        name="contactTypeId"
-                        onChange={handleInput}
-                        required
-                      >
-                        <option disabled selected value> --  Select an Contact type  -- </option>
-                        {contactTypes.map((item) => <option value={item.ContactTypeId} key={item.ContactTypeId}>{item.ContactType}</option>)}
-                      </select>
-                      <div className="form-icon">
-                        <i data-feather="settings" />
-                      </div>
-                    </div>
-                  </div>
               </div>
               <div className="column is-6">
-                {/*Field*/}
-                <div className="field field-group">
-                  <label>Last Name</label>
-                  <div className="control has-icon">
-                    <input
-                      type="text"
-                      className="input is-fade"
-                      name="lastName"
-                      onChange={handleInput}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="link" />
-                    </div>
-                  </div>
-                </div>
                 {/*Field*/}
                 <div className="field field-group">
                   <label>Phone Number</label>
@@ -205,39 +138,26 @@ function NewContact() {
                       required
                     />
                     <div className="form-icon">
-                      <i data-feather="facebook" />
+                      <i data-feather="phone" />
                     </div>
                   </div>
                 </div>
                 {/*Field*/}
                 <div className="field field-group">
-                  <label>Zip Code</label>
+                  <label>Contact Type</label>
                   <div className="control has-icon">
-                    <input
-                      type="number"
+                    <select
+                      type="text"
                       className="input is-fade"
-                      name="zipCode"
+                      name="contactTypeId"
                       onChange={handleInput}
                       required
-                    />
+                    >
+                      <option disabled selected value> --  Select an Contact type  -- </option>
+                      {contactTypes.map((item) => <option value={item.ContactTypeId} key={item.ContactTypeId}>{item.ContactType}</option>)}
+                    </select>
                     <div className="form-icon">
-                      <i data-feather="instagram" />
-                    </div>
-                  </div>
-                </div>
-                {/*Field*/}
-                <div className="field field-group">
-                  <label>Confirm Password</label>
-                  <div className="control has-icon">
-                    <input
-                      type="password"
-                      className="input is-fade"
-                      name="cpassword"
-                      onChange={handleInput}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="instagram" />
+                      <i data-feather="settings" />
                     </div>
                   </div>
                 </div>

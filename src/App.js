@@ -16,6 +16,7 @@ import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
 import Events from "./components/Events";
 import Contacts from "./components/Contacts";
+import AcceptContactRequest from "./components/Contacts/ConfirmContactData"
 // import Home from "./components/Home/Home";
 
 import Home from './components/Home'
@@ -54,6 +55,7 @@ function Application() {
             <Route path="/contacts" component={Contacts} />
             <Route path="/home" component={Home} />
             <Route path="/preview/:id" component={PreviewPage} />
+            <Route path="/accept-contact-request/:id" component={AcceptContactRequest} />
             <Route exact path="/">
               <Redirect to="/home" />
             </Route>

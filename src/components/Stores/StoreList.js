@@ -61,17 +61,6 @@ function StoreList({match}) {
     }
 
     useEffect(() => {
-      // getAllCategories()
-      //   .then((response) => setOptions(response.data));
-      // getAllStores()
-      //   .then((response) => {
-      //     const stores = response.data
-      //     setStores(stores);
-      //     const newListAttributes = {...listAttributes};
-      //     newListAttributes.pageCount = Math.ceil(stores.length/listAttributes.pageSize);
-      //     setListAttributes(newListAttributes);
-      //     setLoading(false);
-      //   })
       fetchAllData();
     }, [])
 
