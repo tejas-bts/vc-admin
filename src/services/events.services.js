@@ -14,7 +14,11 @@ export const getAllEvents = async (searchParams) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchEvents?code=fW1I5g5BhV7d3rqVw2FUYdi5GSmVXcVH6uDXWj7Pdo3RL7zz0zFgxw=="
     return new Promise((resolve, reject) => {
         axios.post(url, JSON.stringify(searchParams))
-        .then((res) => resolve(res.data))
+        .then((res) => {
+            if(res.data.error)
+                reject(res.data.data);
+            resolve(res.data.data);
+        })
         .catch((err) => reject(err))
     })
 }

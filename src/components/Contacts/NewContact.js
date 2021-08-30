@@ -55,9 +55,8 @@ function NewContact() {
     newContact['yearOfBirth'] = formatDate(contactDetails.yearOfBirth)
     createOrUpdateContact(contactDetails)
       .then((response) =>{
-        console.log('Error', response.data.error);
-        if(response.data.error) {
-          console.log("errororor")
+        if(response.data.error) {        
+          console.log('Error', response.data.error);
           setToastAttr({...toastAttr, title:'Opps!', message: response.data.data[0], state: ToastStates.FAIL});
           setShowToast(true);
         }
@@ -83,14 +82,14 @@ function NewContact() {
     <div id="general-settings" className="settings-section is-active">
       <div className="settings-panel">
         <div className="title-wrap">
-          <a className="mobile-sidebar-trigger">
-            <i data-feather="menu" />
+          <a className=" ">
+            <i data-feather="menu"/>
           </a>
           <h2>New Contact</h2>
         </div>
         <div className="settings-form-wrapper">
           <form className="settings-form" onSubmit={handleSubmit}>
-            <div className="columns is-multiline">
+            <div className="columns is-multiline">    
               <div className="column is-6">
                 {/*Field*/}
                 <div className="field field-group">

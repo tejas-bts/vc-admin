@@ -40,27 +40,28 @@ function Application() {
 
   return (
     <Fragment>
-        <Switch>
-          <authContext.Provider value={{ allData, setAllData }}>
-            
-            {/* <Route path="/app" component={App} /> */}
-            <Route exact path="/adminProfile" component={AdminProfile} />
-            <Route path="/user" component={User} />
-            <Route exact path="/adminAbout" component={AdminAbout} />
-            <Route exact path="/search" component={SearchResults} />
-            <Route path="/organizations" component={Organizations} />
-            <Route path="/suppliers" component={Suppliers} />
-            <Route path="/stores" component={Stores} />
-            <Route path="/events" component={Events} />
-            <Route path="/contacts" component={Contacts} />
-            <Route path="/home" component={Home} />
-            <Route path="/preview/:id" component={PreviewPage} />
-            <Route path="/accept-contact-request/:id" component={AcceptContactRequest} />
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
-          </authContext.Provider>
-        </Switch>
+      <div id="toast-anchor"/>
+      <Switch>
+        <authContext.Provider value={{ allData, setAllData }}>
+          
+          {/* <Route path="/app" component={App} /> */}
+          <Route exact path="/adminProfile" component={AdminProfile} />
+          <Route path="/user" component={User} />
+          <Route exact path="/adminAbout" component={AdminAbout} />
+          <Route exact path="/search" component={SearchResults} />
+          <Route path="/organizations" component={Organizations} />
+          <Route path="/suppliers" component={Suppliers} />
+          <Route path="/stores" component={Stores} />
+          <Route path="/events" component={Events} />
+          <Route path="/contacts" component={Contacts} />
+          <Route path="/home" component={Home} />
+          <Route path="/preview/:id" component={PreviewPage} />
+          <Route path="/accept-contact-request/:id" component={AcceptContactRequest} />
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </authContext.Provider>
+      </Switch>
     </Fragment>
   );
 }

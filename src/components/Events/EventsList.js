@@ -33,31 +33,22 @@ const initialEventFields = { eventNature: [], eventStatus:[], eventLevel:[], eve
 function EventList({ match }) {
   const [loading, setLoading] = useState(true);
   const [categoryOptions, setOptions] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
-  const [displayList, setDisplayList] = useState([]);
+  const [events, setEvents] = useState([]);
   const [searchParams, setSearchParams] = useState(initalSearchParams);
   const [eventFields, setEventFields] = useState(initialEventFields)
-  const [listAttributes, setListAttributes] = useState({
-    pageNumber: 0,
-    pageSize: 5,
-    pageCount: 0,
-    sortBy: "Zipcode",
-    sortDirection: true,
-  });
+  const [paginationData, setPaginationData] = useState({})
 
   const fetchEvents = () => {
     setLoading(true);
-    getAllEvents(searchParams).then((response) => {
-      // console.log("Events List",response)
-      const organizations = response.data;
-      setOrganizations(organizations);
-      const newListAttributes = { ...listAttributes };
-      newListAttributes.pageCount = Math.ceil(
-        organizations.length / listAttributes.pageSize
-      );
-      setListAttributes(newListAttributes);
-      setLoading(false);
-    });
+    getAllEvents(searchParams)
+      .then((response) => {
+        console.log("Respo",response);
+        const eventsList = response.data;
+        setEvents(eventsList);
+        setLoading(false);
+        setPaginationData(response.pageDetails);
+      }
+    );
   }
 
   const handleSearch = (e) => {
@@ -68,13 +59,17 @@ function EventList({ match }) {
     const column = e.target.getAttribute("column");
     if(searchParams.sortCol === column) {
       setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
+      fetchEvents();
     }
-    else setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
+    else {
+      setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
+      fetchEvents();
+    }
   }
 
   useEffect(() => {
-    console.log("searchParams", searchParams);
-  }, [searchParams])
+    console.log("paginationData", paginationData);
+  }, [paginationData])
 
   useEffect(() => {
     getAllEventsFields()
@@ -88,38 +83,6 @@ function EventList({ match }) {
         });
     })
   }, []);
-
-  useEffect(() => {
-    console.log("Display List", displayList);
-  }, [displayList]);
-
-  useEffect(() => {
-    console.log("List Attributes", listAttributes);
-    const start =
-      parseInt(listAttributes.pageNumber) * parseInt(listAttributes.pageSize);
-    const end = start + listAttributes.pageSize;
-    let orgList = [...organizations];
-
-    if (listAttributes.sortBy !== undefined) {
-      const column = listAttributes.sortBy;
-
-      if (listAttributes.sortDirection)
-        orgList.sort((a, b) => {
-          if (a[column] < b[column]) return -1;
-          if (a[column] > b[column]) return 1;
-          return 0;
-        });
-      else
-        orgList.sort((a, b) => {
-          if (a[column] < b[column]) return 1;
-          if (a[column] > b[column]) return -1;
-          return 0;
-        });
-    }
-
-    const displayList = [...orgList.slice(start, end)];
-    setDisplayList(displayList);
-  }, [listAttributes, organizations]);
 
   return (
     <div>
@@ -250,8 +213,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="EventTitle">
               Name
-              {listAttributes.sortBy === "EventTitle" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "EventTitle" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -262,8 +225,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="EventStartDateTime">
               Date
-              {listAttributes.sortBy === "EventStartDateTime" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "EventStartDateTime" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -274,8 +237,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="eventTitle">
               Type
-              {listAttributes.sortBy === "eventTitle" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "eventTitle" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -286,8 +249,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="PresenterType">
               Presenter Type
-              {listAttributes.sortBy === "PresenterType" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "PresenterType" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -298,8 +261,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="EventNature">
               Event Nature
-              {listAttributes.sortBy === "EventNature" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "EventNature" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -310,8 +273,8 @@ function EventList({ match }) {
               onClick={handleSort}
               column="PresenterType">
               Presenter Type
-              {listAttributes.sortBy === "PresenterType" &&
-                (listAttributes.sortDirection ? (
+              {searchParams.sortBy === "PresenterType" &&
+                (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
@@ -324,7 +287,7 @@ function EventList({ match }) {
           {loading ? (
             <Spinner />
           ) : (
-            displayList.map((item) => (
+            events.map((item) => (
               <a href={`https://dev.virtualcata.com/landing/${item.EventId}`}>
                 <EventItem event={item} key={item.EventId} match={match} />
               </a>
@@ -336,11 +299,11 @@ function EventList({ match }) {
           nextLabel={"Next"}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={listAttributes.pageCount}
+          pageCount={paginationData.totalPages}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
+          pageRangeDisplayed={2}
           onPageChange={(x) =>
-            setListAttributes({ ...listAttributes, pageNumber: x.selected })
+            setSearchParams({ ...searchParams, pageNumber: x.selected })
           }
           containerClassName={"pagination"}
           activeClassName={"active"}
