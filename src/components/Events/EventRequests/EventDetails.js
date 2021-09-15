@@ -14,13 +14,15 @@ import {
 import { getAllContacts } from "../../../services/contacts.services";
 
 import Toast, { ToastStates } from "../../core/Toast";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { getCurrentUser } from "../../../utils/user";
 import Spinner from "../../core/Spinner";
 
 function EventDetails() {
 
   const currentUser = getCurrentUser();
+
+  const history = useHistory();
 
   const { eventId } = useParams();
 
@@ -62,7 +64,7 @@ function EventDetails() {
     let hours = ("0" + date_ob.getHours()).slice(-2);
 
     // current minutes
-    let minutes = date_ob.getMinutes();
+    let minutes = ("0" + date_ob.getMinutes()).slice(-2);
 
     // current seconds
     let seconds = date_ob.getSeconds();
@@ -130,10 +132,11 @@ function EventDetails() {
             state: ToastStates.SUCCESS,
           });
           setShowToast(true);
-          e.target.reset();
+          setTimeout(() => history.push("../"),2000)
         }
       })
       .catch((error) => {
+        console.error(error);
         setToastAttr({
           ...toastAttr,
           title: "Oops!",
@@ -158,27 +161,16 @@ function EventDetails() {
     createOrUpdateEvent(eventDetails)
       .then((response) => {
         console.log("Error", response.error);
-        // if (response.error) {
-        //   console.log("errororor",response);
-        //   setToastAttr({
-        //     ...toastAttr,
-        //     title: "Opps!",
-        //     message: response.data.data[0],
-        //     state: ToastStates.FAIL,
-        //   });
-        //   setShowToast(true);
-        // } else {
-          setToastAttr({
-            ...toastAttr,
-            title: "Great!",
-            message: "Event saved successfully",
-            state: ToastStates.SUCCESS,
-          });
-          setShowToast(true);
-          e.target.reset();
-        // }
+        setToastAttr({
+          ...toastAttr,
+          title: "Great!",
+          message: "Event saved successfully",
+          state: ToastStates.SUCCESS,
+        });
+        setShowToast(true);
       })
       .catch((error) => {
+        console.error(error);
         setToastAttr({
           ...toastAttr,
           title: "Oops!",
@@ -191,6 +183,38 @@ function EventDetails() {
         setSubmitting(false);
       });
   };
+
+  const handleApprovalRequest = (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    console.log("Event Details Before Submit :: 📺 ", eventDetails);
+    eventDetails['eventSatusId'] = 1;
+    eventDetails['loggedinUserId'] = currentUser.userId;
+    createOrUpdateEvent(eventDetails)
+      .then((response) => {
+        console.log("Error", response.error);
+        setToastAttr({
+          ...toastAttr,
+          title: "Great!",
+          message: "Event saved successfully",
+          state: ToastStates.SUCCESS,
+        });
+        setShowToast(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        setToastAttr({
+          ...toastAttr,
+          title: "Oops!",
+          message: "Something went wrong. Please try again after sometime",
+          state: ToastStates.FAIL,
+        });
+        setShowToast(true);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  }
 
 
   const handleSupplier = (e) => {
@@ -216,9 +240,13 @@ function EventDetails() {
 
       getAllSuppliers().then((suppliersReturned) => {
         console.log(":: Resp Suppliers ::", suppliersReturned.data);
+
         setSuppliersList(suppliersReturned.data);
 
         getEventDetail(eventId).then((values) => {
+
+          console.log("Duration", Math.abs(new Date(values.EventEndDateTime || 0).getTime() - new Date(values.EventStartDateTime).getTime())/60000);
+
           setLoading(false);
           console.log("Incoming Values", values);
           setEvent({
@@ -226,8 +254,9 @@ function EventDetails() {
             eventId: values.Eventguid,
             eventTitle: values.EventTitle,
             eventStartDateTime: formatDate(values.EventStartDateTime),
-            eventEndDateTime: values.EventEndDateTime,
-            eventDuration: new Date(values.EventEndDateTime || 0).getMinutes() - new Date(values.EventStartDateTime).getMinutes(),
+            eventEndDateTime: formatDate(values.EventEndDateTime),
+            eventDuration: 
+              Math.abs(new Date(values.EventEndDateTime || 0).getTime() - new Date(values.EventStartDateTime).getTime())/60000,
             maxParticipants: values.MaxParticipants,
             eventTags: values.EventTags,
             hostId: values.HostId,
@@ -343,7 +372,7 @@ function EventDetails() {
                           name="eventDuration"
                           placeholder="Duration of event in minutes"
                           onChange={handleInput}
-                          // value={eventDetails.eventDuration}
+                          value={eventDetails.eventDuration}
                           required
                         />
                         <div className="form-icon">
@@ -650,22 +679,47 @@ function EventDetails() {
                   </div>
 
                   <div className="column is-12">
-                    <div className="buttons">
-                      <button
-                        type="submit"
-                        className="button is-solid accent-button form-button"
-                        onClick={handleApprove}
-                        disabled={submitting}>
-                        {submitting ? "Sending..." : "Send for publish"}
-                      </button>
-                      <button
-                        type="submit"
-                        className="button is-solid danger-btn form-button"
-                        onClick={handleClose}
-                        disabled={submitting}>
-                        {submitting ? "Sending..." : "Send for Closing"}
-                      </button>
-                    </div>
+                    {(eventDetails.hostId === currentUser.userId) &&  <div className="buttons">
+                        <button
+                          type="submit"
+                          className="button is-solid accent-button form-button"
+                          onClick={handleApprove}
+                          disabled={submitting}>
+                          {submitting ? "Publishing..." : "Publish"}
+                        </button>
+                        <button
+                          type="submit"
+                          className="button is-solid danger-btn form-button"
+                          onClick={handleClose}
+                          disabled={submitting}>
+                          {submitting ? "Closing..." : "Close"}
+                        </button>
+                        <button
+                          type="submit"
+                          className="button is-solid danger-btn form-button"
+                          onClick={handleApprovalRequest}
+                          disabled={submitting}>
+                          {submitting ? "Sending..." : "Send for Review"}
+                        </button>
+                      </div>
+                    }
+                    {(eventDetails.presenterId === currentUser.userId) &&  <div className="buttons">
+                        <button
+                          type="submit"
+                          className="button is-solid accent-button form-button"
+                          onClick={handleApprove}
+                          disabled={submitting}>
+                          {submitting ? "Sending..." : "Send for publish"}
+                        </button>
+                        <button
+                          type="submit"
+                          className="button is-solid danger-btn form-button"
+                          onClick={handleClose}
+                          disabled={submitting}>
+                          {submitting ? "Sending..." : "Send for Closing"}
+                        </button>
+                      </div>
+                    }
                   </div>
                 </div>
               </form>
