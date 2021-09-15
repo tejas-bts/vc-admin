@@ -21,4 +21,22 @@
     bottom: 10px;
     box-shadow: 0px 2px 5px #ddd;
     border-radius: 5px;
+
+    display: flex;
+    justify-content: space-around !important;
+    padding: 16px;
+    margin-top: 1rem;
+    font-size: 2rem;
+    background-color: white;
+
+}
+
+.video-grid-row {
+    display: flex;
+}
+
+.participent-item
+{
+    display: flex;
+    overflow-y: scroll;
 }

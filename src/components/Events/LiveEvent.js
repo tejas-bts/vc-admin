@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Chat from "../MakeCall/Chat";
 import MakeCall from "../MakeCall/MakeCall";
 
 function LiveEvent({ ...props }) {
@@ -298,6 +299,9 @@ function LiveEvent({ ...props }) {
                   </div>
                 ))}
               </div> */}
+
+
+              <Chat/>
             </div>
             <div className="related-side">
               <div className="meta-box related-list">{/* Chat End */}</div>

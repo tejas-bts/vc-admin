@@ -2,6 +2,7 @@ import React, { useEffect, createRef } from "react";
 import { utils } from "./Utils";
 import { Persona, PersonaSize } from 'office-ui-fabric-react';
 import { Icon } from '@fluentui/react/lib/Icon';
+import { FiTrash } from "react-icons/fi";
 
 export default class RemoteParticipantCard extends React.Component {
     constructor(props) {
@@ -48,12 +49,14 @@ export default class RemoteParticipantCard extends React.Component {
         return (
             <li className={`participant-item`} key={utils.getIdentifierText(this.remoteParticipant.identifier)}>
                 <div className="ms-Grid-row">
-                    <div className="ms-Grid-col ms-lg11 ms-sm10">
+                    <div className="ms-Grid-col ms-lg11 ms-sm10" style={{display:'flex', justifyContent:'space-evenly', alignItems:'center'}}>
                     <Persona className={this.state.isSpeaking ? `speaking-border-for-initials` : ``}
                             size={PersonaSize.size40}
                             text={ this.state.displayName ? this.state.displayName : utils.getIdentifierText(this.remoteParticipant.identifier) }
                             secondaryText={this.state.state}
-                            styles={{ primaryText: {color: '#edebe9'}, secondaryText: {color: '#edebe9'} }}/>
+                            styles={{ primaryText: {color: 'black'}, secondaryText: {color: 'black'} }}/>
+                                        <a href="#" onClick={e => this.handleRemoveParticipant(e, this.remoteParticipant.identifier)} className="participant-remove float-right ml-3"><FiTrash/></a>
+
                     </div>
                     <div className="ms-Grid-col ms-lg1 ms-sm2">
                         {
@@ -67,7 +70,6 @@ export default class RemoteParticipantCard extends React.Component {
                     </div>
                 </div>
                 <div className="text-right">
-                    <a href="#" onClick={e => this.handleRemoveParticipant(e, this.remoteParticipant.identifier)} className="participant-remove float-right ml-3">Remove participant</a>
                 </div>
             </li>
         )
