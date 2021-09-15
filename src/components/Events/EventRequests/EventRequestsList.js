@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import EventItem from "./Event.ListItem";
 import { Link } from "react-router-dom";
-import { getAllCategories } from "../../services/category.service";
+import { getAllCategories } from "../../../services/category.service";
 import {
   FiArrowDown,
   FiArrowUp,
   FiChevronDown,
   FiSearch,
 } from "react-icons/fi";
-import { getAllEvents, getAllEventsFields } from "../../services/events.services";
-import Spinner from "../../components/core/Spinner";
+import { getUserEvents, getAllEventsFields } from "../../../services/events.services";
+import Spinner from "../../../components/core/Spinner";
 
 const initalSearchParams = {
   eventTitle: "",
@@ -40,10 +40,10 @@ function EventList({ match }) {
 
   const fetchEvents = () => {
     setLoading(true);
-    getAllEvents(searchParams)
+    getUserEvents(searchParams)
       .then((response) => {
-        console.log("Respo",response);
-        const eventsList = response.data;
+        console.log("Event Req Respo",response);
+        const eventsList = response.upcomingEvents;
         setEvents(eventsList);
         setLoading(false);
         setPaginationData(response.pageDetails);
@@ -88,15 +88,8 @@ function EventList({ match }) {
     <div>
       <div className="settings-wrapper">
         <div className="list-controls">
-          <div className="d-flex">          
-            <Link to={`${match.path}new`} style={{ float: "right" }}>
-              <button className="button is-solid accent-button ml-5">New Event</button>
-            </Link>
-            <Link to={`${match.path}requests`} style={{ float: "right" }}>
-              <button className="button is-solid accent-button">Event requests</button>
-            </Link>
-          </div>
-          <h1 className="admin-title">Events</h1>
+          <span> </span>
+          <h1 className="admin-title">Event Requests</h1>
         </div>
         <div className="list-controls">
           <div className="small-input">
@@ -214,7 +207,7 @@ function EventList({ match }) {
         <div class="flex-table">
           <div class="flex-table-header">
             <span
-              class="name sort-column"
+              class="w-50 sort-column"
               onClick={handleSort}
               column="EventTitle">
               Name
@@ -241,46 +234,13 @@ function EventList({ match }) {
               class="type sort-column"
               onClick={handleSort}
               column="eventTitle">
-              Type
+              Status
               {searchParams.sortBy === "eventTitle" &&
                 (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (
                   <FiArrowDown className="ml-2" />
                 ))}
-            </span>
-            <span
-              class="category sort-column"
-              onClick={handleSort}
-              column="PresenterType">
-              Presenter Type
-              {searchParams.sortBy === "PresenterType" &&
-                (searchParams.sortDirection ? (
-                  <FiArrowUp className="ml-2" />
-                ) : (
-                  <FiArrowDown className="ml-2" />
-                ))}
-            </span>
-            <span
-              class="events-count sort-column"
-              onClick={handleSort}
-              column="EventNature">
-              Event Nature
-              {searchParams.sortBy === "EventNature" &&
-                (searchParams.sortDirection ? (
-                  <FiArrowUp className="ml-2" />
-                ) : (
-                  <FiArrowDown className="ml-2" />
-                ))}
-            </span>
-            <span class="w-10" column="PresenterType">
-              Edit
-            </span>
-            <span class="w-10">
-              QR
-            </span>
-            <span class="w-10">
-              Feedback
             </span>
           </div>
           {loading ? (
@@ -293,7 +253,7 @@ function EventList({ match }) {
             ))
           )}
         </div>
-        <ReactPaginate
+        {/* <ReactPaginate
           previousLabel={"Prev"}
           nextLabel={"Next"}
           breakLabel={"..."}
@@ -306,7 +266,7 @@ function EventList({ match }) {
           }
           containerClassName={"pagination"}
           activeClassName={"active"}
-        />
+        /> */}
       </div>
     </div>
   );

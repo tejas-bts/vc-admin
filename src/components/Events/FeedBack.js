@@ -71,17 +71,17 @@ var Feedback = () => {
                       <>
                         <div className="card mb-5 columns mr-0 ml-0">
                           <div className="column text-center">
-                             <span className="bold" style={{fontSize:'2.5rem'}}>{averageRating.hAvgRating}</span>
+                             <span className="text-bold" style={{fontSize:'2.5rem'}}>{averageRating.hAvgRating}</span>
                              <span><StarRating rating={averageRating.hAvgRating} /></span>
                              <span>Average Ratings for Host</span>
                           </div>
                           <div className="column text-center">
-                             <span className="bold" style={{fontSize:'2.5rem'}}>{averageRating.vcAvgRating}</span>
+                             <span className="text-bold" style={{fontSize:'2.5rem'}}>{averageRating.vcAvgRating}</span>
                              <span><StarRating rating={averageRating.vcAvgRating} /></span>
                              <span>Average Ratings for VirtualCata</span>
                           </div>
                           <div className="column text-center">
-                             <span  className="bold" style={{fontSize:'2.5rem'}}>{averageRating.pAvgRating}</span>
+                             <span  className="text-bold" style={{fontSize:'2.5rem'}}>{averageRating.pAvgRating}</span>
                              <span><StarRating rating={averageRating.pAvgRating} /></span>
                              <span>Average Ratings for Presenter</span>
                           </div>
@@ -126,7 +126,12 @@ var Feedback = () => {
                         </p>
                       </>
                       )
-                       : <p>Select a feedback listing to see details here.</p>}
+                       : 
+                      <div className="column text-center">
+                        <span className="text-bold" style={{fontSize:'2.5rem'}}>{feedbackList.length}</span><br />
+                        <span>Total Feedback Submissions</span>
+                      </div>
+                      }
                     </div>                    
                   </div>
                 </div>

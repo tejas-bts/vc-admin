@@ -21,13 +21,24 @@ function OrganizationListItem({ event, match }) {
       <div className="events-count">
         <span>{event.EventNature}</span>
       </div>
-      <div className="status">
-        <span>{event.PresenterType}</span>
-      </div>
-      <div className="edit" style={{ display: "flex", alignItems: "center" }}>
+      <div className="w-10" style={{ display: "flex", alignItems: "center" }}>
         <Link to={`${match.url}/edit/${event.EventId}`} key={event.EventId}>
           <span style={{ fontSize: "20px" }}>
             <FiEdit />
+          </span>
+        </Link>
+      </div>
+      <div className="w-10">
+        <Link to={`${match.url}/qr/${event.EventId}`} key={event.EventId} > 
+          <span style={{ fontSize: "20px" }}>
+            <i class="fa fa-qrcode" /> 
+          </span>
+        </Link>
+      </div>
+      <div className="w-10">
+        <Link to={`${match.url}/feedbacks/${event.EventId}`} key={event.EventId} > 
+          <span style={{ fontSize: "20px" }}>
+            <i class="fa fa-comments" /> 
           </span>
         </Link>
       </div>

@@ -5,6 +5,7 @@ import AdminAbout from "./components/Profile/AdminAbout";
 import { Fragment, useState } from "react";
 import authContext from "./Context/authContext";
 import NavBar from "./components/core/NavBar/NavBar";
+import Chat from "./components/Chat";
 
 
 import User from "./components/User";
@@ -47,6 +48,7 @@ function Application() {
           {/* <Route path="/app" component={App} /> */}
           <Route exact path="/adminProfile" component={AdminProfile} />
           <Route path="/user" component={User} />
+          <Route exact path="/chat" component={Chat} />
           <Route exact path="/adminAbout" component={AdminAbout} />
           <Route exact path="/search" component={SearchResults} />
           <Route path="/organizations" component={Organizations} />
