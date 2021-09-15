@@ -323,16 +323,11 @@ export default class MakeCall extends React.Component {
         <Login onLoggedIn={this.handleLogIn} />
         <div className="card">
           <div className="ms-Grid">
-            <div className="ms-Grid-row">
-              ==============================================================================================
-              <h2 className="ms-Grid-col ms-lg6 ms-sm6 mb-4">Call section</h2>
-            </div>
-
             {!this.state.incomingCall && !this.state.call && (
               <div className="ms-Grid-row mt-3">
                 <div className="call-input-panel mb-5 ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl4">
-                  <h3 className="mb-1">Group Call</h3>
-                  <div>Enter Group id.</div>
+                  {/* <h3 className="mb-1">Group Call</h3>
+                  <div>Enter Group id.</div> */}
                   <TextField
                     className="mb-3"
                     disabled={this.state.call || !this.state.loggedIn}

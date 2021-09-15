@@ -13,7 +13,19 @@ import LocalVideoPreviewCard from "./LocalVideoPreviewCard";
 import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
 import { LocalVideoStream, Features } from "@azure/communication-calling";
 import { utils } from "./Utils";
-import { FiArrowDown, FiMic, FiMicOff, FiPause, FiPlay, FiVideo, FiVideoOff } from "react-icons/fi";
+import {
+  FiArrowDown,
+  FiMic,
+  FiMicOff,
+  FiPause,
+  FiPlay,
+  FiVideo,
+  FiVideoOff,
+  FiMonitor,
+  FiTv,
+  FiSettings,
+  FiPhoneOff,
+} from "react-icons/fi";
 
 export default class CallCard extends React.Component {
   constructor(props) {
@@ -274,9 +286,9 @@ export default class CallCard extends React.Component {
               }
                 Remote participant ${utils.getIdentifierText(
                   p.identifier
-                )} disconnected: code: ${
-                p.callEndReason.code
-              }, subCode: ${p.callEndReason.subCode}.`,
+                )} disconnected: code: ${p.callEndReason.code}, subCode: ${
+                p.callEndReason.subCode
+              }.`,
             }));
           }
           this.setState({
@@ -688,14 +700,14 @@ export default class CallCard extends React.Component {
         </div>
         <div className="ms-Grid-row">
           <div className="ms-Grid-col ms-lg6">
-            <h2>
+            {/* <h2>
               {this.state.callState !== "Connected"
                 ? `${this.state.callState}...`
                 : `Connected`}
-            </h2>
+            </h2> */}
           </div>
           <div className="ms-Grid-col ms-lg6 text-right">
-            {this.call && <h2>Call Id: {this.state.callId}</h2>}
+            {/* {this.call && <h2>Call Id: {this.state.callId}</h2>} */}
           </div>
         </div>
         <div className="ms-Grid-row">
@@ -805,13 +817,9 @@ export default class CallCard extends React.Component {
                     variant="secondary"
                     style={{ cursor: "pointer" }}
                     onClick={() => this.handleHoldUnhold()}>
-                    {this.state.callState === "LocalHold" && (
-                      <FiPause />
-                    )}
+                    {this.state.callState === "LocalHold" && <FiPause />}
                     {(this.state.callState === "Connected" ||
-                      this.state.callState === "RemoteHold") && (
-                      <FiPlay />
-                    )}
+                      this.state.callState === "RemoteHold") && <FiPlay />}
                   </span>
                 )}
                 {this.props.disName === "Admin" ? (
@@ -822,8 +830,8 @@ export default class CallCard extends React.Component {
                     } sharing your screen`}
                     variant="secondary"
                     onClick={() => this.handleScreenSharingOnOff()}>
-                    {!this.state.screenShareOn && <Icon iconName="TVMonitor" />}
-                    {this.state.screenShareOn && <Icon iconName="CircleStop" />}
+                    {!this.state.screenShareOn && <FiMonitor />}
+                    {this.state.screenShareOn && <FiTv />}
                   </span>
                 ) : null}
                 <span
@@ -832,13 +840,13 @@ export default class CallCard extends React.Component {
                   style={{ cursor: "pointer" }}
                   variant="secondary"
                   onClick={() => this.setState({ showSettings: true })}>
-                  <Icon iconName="Settings" />
+                  <FiSettings />
                 </span>
                 <span
                   className="in-call-button"
                   style={{ cursor: "pointer" }}
                   onClick={() => this.call.hangUp()}>
-                  <Icon iconName="DeclineCall" />
+                  <FiPhoneOff />
                 </span>
                 <Panel
                   type={PanelType.medium}

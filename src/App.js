@@ -6,7 +6,7 @@ import { Fragment, useState } from "react";
 import authContext from "./Context/authContext";
 import NavBar from "./components/core/NavBar/NavBar";
 import Chat from "./components/Chat";
-
+import LiveEvent from "./components/Events/LiveEvent";
 
 import User from "./components/User";
 
@@ -17,10 +17,10 @@ import Suppliers from "./components/Suppliers";
 import Stores from "./components/Stores";
 import Events from "./components/Events";
 import Contacts from "./components/Contacts";
-import AcceptContactRequest from "./components/Contacts/ConfirmContactData"
+import AcceptContactRequest from "./components/Contacts/ConfirmContactData";
 // import Home from "./components/Home/Home";
 
-import Home from './components/Home'
+import Home from "./components/Home";
 
 function Application() {
   let initialState = {
@@ -41,10 +41,9 @@ function Application() {
 
   return (
     <Fragment>
-      <div id="toast-anchor"/>
+      <div id="toast-anchor" />
       <Switch>
         <authContext.Provider value={{ allData, setAllData }}>
-          
           {/* <Route path="/app" component={App} /> */}
           <Route exact path="/adminProfile" component={AdminProfile} />
           <Route path="/user" component={User} />
@@ -55,10 +54,14 @@ function Application() {
           <Route path="/suppliers" component={Suppliers} />
           <Route path="/stores" component={Stores} />
           <Route path="/events" component={Events} />
+          <Route path="/liveevent" component={LiveEvent} />
           <Route path="/contacts" component={Contacts} />
           <Route path="/home" component={Home} />
           <Route path="/preview/:id" component={PreviewPage} />
-          <Route path="/accept-contact-request/:id" component={AcceptContactRequest} />
+          <Route
+            path="/accept-contact-request/:id"
+            component={AcceptContactRequest}
+          />
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
