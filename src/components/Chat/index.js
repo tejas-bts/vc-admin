@@ -6,6 +6,7 @@ import {
   MessageList,
   Message,
   MessageInput,
+  MessageSeparator,
   Avatar
 } from "@chatscope/chat-ui-kit-react";
 import { getCurrentUser } from '../../utils/user';
@@ -18,6 +19,7 @@ import {
 import { AzureCommunicationTokenCredential } from "@azure/communication-common";
 
 import MakeCall from "../MakeCall/MakeCall";
+import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/ConversationHeader';
 
 
   const Chat = (props) => {
@@ -32,6 +34,7 @@ import MakeCall from "../MakeCall/MakeCall";
     };
   
     const [state, setstate] = useState(initialState);
+    const [conversation, setConversation] = useState([]);
 
 
     useEffect(() => {
@@ -41,6 +44,7 @@ import MakeCall from "../MakeCall/MakeCall";
     useEffect(() => {
       if (state.userIdentity != null) {
         init();
+        console.log("User Identity",state.userIdentity);
       }
     }, [state.userIdentity]);
   
@@ -82,65 +86,24 @@ import MakeCall from "../MakeCall/MakeCall";
   
       console.log(chatClients);
       setstate({ ...state, threadClient, chatThreadId });
-  
       chatClients.on("chatMessageReceived", (message) => {
         console.log("Msg :::::::::", message);
-  
-        setstate({ ...state, chats: [...state.chats, message] });
+        conversation.push(message);
+        setConversation([...conversation]);        
+        // const newConversation = [...conversation];  
+        // newConversation.push(message);
+        // setConversation(newConversation);
       });
     };
       
+    useEffect(() => {
+      console.log("New msg Received", conversation);
+    },[conversation])
+
+    console.log("Conversation count", conversation.length)
 
     return (
     <>
-      <p>
-        Create New Chat Group / Join Existing :
-        <input
-          id="destination-group-input"
-          type="text"
-          placeholder="Chat Thread ID"
-          // style="margin-bottom: 1em; width: 600px"
-        />
-      </p>
-
-      <div>
-        <button id="connect-button" type="button" disabled="false">
-          Connect
-        </button>
-        <button id="disconnect-button" type="button" disabled="true">
-          Disconnect
-        </button>
-        <button id="createChatThread" type="button" disabled="true">
-          Create a Chat Thread
-        </button>
-      </div>
-      <div class="footer">
-        <p>
-          <input id="chat-input" type="text" placeholder="Type your message" />
-          <button id="chat-send" type="button" disabled="true">Send</button>
-
-          ||||
-
-          <input
-            id="user-input"
-            type="text"
-            placeholder="User ID"
-            // style="margin-bottom: 1em; width: 400px"
-          />
-          <button id="user-add" type="button" disabled="true">Add User</button>
-
-          ||||
-
-          <input
-            id="remove-user-id"
-            type="text"
-            placeholder="User ID"
-            // style="margin-bottom: 1em; width: 400px"
-          />
-          <button id="remove-user" type="button">Remove User</button>
-        </p>
-      </div>
-
       <div className="live-event-container">
         <div className="event-video-container">
           <MakeCall />
@@ -148,30 +111,32 @@ import MakeCall from "../MakeCall/MakeCall";
         <div className="event-chat-container">
             <MainContainer>
             <ChatContainer>
-                <MessageList>
-                <Message
-                    model={{
-                    message: "Hello my friend",
-                    sentTime: "just now",
-                    sender: "Joe",
-                    position:"last"
-                    }}
-                >
-                    <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="l" />
-                </Message>
-                <Message
-                    model={{
-                    message: "Hello",
-                    sentTime: "just now",
-                    sender: "Ramesh",
-                    direction: "outgoing",
-                    position: "last"
-                    }}
-                /> 
-                </MessageList>
-                <MessageInput placeholder="Type message here" >
-                    <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="l" />
-                </MessageInput>
+              <ConversationHeader>
+                <ConversationHeader.Content userName="Emily" info="Active 10 mins ago" />
+              </ConversationHeader>
+              <MessageList>
+                <MessageSeparator className="mt-5">
+                  {`User Identity : \n ${ state.userIdentity }`}
+                </MessageSeparator>
+                {
+                  conversation.map((item) => 
+                    <Message
+                      key={item.id}
+                      model={{
+                      message: item.message,
+                      sentTime: "just now",
+                      sender: "Joe",
+                      position:"last"
+                      }}
+                    >
+                    <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="s" />
+                  </Message>
+                  )
+                } 
+              </MessageList>
+              <MessageInput placeholder="Type message here" >
+                <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="l" />
+              </MessageInput>
             </ChatContainer>
             </MainContainer>
         </div>
