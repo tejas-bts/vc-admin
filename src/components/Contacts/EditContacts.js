@@ -1,27 +1,22 @@
 
 import React, {  useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Toast, { ToastStates } from '../core/Toast';
-import { createOrUpdateContact, fetchContactTypes } from '../../services/contacts.services';
+import { createOrUpdateContact, fetchContactTypes, getContactById } from '../../services/contacts.services';
+import { formatDateforInput } from '../../utils/Utils';
 
 function EditContact(props) {
 
+  const { contactId } = useParams();
   const { state } = props.location
   
   console.log("Edit Contact", state);
 
-  const initialValues = {
-    profileType: "native",
-    contactId: state.ContactId,
-    email: state.Email,
-    firstName: state.FirstName,
-    lastName: state.LastName,
-    contactTypeId: state.ContactTypeId,
-  }
 
   const [ submitting, setSubmitting ] = useState(false);
   const [ showToast, setShowToast ] = useState(false);
   const [ toastAttr, setToastAttr ] = useState({});
-  const [ contactDetails, setContact ] = useState(initialValues);
+  const [ contactDetails, setContact ] = useState({});
   const [ contactTypes, setContactTypes ] = useState([]);
 
 
@@ -50,13 +45,14 @@ function EditContact(props) {
 
   useEffect(() => {
     fetchContactTypes()
-      .then((contactTypes) => setContactTypes(contactTypes))
+      .then((contactTypes) => {
+        setContactTypes(contactTypes);
+        getContactById(contactId)
+          .then((userData) => setContact(userData))
+          .catch((error) => console.log("Contact Details", error))
+      }
+    )
   }, [])
-
-  
-  useEffect(() => {
-    console.log(contactDetails);
-  }, [contactDetails])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -112,7 +108,7 @@ function EditContact(props) {
                       className="input is-fade"
                       name="firstName"
                       onChange={handleInput}
-                      value={contactDetails.firstName}
+                      value={contactDetails.FirstName}
                       required
                     />
                     <div className="form-icon">
@@ -129,7 +125,7 @@ function EditContact(props) {
                       className="input is-fade"
                       name="email"
                       onChange={handleInput}
-                      value={contactDetails.email}
+                      value={contactDetails.Email}
                       required
                     />
                     <div className="form-icon">
@@ -146,28 +142,11 @@ function EditContact(props) {
                       className="input is-fade"
                       name="yearOfBirth"
                       onChange={handleInput}
-                      value={contactDetails.yearOfBirth}
+                      value={formatDateforInput(new Date(contactDetails.BirthYear))}
                       required
                     />
                     <div className="form-icon">
                       <i data-feather="phone" />
-                    </div>
-                  </div>
-                </div>
-                {/*Field*/}
-                <div className="field field-group">
-                  <label>Password</label>
-                  <div className="control has-icon">
-                    <input
-                      type="password"
-                      className="input is-fade"
-                      name="password"
-                      onChange={handleInput}
-                      value={contactDetails.password}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="instagram" />
                     </div>
                   </div>
                 </div>
@@ -184,13 +163,15 @@ function EditContact(props) {
                         required
                       >
                         <option disabled selected value> --  Select an Contact type  -- </option>
-                        {contactTypes.map((item) => <option
-                                                      value={item.ContactTypeId}
-                                                      key={item.ContactTypeId} 
-                                                      selected={item.ContactTypeId == state.ContactTypeId}
-                                                      >
-                                                        {item.ContactType}
-                                                      </option>)}
+                        {contactTypes.map(
+                          (item) => 
+                            <option
+                              value={item.ContactTypeId}
+                              key={item.ContactTypeId} 
+                              selected={item.ContactTypeId == state.ContactTypeId}
+                            >
+                                {item.ContactType}
+                            </option>)}
                       </select>
                       <div className="form-icon">
                         <i data-feather="settings" />
@@ -208,7 +189,7 @@ function EditContact(props) {
                       className="input is-fade"
                       name="lastName"
                       onChange={handleInput}
-                      value={contactDetails.lastName}
+                      value={contactDetails.LastName}
                       required
                     />
                     <div className="form-icon">
@@ -225,7 +206,7 @@ function EditContact(props) {
                       className="input is-fade"
                       name="phoneNumber"
                       onChange={handleInput}
-                      value={contactDetails.phoneNumber}
+                      value = {contactDetails.PhoneNumber}
                       required
                     />
                     <div className="form-icon">
@@ -242,24 +223,7 @@ function EditContact(props) {
                       className="input is-fade"
                       name="zipCode"
                       onChange={handleInput}
-                      value={contactDetails.zipCode}
-                      required
-                    />
-                    <div className="form-icon">
-                      <i data-feather="instagram" />
-                    </div>
-                  </div>
-                </div>
-                {/*Field*/}
-                <div className="field field-group">
-                  <label>Confirm Password</label>
-                  <div className="control has-icon">
-                    <input
-                      type="password"
-                      className="input is-fade"
-                      name="cpassword"
-                      onChange={handleInput}
-                      value={contactDetails.cpassword}
+                      value={contactDetails.ZipCode}
                       required
                     />
                     <div className="form-icon">

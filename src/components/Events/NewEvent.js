@@ -1,43 +1,50 @@
 import { map } from "async";
 import React, { useEffect, useState } from "react";
-import {
-  createNewStore,
-  getAllStoreType,
-} from "../../services/stores.services";
 import { getAllSuppliers } from "../../services/suppliers.services";
 import {
   createOrUpdateEvent,
   getAllEventsFields,
 } from "../../services/events.services";
 
+import { useHistory } from "react-router";
+
 import { getAllContacts } from "../../services/contacts.services";
 
-import Toast, { ToastStates } from "../core/Toast";
+import Toaster from "../core/Toaster";
+import { getCurrentUser } from "../../utils/user";
 
 function NewEvent() {
+  
+  const currentUser = getCurrentUser();
+  const history = useHistory();
+
   const [submitting, setSubmitting] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastAttr, setToastAttr] = useState({});
   const [eventDetails, setEvent] = useState({
-    loggedInUserId: 73,
+    loggedInUserId: currentUser.userId,
+    presenterSupplierId: currentUser.supplierId,
     isActive: 1,
     eventSatusId: 1,
     hostType: "Retailer",
     hostId: 1,
     eventCategoryId: 1,
-    eventThumbnail: 'https://via.placeholder.com/920x600',
+    eventThumbnail: "https://via.placeholder.com/920x600",
   });
 
-  const [eventLevel, setEventLevel] = useState([]);
   const [eventNature, setEventNature] = useState([]);
-  const [eventStatus, setEventStatus] = useState([]);
   const [eventType, setEventType] = useState([]);
   const [suppliersList, setSuppliersList] = useState([]);
   const [suppliersContacts, setSuppliersContacts] = useState([]);
 
+  useEffect(() => {
+    console.log("Suppliers Contact", suppliersContacts);
+  }, [suppliersContacts]);
+
   const handleInput = (e) => {
     const newEvent = { ...eventDetails };
     newEvent[e.target.name] = e.target.value;
+    if (e.target.name === "eventStartDateTime") {
+      newEvent["eventEndDateTime"] = e.target.value;
+    }
     setEvent(newEvent);
   };
 
@@ -47,46 +54,21 @@ function NewEvent() {
     setEvent(newEvent);
   };
 
-  const onToastHide = () => {
-    setShowToast(false);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("Submit");
     setSubmitting(true);
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
     createOrUpdateEvent(eventDetails)
-      .then((response) => {
-        console.log("Error", response.error);
-        if (response.error) {
-          console.log("errororor",response);
-          setToastAttr({
-            ...toastAttr,
-            title: "Opps!",
-            message: response.data.data[0],
-            state: ToastStates.FAIL,
-          });
-          setShowToast(true);
-        } else {
-          setToastAttr({
-            ...toastAttr,
-            title: "Great!",
-            message: "Event added successfully",
-            state: ToastStates.SUCCESS,
-          });
-          setShowToast(true);
-          e.target.reset();
-        }
+      .then(() => {
+        Toaster.success("Great!", "Event added successfully");
+        history.push("../")
       })
       .catch((error) => {
-        // setToastAttr({
-        //   ...toastAttr,
-        //   title: "Oops!",
-        //   message: "Something went wrong. Please try again after sometime",
-        //   state: ToastStates.FAIL,
-        // });
-        // setShowToast(true);
+        console.error("Error during event creation", error);
+        Toaster.fail(
+          "Opps",
+          "Something went wrong. Please try again after sometime"
+        );
       })
       .finally(() => {
         setSubmitting(false);
@@ -102,47 +84,33 @@ function NewEvent() {
     console.log("Data to Send :: ", dataToSend);
     getAllContacts({ supplierId: values.supplierId }).then(
       (supplierContacts) => {
-        setSuppliersContacts(supplierContacts.data);
+        console.log("Suppliers contact", supplierContacts);
+        setSuppliersContacts(supplierContacts);
       }
     );
   };
 
   useEffect(() => {
     getAllEventsFields().then((data) => {
-      // console.log(data);
-      setEventLevel(data.eventLevel);
       setEventNature(data.eventNature);
-      setEventStatus(data.eventStatus);
       setEventType(data.eventType);
     });
 
     getAllSuppliers().then((suppliersReturned) => {
       console.log(":: Resp Suppliers ::", suppliersReturned.data);
-
       setSuppliersList(suppliersReturned.data);
     });
   }, []);
 
-  useEffect(() => {
-    // console.log(eventDetails);
-  }, [eventDetails]);
-
   return (
     <>
-      <Toast
-        toastState={toastAttr.state}
-        title={toastAttr.title}
-        message={toastAttr.message}
-        show={showToast}
-        onClose={onToastHide}
-      />
       <div className="settings-wrapper">
         <div id="general-settings" className="settings-section is-active">
           <div className="settings-panel">
             <div className="title-wrap">
-              <a className="mobile-sidebar-trigger">
+              <span className="mobile-sidebar-trigger">
                 <i data-feather="menu" />
-              </a>
+              </span>
               <h2>Add new Event</h2>
             </div>
             <div className="settings-form-wrapper">
@@ -231,7 +199,6 @@ function NewEvent() {
                           rows={1}
                           placeholder="Description for event..."
                           style={{ height: "70px" }}
-                          name="address1"
                           onChange={handleInput}
                           name="description"
                           required
@@ -250,7 +217,8 @@ function NewEvent() {
                           name="eventType"
                           onChange={handleInput}
                           defaultValue={"null"}
-                          required>
+                          required
+                        >
                           <option disabled selected value="null">
                             {" "}
                             -- Select a Event type --{" "}
@@ -276,7 +244,8 @@ function NewEvent() {
                           name="eventNature"
                           onChange={handleInput}
                           defaultValue={"null"}
-                          required>
+                          required
+                        >
                           <option disabled selected value="null">
                             {" "}
                             -- Select a Event Nature --{" "}
@@ -298,7 +267,8 @@ function NewEvent() {
                       <div className="control has-icon">
                         <div
                           className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
+                          style={{ justifyContent: "space-between" }}
+                        >
                           <label className="mr-5 pl-5 ml-4">
                             Is event age restricted?
                           </label>
@@ -323,7 +293,8 @@ function NewEvent() {
                       <div className="control has-icon">
                         <div
                           className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
+                          style={{ justifyContent: "space-between" }}
+                        >
                           <label className="mr-5 pl-5 ml-4">
                             Should event be availble to view after live stream
                           </label>
@@ -342,59 +313,8 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
-                    {/*Field*/}
-                    {/* <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Is event active?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isActive"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
                   <div className="column is-6">
-                    {/*Field*/}
-                    {/* <div className="field field-group">
-                      <label>Event Status</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          className="input is-fade"
-                          name="eventSatusId"
-                          onChange={handleInput}
-                          required>
-                          <option disabled selected value>
-                            {" "}
-                            -- Select a Event Status --{" "}
-                          </option>
-                          {eventStatus.map((item) => (
-                            <option value={item.EventStatusId} key={map.key}>
-                              {item.EventStatus}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div> */}
-
                     {/*Field*/}
                     <div className="field field-group">
                       <label>Presenter Type</label>
@@ -404,7 +324,8 @@ function NewEvent() {
                           className="input is-fade"
                           name="presenterType"
                           onChange={handleSupplier}
-                          required>
+                          required
+                        >
                           <option disabled selected value>
                             {" "}
                             -- Select a Presenter Type --{" "}
@@ -416,7 +337,8 @@ function NewEvent() {
                                 supplierId: sup.SupplierID,
                                 supplierType: sup.SupplierType,
                               })}
-                              key={map.key}>
+                              key={map.key}
+                            >
                               {sup.SupplierName} | {sup.SupplierType}
                             </option>
                           ))}
@@ -436,7 +358,8 @@ function NewEvent() {
                           className="input is-fade"
                           name="presenterId"
                           onChange={handleInput}
-                          required>
+                          required
+                        >
                           <option disabled selected value>
                             {" "}
                             -- Select a Presenter Contact --{" "}
@@ -455,14 +378,14 @@ function NewEvent() {
                       </div>
                     </div>
 
-
                     {/*Field*/}
                     <div className="field field-group">
                       <label>Select Yes/No</label>
                       <div className="control has-icon">
                         <div
                           className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
+                          style={{ justifyContent: "space-between" }}
+                        >
                           <label className="mr-5 pl-5 ml-4">
                             Do you want to collect feedbacks?
                           </label>
@@ -487,7 +410,8 @@ function NewEvent() {
                       <div className="control has-icon">
                         <div
                           className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
+                          style={{ justifyContent: "space-between" }}
+                        >
                           <label className="mr-5 pl-5 ml-4">
                             Should user be necessarily registered to attend the
                             event?
@@ -507,10 +431,9 @@ function NewEvent() {
                         </div>
                       </div>
                     </div>
-                  {/* </div>
+                    {/* </div>
 
                   <div className="column is-6"> */}
-                    
                   </div>
 
                   <div className="column is-12">
@@ -519,7 +442,8 @@ function NewEvent() {
                         type="submit"
                         className="button is-solid accent-button form-button"
                         onClick={handleSubmit}
-                        disabled={submitting}>
+                        disabled={submitting}
+                      >
                         {submitting ? "Adding..." : "Add"}
                       </button>
                     </div>

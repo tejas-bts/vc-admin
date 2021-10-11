@@ -102,10 +102,10 @@ function StoreList({match}) {
     return (
         <div className="settings-wrapper">
             <div className="list-controls">
-                <Link to={`${match.path}new`} style={{float:'right'}}>
-                        <button className="button is-solid accent-button">New Store</button>
-                </Link>
-                <h1 className="admin-title">Stores</h1>
+              <h1 className="admin-title">Stores</h1>
+              <Link to={`${match.path}new`} style={{float:'right'}}>
+                      <button className="button is-solid accent-button">New Store</button>
+              </Link>
             </div>
             <div className="list-controls">
                 <div className="small-input">

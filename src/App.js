@@ -39,6 +39,7 @@ function Application() {
   };
   const [allData, setAllData] = useState(initialState);
 
+
   return (
     <Fragment>
       <div id="toast-anchor" />
@@ -54,7 +55,7 @@ function Application() {
           <Route path="/suppliers" component={Suppliers} />
           <Route path="/stores" component={Stores} />
           <Route path="/events" component={Events} />
-          <Route path="/liveevent" component={LiveEvent} />
+          <Route path="/view-event" component={LiveEvent} />
           <Route path="/contacts" component={Contacts} />
           <Route path="/home" component={Home} />
           <Route path="/preview/:id" component={PreviewPage} />

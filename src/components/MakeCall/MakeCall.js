@@ -1,21 +1,21 @@
 import React from "react";
 import { CallClient, LocalVideoStream } from "@azure/communication-calling";
 import { AzureCommunicationTokenCredential } from "@azure/communication-common";
-import {
-  PrimaryButton,
-  TextField,
-  MessageBar,
-  MessageBarType,
-} from "office-ui-fabric-react";
-// import { Icon } from "@fluentui/react/lib/Icon";
-import IncomingCallCard from "./IncomingCallCard";
+import {  TextField } from "office-ui-fabric-react";
 import CallCard from "../MakeCall/CallCard";
-import Login from "./Login";
 import { setLogLevel } from "@azure/logger";
+import { utils } from "./Utils";
+import { getCurrentUser } from "../../utils/user";
 
 export default class MakeCall extends React.Component {
   constructor(props) {
+
     super(props);
+
+    console.log("User Identity ::::::::::::::::", props.userIdentity);
+    console.log("User Token ::::::::::::::::", props.accessToken);
+    
+
     this.callClient = null;
     this.callAgent = null;
     this.deviceManager = null;
@@ -46,12 +46,46 @@ export default class MakeCall extends React.Component {
     };
   }
 
+  provisionNewUser = async () => {
+    try {
+      const currentUser = getCurrentUser();
+      this.setState({ showSpinner: true, disableInitializeButton: true });
+      this.userDetailsResponse = await utils.provisionNewUser();
+      console.log("userDetailsResponse", this.userDetailsResponse);
+      this.setState({
+        id: utils.getIdentifierText(this.userDetailsResponse.user),
+      });
+      await this.handleLogIn({
+        id: this.props.userIdentity,
+        token: this.props.accessToken,
+        displayName: currentUser? currentUser.firstName : 'Anonymous',
+      });
+
+      console.log("User obj video::::::::", this.userDetailsResponse)
+      this.setState({ loggedIn: true });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ disableInitializeButton: false, showSpinner: false });
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener('load', () => { 
+      this.provisionNewUser()
+      .then((data) => {
+        console.log("Provisional User from Make CAlls", data);
+      })
+    });
+ }
+
   handleLogIn = async (userDetails) => {
     if (userDetails) {
       try {
         const tokenCredential = new AzureCommunicationTokenCredential(
           userDetails.token
         );
+        console.log("tokenCredential", tokenCredential);
         setLogLevel("verbose");
         this.callClient = new CallClient();
         this.callAgent = await this.callClient.createCallAgent(
@@ -305,29 +339,18 @@ export default class MakeCall extends React.Component {
     return callOptions;
   }
   render() {
-    const callSampleCode = ``;
 
-    const streamingSampleCode = ``;
-
-    const muteUnmuteSampleCode = ``;
-
-    const holdUnholdSampleCode = ``;
-
-    const deviceManagerSampleCode = ``;
 
     // TODO: Create section component. Couldnt use the ExampleCard compoenent from uifabric becuase its buggy,
     //       when toggling their show/hide code functionality, videos dissapear from DOM.
 
     return (
       <div>
-        <Login onLoggedIn={this.handleLogIn} />
         <div className="card">
           <div className="ms-Grid">
             {!this.state.incomingCall && !this.state.call && (
               <div className="ms-Grid-row mt-3">
                 <div className="call-input-panel mb-5 ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl4">
-                  {/* <h3 className="mb-1">Group Call</h3>
-                  <div>Enter Group id.</div> */}
                   <TextField
                     className="mb-3"
                     disabled={this.state.call || !this.state.loggedIn}
@@ -337,7 +360,7 @@ export default class MakeCall extends React.Component {
                     componentRef={(val) => (this.destinationGroup = val)}
                   />{" "}
                   <br />
-                  <PrimaryButton
+                  <button
                     className="primary-button"
                     iconProps={{
                       iconName: "Video",
@@ -345,7 +368,7 @@ export default class MakeCall extends React.Component {
                     }}
                     text="Join"
                     disabled={this.state.call || !this.state.loggedIn}
-                    onClick={() => this.joinGroup(true)}></PrimaryButton>
+                    onClick={() => this.joinGroup(true)} >Join</button>
                 </div>
               </div>
             )}
@@ -367,18 +390,6 @@ export default class MakeCall extends React.Component {
                   this.setState({ showMicrophoneNotFoundWarning: show });
                 }}
                 disName={this.state.disName}
-              />
-            )}
-            {this.state.incomingCall && !this.state.call && (
-              <IncomingCallCard
-                incomingCall={this.state.incomingCall}
-                acceptCallOptions={async () => await this.getCallOptions()}
-                acceptCallWithVideoOptions={async () =>
-                  await this.getCallOptions(true)
-                }
-                onReject={() => {
-                  this.setState({ incomingCall: undefined });
-                }}
               />
             )}
           </div>

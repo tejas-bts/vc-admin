@@ -22,18 +22,40 @@ function OrganizationListItem({ event, match }) {
   // console.log("Item",event)
   return (
     <div class="flex-table-item">
-      <div className="w-50">
+      <div className="name">
         <span>{event.EventTitle}</span>
       </div>
       <div className="location">
         <span>{new Date(event.EventStartDateTime).toLocaleDateString()}</span>
       </div>
       <div className="type">
-        <span>{printEventStatus(event.EventSatusId)}</span>
+        <span>{event.EventType}</span>
       </div>
-      <div className="w-20 text-center" style={{ display: "flex", justifyContent: "center" }}>
-        <Link to={`${match.path}${event.EventId}`} style={{ float: "right" }}>
-          <button className="button is-solid accent-button">View Details</button>
+      <div className="category">
+        <span>{event.PresenterType}</span>
+      </div>
+      <div className="events-count">
+        <span>{event.EventNature}</span>
+      </div>
+      <div className="w-10" style={{ display: "flex", alignItems: "center" }}>
+        <Link to={`${match.url}/edit/${event.EventId}`} key={event.EventId}>
+          <span style={{ fontSize: "20px" }}>
+            <FiEdit />
+          </span>
+        </Link>
+      </div>
+      <div className="w-10">
+        <Link to={`${match.url}/qr/${event.EventId}`} key={event.EventId} > 
+          <span style={{ fontSize: "20px" }}>
+            <i class="fa fa-qrcode" /> 
+          </span>
+        </Link>
+      </div>
+      <div className="w-10">
+        <Link to={`${match.url}/feedbacks/${event.EventId}`} key={event.EventId} > 
+          <span style={{ fontSize: "20px" }}>
+            <i class="fa fa-comments" /> 
+          </span>
         </Link>
       </div>
     </div>

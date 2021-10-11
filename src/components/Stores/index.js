@@ -9,7 +9,7 @@ function Stores({match}) {
         <Switch>
             <Route path={`${match.path}/new`} component={NewStore} />
             <Route exact path={`${match.path}/`} component={StoreList} />
-            <Route exact path={`${match.path}/edit/:orgId`} component={EditStore} />
+            <Route exact path={`${match.path}/edit/:storeId`} component={EditStore} />
         </Switch>
     )
 }

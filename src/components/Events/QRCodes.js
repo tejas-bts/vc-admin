@@ -5,6 +5,8 @@ import { FiArrowRightCircle, FiEdit } from 'react-icons/fi';
 import { useParams } from 'react-router'; 
 import { getAllQRcodes, createQRcode } from '../../services/qr.services';
 import Toaster from '../core/Toaster';
+import QRCode from "react-qr-code";
+
 
 
 function QrCodeListItem({ item, onSelect, onEdit }) {
@@ -53,7 +55,6 @@ var QRCodes = () => {
     }, [])
 
     const onSelect = (qrCode) => {
-      setLoadingImage(true);
       setQR(qrCode)
     }
 
@@ -78,13 +79,13 @@ var QRCodes = () => {
         responseType: 'blob'
       })
       .then((response) => {
-            const url = window.URL
-            .createObjectURL(new Blob([response.data]));
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', 'image.jpg');
-              document.body.appendChild(link);
-              link.click();
+        const url = window.URL
+        .createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'image.jpg');
+          document.body.appendChild(link);
+          link.click();
       })
     }
 
@@ -184,7 +185,9 @@ var QRCodes = () => {
                       {Object.keys(selectedQr).length > 0 ? 
                       (
                       <>
-                        <img onLoad={() => setLoadingImage(false)} className="w-100" src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${selectedQr.qrLink}`} alt="qr"/>
+                        <div className="d-flex justify-content-center">
+                          <QRCode size={256} value={selectedQr.qrLink} />
+                        </div>
                         <div className="columns mt-4">
                           <div className="column is-two-third">
                             <p className="mt-2"><span className="text-bold">Scan count :</span> {selectedQr.qrScanCount}</p>

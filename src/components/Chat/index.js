@@ -9,7 +9,15 @@ import {
   MessageSeparator,
   Avatar
 } from "@chatscope/chat-ui-kit-react";
+import {
+  FiAlertCircle,
+  FiMaximize,
+  FiMessageSquare,
+  FiMinimize,
+} from "react-icons/fi";
+
 import { getCurrentUser } from '../../utils/user';
+import VideoModal from "./VideoModal";
 import {
     ChatClient,
     ChatThreadClient,
@@ -21,20 +29,54 @@ import { AzureCommunicationTokenCredential } from "@azure/communication-common";
 import MakeCall from "../MakeCall/MakeCall";
 import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/ConversationHeader';
 
+let sendMessage;
 
   const Chat = (props) => {
 
-    let initialState = {
-      chatClienta: null,
-      userIdentity: null,
-      senderDisplayName: null,
-      accessToken: null,
-      acsEndpoint: "https://vcatadevcommnicationserveus.communication.azure.com",
-      chats: [],
-    };
-  
-    const [state, setstate] = useState(initialState);
-    const [conversation, setConversation] = useState([]);
+  let initialState = {
+    chatClienta: null,
+    userIdentity: null,
+    senderDisplayName: null,
+    accessToken: null,
+    acsEndpoint: "https://vcatadevcommnicationserveus.communication.azure.com",
+    chats: [],
+  };
+
+  const [state, setstate] = useState(initialState);
+  const [conversation, setConversation] = useState([]);
+    
+  const [isFullScreen, setFullScreen] = useState(false);
+  const [isChatHidden, setChatHidden] = useState(false);
+  const [isPopUpShown, setPopUpShown] = useState(false);
+
+
+  const handleFullScreen = () => {
+    let elem = document.getElementById("event-container-box");
+    if (!document.fullscreenElement) {
+      elem
+        .requestFullscreen()
+        .then(() => {
+          setFullScreen(true);
+        })
+        .catch((err) => {
+          alert(
+            `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+          );
+        });
+    } else {
+      document.exitFullscreen();
+      setFullScreen(false);
+    }
+  };
+
+  const handleChatToggle = () => {
+    setChatHidden(!isChatHidden);
+  };
+
+  const handlePopUpToggle = () => {
+    setPopUpShown(!isPopUpShown);
+  }
+
 
 
     useEffect(() => {
@@ -47,13 +89,14 @@ import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/Conversati
         console.log("User Identity",state.userIdentity);
       }
     }, [state.userIdentity]);
+
   
     const provisionNewUser = async () => {
       try {
         let userDetailsResponse = await utils.provisionNewUser();
         setstate({
           ...state,
-          userIdentity: userDetailsResponse.user.communicationUserId,
+          userIdentity:  userDetailsResponse.user.communicationUserId,
           accessToken: userDetailsResponse.token,
         });
       } catch (error) {
@@ -73,7 +116,7 @@ import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/Conversati
       setstate({ ...state, chatClienta: chatClients });
   
       const chatThreadId =
-        "19:l7Ngsr7bUV9CgVELX31oy7KPm3unVTNwDa2GkNw4u7I1@thread.v2";
+        "19:ss2ay1KPqhc9jYiX2ciLR2HxhTSyhbGerTP2G-iRt481@thread.v2";
   
       let threadClient = await chatClients.getChatThreadClient(chatThreadId);
   
@@ -83,6 +126,18 @@ import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/Conversati
       console.log("Participants  :::: ", threadClient);
   
       await chatClients.startRealtimeNotifications();
+
+      sendMessage = async (message) => {
+        try {
+          await threadClient.sendMessage({
+            content: message,
+            senderDisplayName: 'Anonymous User',
+          });
+        }
+        catch (error) {
+          console.error('Send Message',error.message);
+        }
+      }
   
       console.log(chatClients);
       setstate({ ...state, threadClient, chatThreadId });
@@ -103,46 +158,80 @@ import ConversationHeader from '@chatscope/chat-ui-kit-react/dist/cjs/Conversati
     console.log("Conversation count", conversation.length)
 
     return (
-    <>
-      <div className="live-event-container">
+      <div className="event-container" id="event-container-box">
         <div className="event-video-container">
-          <MakeCall />
+          {/* <video style={{ height: "100%" }} autoPlay preload>
+            <source
+              src="https://www.w3schools.com/tags/movie.mp4"
+              type="video/mp4"
+            />
+            <source src="movie.ogg" type="video/ogg" />
+            Your browser does not support the video tag.
+          </video> */}
+          <MakeCall userIdentity={state.userIdentity} accessToken={state.accessToken} />
+          {/* <EventVideo /> */}
+          <VideoModal show={isPopUpShown} onClose={handlePopUpToggle}/>
+          <div className="video-controls-container">
+            <div className="video-controls-left">
+              <button onClick={handlePopUpToggle}>
+                <FiAlertCircle />
+              </button>
+            </div>
+            <div className="video-controls-right">
+              <button title="Change Fullscreen" onClick={handleFullScreen}>
+                {isFullScreen ? <FiMinimize /> : <FiMaximize />}
+              </button>
+              <button onClick={handleChatToggle}>
+                {isChatHidden ? <FiMessageSquare /> : <FiMessageSquare />}
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="event-chat-container">
-            <MainContainer>
+        <div
+          className={`event-chat-container ${
+            isChatHidden ? "chat-hidden" : null
+          }`}
+        >
+          <MainContainer>
             <ChatContainer>
-              <ConversationHeader>
-                <ConversationHeader.Content userName="Emily" info="Active 10 mins ago" />
-              </ConversationHeader>
               <MessageList>
-                <MessageSeparator className="mt-5">
-                  {`User Identity : \n ${ state.userIdentity }`}
-                </MessageSeparator>
-                {
-                  conversation.map((item) => 
-                    <Message
-                      key={item.id}
-                      model={{
-                      message: item.message,
-                      sentTime: "just now",
-                      sender: "Joe",
-                      position:"last"
-                      }}
-                    >
-                    <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="s" />
-                  </Message>
-                  )
-                } 
+                <Message
+                  model={{
+                    message: "Hello my friend",
+                    sentTime: "just now",
+                    sender: "Joe",
+                    position: "last",
+                  }}
+                >
+                  <Avatar
+                    src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg"
+                    name={"Zoe"}
+                    size="md"
+                  />
+                </Message>
+                <Message
+                  model={{
+                    message: "Hello",
+                    sentTime: "just now",
+                    sender: "Ramesh",
+                    direction: "outgoing",
+                    position: "last",
+                  }}
+                />
               </MessageList>
-              <MessageInput placeholder="Type message here" >
-                <Avatar src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg" name={"Zoe"} size="l" />
+              <MessageInput placeholder="Type message here">
+                <Avatar
+                  src="https://chatscope.io/storybook/react/static/media/zoe.e31a4ff8.svg"
+                  name={"Zoe"}
+                  size="l"
+                />
               </MessageInput>
             </ChatContainer>
-            </MainContainer>
+          </MainContainer>
         </div>
       </div>
-    </>
     )
 }
 
 export default Chat
+

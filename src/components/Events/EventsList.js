@@ -38,9 +38,9 @@ function EventList({ match }) {
   const [eventFields, setEventFields] = useState(initialEventFields)
   const [paginationData, setPaginationData] = useState({})
 
-  const fetchEvents = () => {
+  const fetchEvents = (inputSearchParams) => {
     setLoading(true);
-    getAllEvents(searchParams)
+    getAllEvents(inputSearchParams)
       .then((response) => {
         console.log("Respo",response);
         const eventsList = response.data;
@@ -52,18 +52,23 @@ function EventList({ match }) {
   }
 
   const handleSearch = (e) => {
-    fetchEvents();
-  } 
+    fetchEvents(searchParams);
+  }
+  
+  const handleReset = () => {
+    setSearchParams(initalSearchParams);
+    fetchEvents(initalSearchParams);
+  }
 
   const handleSort = async (e) => {
     const column = e.target.getAttribute("column");
     if(searchParams.sortCol === column) {
-      setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
-      fetchEvents();
+      setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")})
+      fetchEvents(searchParams);
     }
     else {
       setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
-      fetchEvents();
+      fetchEvents(searchParams);
     }
   }
 
@@ -79,7 +84,7 @@ function EventList({ match }) {
         getAllCategories()
         .then((response) => {
           setOptions(response.data.filter((item) => item.ParentCategoryId === 0))
-          fetchEvents();
+          fetchEvents(initalSearchParams);
         });
     })
   }, []);
@@ -88,45 +93,45 @@ function EventList({ match }) {
     <div>
       <div className="settings-wrapper">
         <div className="list-controls">
-          <div className="d-flex">          
+        <h1 className="admin-title">Events</h1>
+          <div className="d-flex">
+            <Link to={`${match.path}requests`} style={{ float: "right" }}>
+              <button className="button is-solid accent-button">Event requests</button>
+            </Link>  
             <Link to={`${match.path}new`} style={{ float: "right" }}>
               <button className="button is-solid accent-button ml-5">New Event</button>
             </Link>
-            <Link to={`${match.path}requests`} style={{ float: "right" }}>
-              <button className="button is-solid accent-button">Event requests</button>
-            </Link>
           </div>
-          <h1 className="admin-title">Events</h1>
         </div>
-        <div className="list-controls">
-          <div className="small-input">
-            <button
-              className="input is-rounded admin-search-button"
-              placeholder="Type"
-              onClick={handleSearch}
-            >
-              {" "}
-              <FiSearch className="mr-2" />
-              Search
-            </button>
-          </div>
-          <div className="small-input">
+        <div className="list-controls justify-content-center">
+        <div className="d-flex flex-row">     
+          <div className="small-input w-20">
             <input
-              type="datetime-local"
               className="input is-rounded"
-              name="eventStartDate"
-              placeholder="Email"
+              name="eventTitle"
+              type="text"
+              placeholder="Title"
               onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
             />
             <div className="search-icon">
               <FiSearch />
             </div>
-          </div>
+          </div>         
           <div className="small-input">
+            <input
+              type="date"
+              className="input is-rounded"
+              name="eventStartDate"
+              placeholder="Email"
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+            />
+          </div>
+          <div className="small-input w-15">
             <select
                 className="input is-rounded"
                 type="text"
                 name="eventStatus"
+                value={searchParams.eventStatus}
                 style={{ paddingLeft: "30px", textAlign: "center" }}
                 onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
               >
@@ -138,10 +143,10 @@ function EventList({ match }) {
                 ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>
-          <div className="small-input">
+          <div className="small-input w-15">
             <select
               className="input is-rounded"
               type="text"
@@ -157,10 +162,10 @@ function EventList({ match }) {
               ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>
-          <div className="small-input">
+          <div className="small-input w-15">
             <select
                 className="input is-rounded"
                 type="text"
@@ -176,7 +181,7 @@ function EventList({ match }) {
                 ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>          
           <div className="small-input">
@@ -199,17 +204,25 @@ function EventList({ match }) {
             </div>
           </div>
           <div className="small-input">
-            <input
+            <button
+              className="input is-rounded admin-search-button"
+              placeholder="Type"
+              onClick={handleSearch}
+            >
+              <FiSearch className="mr-2"/>
+              Search
+            </button>
+          </div>   
+          <div className="small-input">
+            <button
               className="input is-rounded"
-              name="eventTitle"
-              type="text"
-              placeholder="Title"
-              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
-            />
-            <div className="search-icon">
-              <FiSearch />
-            </div>
+              placeholder="Type"
+              onClick={handleReset}
+            >
+              Reset
+            </button>
           </div>
+        </div>
         </div>
         <div class="flex-table">
           <div class="flex-table-header">

@@ -9,9 +9,23 @@ import Spinner from '../../components/core/Spinner';
 
 function SuppliersList({match}) {
 
+  const initalSearchParams = {
+    "supplierID": "",
+    "supplierName": "",
+    "orgId": "",
+    "supplierType": "",
+    "firstRow": "1",
+    "lastRow": "10",
+    "sortColumn": "SupplierType",
+    "sortOrder": "DESC",
+    "pagesize" : 10,
+    "pageNumber": 1
+  }
+
     const [ loading, setLoading ] = useState(true);
     const [ categoryOptions, setOptions ] = useState([]);
     const [ suppliers, setSuppliers ] = useState([]);
+    const [ searchParams, setSearchParams ] = useState(initalSearchParams);  
     const [ displayList, setDisplayList ] = useState([]);
     const [ listAttributes, setListAttributes ] = useState({ pageNumber : 0, pageSize: 5, pageCount: 0, sortBy: 'Zipcode', sortDirection: true })
 
@@ -23,23 +37,35 @@ function SuppliersList({match}) {
       setListAttributes({...currentListAttributes, sortBy:column})
     }
 
+    const handleSearch = () => {
+      fetchAllData(searchParams);
+    }
+    
+    const handleReset = () => {
+      fetchAllData();
+    }
+
+    const fetchAllData = (searchParams) => {
+      getAllSuppliers(searchParams)
+      .then((response) => {
+        const organizations = response.data
+        setSuppliers(organizations);
+        const newListAttributes = {...listAttributes};
+        newListAttributes.pageCount = Math.ceil(organizations.length/listAttributes.pageSize);
+        setListAttributes(newListAttributes);
+        setLoading(false);
+      })
+    }
+
+    useEffect(() => {
+      console.log("Search Params", searchParams);
+    }, [searchParams])
+
     useEffect(() => {
       getAllCategories()
         .then((response) => setOptions(response.data));
-        getAllSuppliers()
-        .then((response) => {
-          const organizations = response.data
-          setSuppliers(organizations);
-          const newListAttributes = {...listAttributes};
-          newListAttributes.pageCount = Math.ceil(organizations.length/listAttributes.pageSize);
-          setListAttributes(newListAttributes);
-          setLoading(false);
-        })
+      fetchAllData()
     }, [])
-
-    useEffect(() => {
-      console.log('Display List', displayList);
-    },[displayList])
 
     useEffect(() => {
       console.log('List Attributes',listAttributes)
@@ -70,87 +96,70 @@ function SuppliersList({match}) {
     return (
         <div className="settings-wrapper">
             <div className="list-controls">
-                <Link to={`${match.path}new`} style={{float:'right'}}>
-                        <button className="button is-solid accent-button">New Supplier</button>
-                </Link>
-                <h1 className="admin-title">Suppliers</h1>
+              <h1 className="admin-title">Suppliers</h1>
+              <Link to={`${match.path}new`} style={{float:'right'}}>
+                <button className="button is-solid accent-button">New Supplier</button>
+              </Link>
             </div>
-            <div className="list-controls">
-                <div className="small-input">
-                  <button className="input is-rounded admin-search-button" placeholder="Type" > <FiSearch className="mr-2"/>Search</button>
+            <div className="list-controls justify-content-center">
+              <div className="small-input">
+                <input className="input is-rounded" type="text" placeholder="Name" name="supplierName" onChange={(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})} />
+                <div className="search-icon">
+                  <FiSearch />
                 </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Name" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Email" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="City" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="State" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <input className="input is-rounded" type="text" placeholder="Type" />
-                    <div className="search-icon">
-                        <FiSearch />
-                    </div>
-                </div>
-                <div className="small-input">
-                    <select className="input is-rounded" type="text" style={{paddingLeft:'30px', textAlign: 'center'}}>
-                      <option disabled selected value>Select  Category</option>
-                      {categoryOptions.map((item) => <option>{item.CategoryName}</option>)}
-                    </select>
-                    <div className="search-icon">
-                        <FiChevronDown />
-                    </div>
-                </div>
+              </div>
+              <div className="small-input">
+                <button
+                  className="input is-rounded admin-search-button"
+                  placeholder="Type"
+                  onClick={handleSearch}
+                >
+                  <FiSearch className="mr-2"/>
+                  Search
+                </button>
+              </div>   
+              <div className="small-input">
+                <button
+                  className="input is-rounded"
+                  placeholder="Type"
+                  onClick={handleReset}
+                >
+                  Reset
+                </button>
+              </div>
             </div>
             <div class="flex-table">
-                <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="SupplierName">
-                      Name
-                      {
-                        listAttributes.sortBy === "SupplierName" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="type sort-column" onClick={handleSort} column="OrgType">
-                      Type
-                      {
-                        listAttributes.sortBy === "OrgType" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="category sort-column" onClick={handleSort} column="OrgName">
-                      Organization
-                      {
-                        listAttributes.sortBy === "OrgName" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="events-count sort-column" onClick={handleSort} column="TotalSupplier">
-                      Suppliers Count
-                      {
-                        listAttributes.sortBy === "TotalSupplier" && 
-                        (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
-                      }
-                    </span>
-                    <span class="edit sort-column" column="IsActive" >Edit</span>
-                </div>
+              <div class="flex-table-header">
+                <span class="w-30 sort-column" onClick={handleSort} column="SupplierName">
+                  Name
+                  {
+                    listAttributes.sortBy === "SupplierName" && 
+                    (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                  }
+                </span>
+                <span class="w-20 sort-column" onClick={handleSort} column="OrgType">
+                  Type
+                  {
+                    listAttributes.sortBy === "OrgType" && 
+                    (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                  }
+                </span>
+                <span class="w-30 sort-column" onClick={handleSort} column="OrgName">
+                  Organization
+                  {
+                    listAttributes.sortBy === "OrgName" && 
+                    (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                  }
+                </span>
+                <span class="w-10 sort-column" onClick={handleSort} column="TotalSupplier">
+                  Suppliers Count
+                  {
+                    listAttributes.sortBy === "TotalSupplier" && 
+                    (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
+                  }
+                </span>
+                <span class="w-10 sort-column" column="IsActive" >Edit</span>
+              </div>
                 {loading ? <Spinner /> : displayList.map((item) => <SuppliersListItem supplier={item} key={item.OrgId} match={match} />)}
             </div>
             <ReactPaginate

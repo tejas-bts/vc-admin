@@ -301,7 +301,7 @@ function LiveEvent({ ...props }) {
               </div> */}
 
 
-              <Chat/>
+              <Chat />
             </div>
             <div className="related-side">
               <div className="meta-box related-list">{/* Chat End */}</div>
