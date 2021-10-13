@@ -312,7 +312,7 @@ function EventList({ match }) {
             <Spinner />
           ) : (
             events.map((item) => (
-              <a href={`https://dev.virtualcata.com/landing/${item.EventId}`}>
+              <a href={`preview/${item.EventId}`}>
                 <EventItem event={item} key={item.EventId} match={match} />
               </a>
             ))
