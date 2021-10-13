@@ -1,8 +1,3 @@
-.event-video-container {
-    height:100%;
-    flex:3;
-}
-
 .live-event-container {
     display: flex;
     width: 100vw;
@@ -26,6 +21,9 @@
 
 .video-grid-row {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .participent-item
@@ -46,4 +44,19 @@
 .event-chat-container.chat-hidden {
     width: 0px;
     opacity: 0;
+}
+
+.event-participants-container {
+    background-color: white;
+    max-width: 400px;
+    flex: 1;
+    transition: all 500ms;
+    padding: 20px;
+}
+
+.event-participants-container.participants-hidden {
+    width: 0px;
+    opacity: 0;
+    flex: 0;
+    padding: 0px;
 }

@@ -56268,16 +56268,19 @@ body.is-dark .elements-wrap .element-block code {
 }
 
 .event-video-container {
-  flex: 1;
+  flex: 3;
+  height: 100vh !important;
+  position: relative;
+  background-color: black;
 }
 
 .video-controls-container {
   width: 100%;
   height: 50px;
   background: black;
-  position: relative;
-  bottom: 57px;
-  opacity: 0;
+  position: absolute;
+  bottom: 0px;
+  opacity: 1;
   transition: all 300ms;
   display: flex;
 }
@@ -56311,6 +56314,7 @@ body.is-dark .elements-wrap .element-block code {
   font-size: 25px;
   line-height: 100%;
   cursor: pointer;
+  padding: 0px 15px;
 }
 
 .video-modal-container {
@@ -56349,4 +56353,16 @@ body.is-dark .elements-wrap .element-block code {
   outline: transparent;
   font-size: 1.2rem;
   cursor: pointer;
+}
+
+.status-warning {
+    background-color: rgba(255,165,0, 0.2) !important;
+}
+
+.status-danger {
+	background-color: rgba(255,0,0, 0.2) !important;
+}
+
+.status-success {
+	background-color: rgba(0,255,0, 0.2) !important;
 }

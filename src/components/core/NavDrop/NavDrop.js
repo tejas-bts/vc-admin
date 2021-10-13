@@ -12,7 +12,7 @@ export default function NavDrop({ isActive }) {
   let clientId = process.env.REACT_APP_CLIENT_ID_GOOGLE;
   const onSuccess = () => {
     console.log("Logout made successfully");
-    history.push("/login");
+    history.push("/user/login");
   };
 
   // const [userDetails, setUserDetails] = useState(

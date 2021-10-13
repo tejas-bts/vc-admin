@@ -11,7 +11,7 @@ const createVideoRenderer = async (props) => {
         const localVideoStream = new LocalVideoStream(cameraDeviceInfo);
         const renderer = new VideoStreamRenderer(localVideoStream);
         const view = await renderer.createView();
-        const targetContainer = document.getElementById('localVideoRenderer');
+        const targetContainer = document.getElementById('local-video-renderer');
         targetContainer.appendChild(view.target);
     } catch (error) {
         console.error(error);
@@ -21,15 +21,12 @@ const createVideoRenderer = async (props) => {
 const LocalVideoPreviewCard = (props) => {
 
     useEffect(() => {
-        createVideoRenderer();
+        createVideoRenderer(props);
     }, [])
 
     return (
-        <div>
-            <div style={{ marginBottom: "0.5em", padding: "0.5em" }}>
-                <div id="localVideoRenderer"></div>
-            </div>
-        </div>
+
+        <div id="local-video-view" />
     );
 }
 

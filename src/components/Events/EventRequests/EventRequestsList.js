@@ -11,26 +11,32 @@ import {
 } from "react-icons/fi";
 import { getUserEvents, getAllEventsFields } from "../../../services/events.services";
 import Spinner from "../../../components/core/Spinner";
+import { getCurrentUser } from "../../../utils/user";
 
-const initalSearchParams = {
-  eventTitle: "",
-  eventStartDate: "",
-  eventCategoryId: "",
-  eventType: "",
-  eventNature: "",
-  hostType: "",
-  hostId: "",
-  presenterType: "",
-  presenterId: "",
-  limit: "",
-  offset: "",
-  sortCol: "",
-  sortOrder: "",
-};
-
-const initialEventFields = { eventNature: [], eventStatus:[], eventLevel:[], eventType:[] }
 
 function EventList({ match }) {
+
+  const currentUser = getCurrentUser()
+
+  const initalSearchParams = {
+    eventTitle: "",
+    eventStartDate: "",
+    eventCategoryId: "",
+    eventType: "",
+    eventNature: "",
+    hostType: "",
+    hostId: "",
+    presenterType: "",
+    presenterId: "",
+    limit: "",
+    offset: "",
+    sortCol: "",
+    sortOrder: "",
+    token: currentUser.token,
+  };
+
+  const initialEventFields = { eventNature: [], eventStatus:[], eventLevel:[], eventType:[] }
+
   const [loading, setLoading] = useState(true);
   const [categoryOptions, setOptions] = useState([]);
   const [events, setEvents] = useState([]);
@@ -38,13 +44,17 @@ function EventList({ match }) {
   const [eventFields, setEventFields] = useState(initialEventFields)
   const [paginationData, setPaginationData] = useState({})
 
+  useEffect(() => {
+    setSearchParams({ token: currentUser.token });
+    }, []);
+
   const fetchEvents = () => {
     setLoading(true);
     getUserEvents(searchParams)
       .then((response) => {
         console.log("Event Req Respo",response);
-        const eventsList = response.upcomingEvents;
-        setEvents(eventsList);
+        setEvents(response.upcomingEvents);
+        console.log("Upcoming Events",response.upcomingEvents)
         setLoading(false);
         setPaginationData(response.pageDetails);
       }
@@ -146,6 +156,17 @@ function EventList({ match }) {
               column="EventNature">
               Event Nature
               {searchParams.sortBy === "EventNature" &&
+                (searchParams.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span><span
+              class="events-count sort-column"
+              onClick={handleSort}
+              column="EventStatus">
+              Event Status
+              {searchParams.sortBy === "EventStatus" &&
                 (searchParams.sortDirection ? (
                   <FiArrowUp className="ml-2" />
                 ) : (

@@ -711,27 +711,6 @@ export default class CallCard extends React.Component {
           </div>
         </div>
         <div style={{ display: "flex" }}>
-          <div className="participants-panel mt-1 mb-3 w-30">
-            <div className="participants-panel-title custom-row text-center">
-              <AddParticipantPopover call={this.call} />
-            </div>
-            {this.state.remoteParticipants.length === 0 && (
-              <p className="text-center">
-                No other participants currently in the call
-              </p>
-            )}
-            <ul className="participants-panel-list">
-              {this.state.remoteParticipants.map((remoteParticipant) => (
-                <RemoteParticipantCard
-                  key={`${utils.getIdentifierText(
-                    remoteParticipant.identifier
-                  )}`}
-                  remoteParticipant={remoteParticipant}
-                  call={this.call}
-                />
-              ))}
-            </ul>
-          </div>
           <div className="ms-Grid-row" style={{ flex: 1 }}>
             {this.state.callState === "Connected" && (
               <div className="ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl3">
@@ -778,7 +757,7 @@ export default class CallCard extends React.Component {
                     ))}
                 </div>
               }
-              <div className="my-4" style={{ width: "100%", float: "left" }}>
+              <div className="my-4" style={{ width: "100%", float: "left", display: 'none' }}>
                 {this.state.callState !== "Connected" && (
                   <div className="custom-row">
                     <div className="ringing-loader mb-4"></div>
@@ -833,7 +812,7 @@ export default class CallCard extends React.Component {
                         this.state.callState === "RemoteHold") && <FiPause />}
                     </span>
                   )}
-                  {this.props.disName === "Admin" ? (
+                  {this.props.disName === "Nishant" ? (
                     <span
                       className="in-call-button"
                       title={`${
@@ -865,7 +844,7 @@ export default class CallCard extends React.Component {
                   <Panel
                     type={PanelType.medium}
                     // isLightDismiss
-                    isOpen={this.state.showSettings}
+                    isOpen={this.props.showSettings}
                     onDismiss={() => this.setState({ showSettings: false })}
                     closeButtonAriaLabel="Close"
                     headerText="Settings"

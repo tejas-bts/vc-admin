@@ -17,7 +17,7 @@ export const getAllContacts = async (searchParams) => {
 export const getContactById = async (id) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchUserDetails?code=u6U01vtwGG2FBpmwMuuaG9LGz1bUnCoIPbg9eafKNIlXsuNpRTxr8w=="
     return new Promise((resolve, reject) => {
-    axios.post(url, JSON.stringify({ "userId" :  "144" }))
+    axios.post(url, JSON.stringify({ "userId": id }))
       .then((res) => { 
         if(res.data.error)
           reject(new Error(res.data.data));

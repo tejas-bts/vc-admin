@@ -24,7 +24,7 @@ function ContactListItem({contact, match}) {
             <Link 
                 key={contact.ContactId}
                 to={{
-                    pathname: `${match.url}/edit/${contact.ContactId}`,
+                    pathname: `${match.url}/edit/${contact.UserId}`,
                     state: contact
                 }}
             >

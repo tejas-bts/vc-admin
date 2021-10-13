@@ -114,7 +114,7 @@ function LiveEvent({ ...props }) {
             <div className="video-side">
               <div className="image">
                 <div className="plyr__video-embed" id="player">
-                  <MakeCall />
+                  {/* <MakeCall /> */}
                   {/* <iframe
                     src="https://www.youtube.com/embed/-qbVcvO7eks?origin=https://plyr.io&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1"
                     allowFullScreen

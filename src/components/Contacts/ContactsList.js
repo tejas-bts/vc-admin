@@ -6,12 +6,13 @@ import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
 import { getAllContacts, fetchContactTypes } from '../../services/contacts.services';
 import Spinner from '../../components/core/Spinner';
+import { getCurrentUser } from '../../utils/user';
 
 const initalSearchParams = {
   "supplierId" : "",
   "firstName" : "",
   "lastName" : "",
-  "storeId" : "",
+  "storeId" : getCurrentUser().storeId,
   "contactTypeId" : "",
   "email" : "",
   "limit" : "",
@@ -83,6 +84,7 @@ function EventList({match}) {
 
     useEffect( () => {
       fetchAllData();
+      setSearchParams({ ...searchParams, storeId: getCurrentUser().storeId });
     }, [])
 
     return (

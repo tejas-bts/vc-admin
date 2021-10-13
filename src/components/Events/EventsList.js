@@ -9,7 +9,7 @@ import {
   FiChevronDown,
   FiSearch,
 } from "react-icons/fi";
-import { getAllEvents, getAllEventsFields } from "../../services/events.services";
+import { getUserEvents, getAllEventsFields } from "../../services/events.services";
 import Spinner from "../../components/core/Spinner";
 
 const initalSearchParams = {
@@ -36,24 +36,24 @@ function EventList({ match }) {
   const [events, setEvents] = useState([]);
   const [searchParams, setSearchParams] = useState(initalSearchParams);
   const [eventFields, setEventFields] = useState(initialEventFields)
-  const [paginationData, setPaginationData] = useState({})
+  // const [paginationData, setPaginationData] = useState({})
 
-  const fetchEvents = (inputSearchParams) => {
+  const fetchEvents = () => {
     setLoading(true);
-    getAllEvents(inputSearchParams)
+    getUserEvents(searchParams)
       .then((response) => {
-        console.log("Respo",response);
-        const eventsList = response.data;
-        setEvents(eventsList);
+        console.log("Event Req Respo",response);
+        setEvents(response.upcomingEvents);
+        console.log("Upcoming Events",response.upcomingEvents)
         setLoading(false);
-        setPaginationData(response.pageDetails);
+        // setPaginationData(response.pageDetails);
       }
     );
   }
 
   const handleSearch = (e) => {
-    fetchEvents(searchParams);
-  }
+    fetchEvents();
+  } 
   
   const handleReset = () => {
     setSearchParams(initalSearchParams);
@@ -72,9 +72,9 @@ function EventList({ match }) {
     }
   }
 
-  useEffect(() => {
-    console.log("paginationData", paginationData);
-  }, [paginationData])
+  // useEffect(() => {
+  //   console.log("paginationData", paginationData);
+  // }, [paginationData])
 
   useEffect(() => {
     getAllEventsFields()
@@ -286,6 +286,18 @@ function EventList({ match }) {
                   <FiArrowDown className="ml-2" />
                 ))}
             </span>
+            <span
+              class="events-count sort-column"
+              onClick={handleSort}
+              column="EventSatusId">
+              Event Status
+              {searchParams.sortBy === "EventNature" &&
+                (searchParams.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
+            </span>
             <span class="w-10" column="PresenterType">
               Edit
             </span>
@@ -306,7 +318,7 @@ function EventList({ match }) {
             ))
           )}
         </div>
-        <ReactPaginate
+        {/* <ReactPaginate
           previousLabel={"Prev"}
           nextLabel={"Next"}
           breakLabel={"..."}
@@ -319,7 +331,7 @@ function EventList({ match }) {
           }
           containerClassName={"pagination"}
           activeClassName={"active"}
-        />
+        /> */}
       </div>
     </div>
   );

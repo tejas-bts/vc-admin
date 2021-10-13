@@ -1,24 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiFilm, FiUser, FiStar, FiMapPin } from "react-icons/fi";
 
 function OrganizationListItem({ event, match }) {
-
-  
-  const printEventStatus = (statusId) => {
-    const statusTitle = {
-      1:'Waiting approval',
-      2:'Waiting to be published',
-      3:'Waiting review',
-      4:'Closed',
-      5:'Published',
-      6:'Cancelled',
-      7:'Completed', 
-    }
-
-    return statusTitle[statusId];
-  }
-
   // console.log("Item",event)
   return (
     <div class="flex-table-item">
@@ -28,36 +12,44 @@ function OrganizationListItem({ event, match }) {
       <div className="location">
         <span>{new Date(event.EventStartDateTime).toLocaleDateString()}</span>
       </div>
-      <div className="type">
-        <span>{event.EventType}</span>
-      </div>
-      <div className="category">
-        <span>{event.PresenterType}</span>
-      </div>
+
       <div className="events-count">
         <span>{event.EventNature}</span>
       </div>
-      <div className="events-count">
-        <span>{printEventStatus(event.EventSatusId)}</span>
-      </div>
       <div className="w-10" style={{ display: "flex", alignItems: "center" }}>
-        <Link to={`../edit/${event.EventId}`} key={event.EventId}>
+        <Link to={`${match.path}/eventAnalysis`}>
           <span style={{ fontSize: "20px" }}>
-            <FiEdit />
+            <FiFilm />
           </span>
         </Link>
       </div>
       <div className="w-10">
-        <Link to={`../qr/${event.EventId}`} key={event.EventId} > 
+        <Link to={`${match.path}/userAnalysis`}>
           <span style={{ fontSize: "20px" }}>
-            <i class="fa fa-qrcode" /> 
+            <FiUser />
           </span>
         </Link>
       </div>
       <div className="w-10">
-        <Link to={`${match.url}/../feedbacks/${event.EventId}`} key={event.EventId} > 
+        <Link to={`${match.path}/ratings`}>
           <span style={{ fontSize: "20px" }}>
-            <i class="fa fa-comments" /> 
+            <FiStar />
+          </span>
+        </Link>
+      </div>
+
+      <div className="w-10" style={{ display: "flex", alignItems: "center" }}>
+        <Link to={`${match.path}/location`}>
+          <span style={{ fontSize: "20px" }}>
+            <FiMapPin />
+          </span>
+        </Link>
+      </div>
+
+      <div className="w-10" style={{ display: "flex", alignItems: "center" }}>
+        <Link to={`${match.path}/qrscan`}>
+          <span style={{ fontSize: "20px" }}>
+            <i class="fa fa-qrcode" />
           </span>
         </Link>
       </div>

@@ -18,6 +18,7 @@ import Stores from "./components/Stores";
 import Events from "./components/Events";
 import Contacts from "./components/Contacts";
 import AcceptContactRequest from "./components/Contacts/ConfirmContactData";
+import Analytics from "./components/Analytics";
 // import Home from "./components/Home/Home";
 
 import Home from "./components/Home";
@@ -48,7 +49,8 @@ function Application() {
           {/* <Route path="/app" component={App} /> */}
           <Route exact path="/adminProfile" component={AdminProfile} />
           <Route path="/user" component={User} />
-          <Route exact path="/chat" component={Chat} />
+          <Route exact path="/event" component={Chat} />
+          <Route exact path="/view-event" component={Chat} />
           <Route exact path="/adminAbout" component={AdminAbout} />
           <Route exact path="/search" component={SearchResults} />
           <Route path="/organizations" component={Organizations} />
@@ -58,6 +60,7 @@ function Application() {
           <Route path="/view-event" component={LiveEvent} />
           <Route path="/contacts" component={Contacts} />
           <Route path="/home" component={Home} />
+          <Route path="/analytics" component={Analytics} />
           <Route path="/preview/:id" component={PreviewPage} />
           <Route
             path="/accept-contact-request/:id"
