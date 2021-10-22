@@ -6,6 +6,8 @@ import { getAllCategories } from '../../services/category.service'
 import { FiArrowDown, FiArrowUp, FiChevronDown, FiSearch } from 'react-icons/fi';
 import { getAllStores } from '../../services/stores.services';
 import Spinner from '../../components/core/Spinner';
+import { RenderWithPermission } from '../../utils/ConditionalRenderer';
+import { userPermissions } from '../../utils/user';
 
 function StoreList({match}) {
 
@@ -102,10 +104,12 @@ function StoreList({match}) {
     return (
         <div className="settings-wrapper">
             <div className="list-controls">
+              <h1 className="admin-title">Stores</h1>
+              <RenderWithPermission permission={userPermissions.EDIT_STORES}>
                 <Link to={`${match.path}new`} style={{float:'right'}}>
                         <button className="button is-solid accent-button">New Store</button>
                 </Link>
-                <h1 className="admin-title">Stores</h1>
+              </RenderWithPermission>
             </div>
             <div className="list-controls">
                 <div className="small-input">
@@ -153,42 +157,44 @@ function StoreList({match}) {
             </div>
             <div class="flex-table">
                 <div class="flex-table-header">
-                    <span class="name sort-column" onClick={handleSort} column="StoreName">
+                    <span class="w-20 sort-column" onClick={handleSort} column="StoreName">
                       Name
                       {
                         listAttributes.sortBy === "StoreName" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="location sort-column" onClick={handleSort} column="TotalStores">
+                    <span class="w-10 sort-column" onClick={handleSort} column="TotalStores">
                       Store Count
                       {
                         listAttributes.sortBy === "TotalStores" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="type sort-column" onClick={handleSort} column="StoreCode">
+                    <span class="w-15 sort-column" onClick={handleSort} column="StoreCode">
                       Store Code
                       {
                         listAttributes.sortBy === "StoreCode" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="category sort-column" onClick={handleSort} column="StoreType">
+                    <span class="w-20 sort-column" onClick={handleSort} column="StoreType">
                       Store Type
                       {
                         listAttributes.sortBy === "StoreType" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="status sort-column" onClick={handleSort} column="IsActive">
+                    <span class="w-15 sort-column" onClick={handleSort} column="IsActive">
                       Active
                       {
                         listAttributes.sortBy === "IsActive" && 
                         (listAttributes.sortDirection ? <FiArrowUp className="ml-2"/> : <FiArrowDown className="ml-2"/>)
                       }
                     </span>
-                    <span class="edit sort-column" column="IsActive" >Edit</span>
+                    <RenderWithPermission permission={userPermissions.EDIT_STORES}>
+                      <span class="w-10 sort-column" column="IsActive" >Edit</span>
+                    </RenderWithPermission>
                 </div>
                 {loading ? <Spinner /> : displayList.map((item) => <StoreListItem store={item} key={item.OrgId} match={match} />)}
             </div>

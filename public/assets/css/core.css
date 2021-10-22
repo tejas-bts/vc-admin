@@ -25923,10 +25923,11 @@ body.is-dark .child-dropdown .inner ul li .text span:first-child {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
+	justify-content: space-between;
 	-webkit-box-align: center;
 	-ms-flex-align: center;
 	align-items: center;
-	padding: 0px 0px 10px 15px;
+	padding: 0px 8px 10px 8px;
 }
 
 .flex-table .flex-table-header span {
@@ -25936,7 +25937,13 @@ body.is-dark .child-dropdown .inner ul li .text span:first-child {
 	color: #999;
 	text-transform: uppercase;
 	padding-bottom: 10px;
-	text-align: left !important;
+	text-align: center !important;
+}
+
+.flex-table .flex-table-item div {
+	display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .flex-table .flex-table-header span.name,
@@ -25990,6 +25997,7 @@ body.is-dark .flex-table .flex-table-item div span {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
+	justify-content: space-between;
 	-webkit-box-align: stretch;
 	-ms-flex-align: stretch;
 	align-items: stretch;
@@ -26028,7 +26036,7 @@ body.is-dark .flex-table .flex-table-item div span {
 	font-weight: 600;
 	font-size: .8rem;
 	color: #393a4f;
-	text-align: left;
+	text-align: center;
 }
 
 .flex-table .flex-table-item .quantity span,
@@ -48795,8 +48803,8 @@ body.is-dark .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--suggestion-address
 .login-wrapper .hero.is-login {
 	position: relative;
 	background: #5596e6;
-	background: -webkit-gradient(linear, left top, left bottom, from(#9cc2f0), to(#5596e6));
-	background: linear-gradient(180deg, #9cc2f0, #5596e6);
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffc107), to(#ff9800));
+	background: linear-gradient(180deg, #ffc107, #ff9800);
 	background-size: 400% 400%;
 	-webkit-animation: gradientShift 12s ease infinite;
 	animation: gradientShift 12s ease infinite
@@ -48810,10 +48818,28 @@ body.is-dark .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--suggestion-address
 .login-wrapper .hero.is-login .left-caption h2 {
 	font-family: "Montserrat", sans-serif;
 	font-weight: bold;
+	font-size: 2.2rem;
+	color: #fcfcfc;
+	line-height: 1.3;
+	text-shadow: 4px 4px #ff5722, 8px 8px #ff9800
+}
+
+.login-wrapper .hero.is-login .left-caption h4 {
+	font-family: "Montserrat", sans-serif;
+	font-weight: bold;
+	font-size: 5.2rem;
+	color: #fcfcfc;
+	line-height: 1.3;
+	text-shadow: 4px 4px #ff5722, 8px 8px #ff9800
+}
+
+.login-wrapper .hero.is-login .left-caption h5 {
+	font-family: "Montserrat", sans-serif;
+	font-weight: bold;
 	font-size: 3.2rem;
 	color: #fcfcfc;
 	line-height: 1.3;
-	text-shadow: 4px 4px #3180e1, 8px 8px #3180e1
+	text-shadow: 4px 4px #ff5722, 8px 8px #ff9800
 }
 
 .login-wrapper .hero.form-hero {
@@ -56148,7 +56174,7 @@ body.is-dark .elements-wrap .element-block code {
 	position: relative;
 	text-align: inherit;
 	max-width: 200px;
-	margin-left: 20px;
+	margin-right: 10px;
 }
 
 .small-input input.input {
@@ -56164,45 +56190,23 @@ body.is-dark .elements-wrap .element-block code {
     color: white !important;
 }
 
-.w-10 {
-	width: 10% !important;
-}
-
-.w-20 {
-	width: 20% !important;
-}
-
-.w-30 {
-	width: 30% !important;
-}
-
-.w-40 {
-	width: 40% !important;
-}
-
-.w-50 {
-	width: 50% !important;
-}
-
-.w-60 {
-	width: 60% !important;
-}
-
-.w-70 {
-	width: 70% !important;
-}
-
-.w-80 {
-	width: 80% !important;
-}
-
-.w-90 {
-	width: 90% !important;
-}
-
-.w-100 {
-	width: 100% !important;
-}
+.w-5 {	width: 5% !important; }
+.w-10 {	width: 10% !important; }
+.w-15 { width: 15% !important; }
+.w-20 {	width: 20% !important; }  
+.w-25 {	width: 25% !important; }  
+.w-30 {	width: 30% !important; }  
+.w-35 {	width: 35% !important; }
+.w-40 {	width: 40% !important; }
+.w-45 {	width: 45% !important; }
+.w-50 {	width: 50% !important; }
+.w-55 {	width: 55% !important; }
+.w-60 {	width: 60% !important; }
+.w-65 {	width: 65% !important; }
+.w-70 {	width: 70% !important; }
+.w-80 {	width: 80% !important; }
+.w-90 {	width: 90% !important; }
+.w-100 { width: 100% !important; }
 
 .text-center {
 	text-align: center !important;
@@ -56264,4 +56268,115 @@ body.is-dark .elements-wrap .element-block code {
 
 .is-one-third {
 	width: 33.333%;
+}
+
+.d-flex {
+	display: flex !important;
+}
+
+.justify-content-center {
+	justify-content: center !important;
+}
+
+.flex-row {
+	flex-direction: row !important;
+}
+
+
+
+
+
+.event-container {
+	width: 100%;
+  height: 100%;
+  display: flex;
+  text-align: center;
+}
+
+.event-video-container {
+  flex: 3;
+  height: 100vh !important;
+  position: relative;
+  background-color: black;
+}
+
+.video-controls-container {
+  width: 100%;
+  height: 50px;
+  background: black;
+  position: absolute;
+  bottom: 0px;
+  opacity: 1;
+  transition: all 300ms;
+  display: flex;
+}
+
+.video-controls-container:hover {
+  opacity: 0.8;
+  flex:1;
+}
+
+.video-controls-right, .video-controls-left {
+  display: flex;
+  flex: 1;
+  color: white;
+  align-items: center;
+  padding: 10px;
+  font-size: 25px;
+}
+
+.video-controls-left {
+  justify-content: start;
+}
+
+.video-controls-right {
+  justify-content: end;
+}
+
+.video-controls-container button {
+  background: transparent;
+  color: white;
+  border: 0px;
+  font-size: 25px;
+  line-height: 100%;
+  cursor: pointer;
+  padding: 0px 15px;
+}
+
+.video-modal-container {
+  position: relative;
+  top: -101%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 0px;
+  width: 0px;
+  opacity:0;
+  transition: 500ms;
+  margin:0px auto;
+}
+
+.video-modal-container.is-active {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+.video-modal-body {
+  height: 60%;
+  width: 60%;
+  background: white;
+  border-radius: 5px;
+  padding: 20px
+}
+
+.video-modal-body button.close {
+  position: relative;
+  top: 0px;
+  float: right;
+  background: transparent;
+  border: transparent;
+  outline: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
 }

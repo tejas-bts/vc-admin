@@ -18,8 +18,11 @@ import { useParams, useHistory } from "react-router-dom";
 import { getCurrentUser } from "../../../utils/user";
 import Spinner from "../../core/Spinner";
 
-function EventDetails() {
+import Toaster from "../../core/Toaster";
 
+import Confetti from "react-confetti";
+
+function EventDetails() {
   const currentUser = getCurrentUser();
 
   const history = useHistory();
@@ -31,7 +34,7 @@ function EventDetails() {
   const [showToast, setShowToast] = useState(false);
   const [toastAttr, setToastAttr] = useState({});
   const [eventDetails, setEvent] = useState({
-    loggedInUserId: currentUser.userId ,
+    loggedInUserId: currentUser.userId,
     // isActive: 1,
     // eventSatusId: 1,
     // hostType: "Retailer",
@@ -48,45 +51,33 @@ function EventDetails() {
   const [suppliersList, setSuppliersList] = useState([]);
   const [suppliersContacts, setSuppliersContacts] = useState([]);
 
+  const [showConfetti, setShowConfetti] = useState(false);
+
   const formatDate = (in_date) => {
     let date_ob = new Date(in_date);
 
-    // adjust 0 before single digit date
     let date = ("0" + date_ob.getDate()).slice(-2);
-
-    // current month
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-
-    // current year
     let year = date_ob.getFullYear();
-
-    // current hours
     let hours = ("0" + date_ob.getHours()).slice(-2);
-
-    // current minutes
     let minutes = ("0" + date_ob.getMinutes()).slice(-2);
-
-    // current seconds
     let seconds = date_ob.getSeconds();
-
-    // prints date & time in YYYY-MM-DD HH:MM:SS format
-    const returnDate = year + "-" + month + "-" + date + "T" + hours + ":" + minutes;
-    console.log("Formatted Date", returnDate)
+    const returnDate =
+      year + "-" + month + "-" + date + "T" + hours + ":" + minutes;
+    console.log("Formatted Date", returnDate);
     return returnDate;
-  }
-
-
+  };
 
   const handleInput = (e) => {
-    if(e.target.name === "eventDuration") {
+    if (e.target.name === "eventDuration") {
       console.log("Event Duration", e.target.value);
       const duration = e.target.value;
       let endTime = new Date(eventDetails.eventStartDateTime);
-      endTime = new Date((endTime.getTime() || 0) + duration*60000);
+      endTime = new Date((endTime.getTime() || 0) + duration * 60000);
       console.log("End time", endTime);
-      const newEvent = {...eventDetails};
-      newEvent['eventEndDateTime'] = endTime.toISOString();
-      newEvent['eventDuration'] = duration;
+      const newEvent = { ...eventDetails };
+      newEvent["eventEndDateTime"] = endTime.toISOString();
+      newEvent["eventDuration"] = duration;
       setEvent(newEvent);
       return;
     }
@@ -105,18 +96,100 @@ function EventDetails() {
     setShowToast(false);
   };
 
+
+
+const handlePublishRequest = (e) => {
+  e.preventDefault();
+  setSubmitting(true);
+  console.log("Event Details Before Submit :: 📺 ", eventDetails);
+  createOrUpdateEvent({eventSatusId: 1, loggedinUserId: currentUser.userId, ...eventDetails})
+    .then((response) => {
+      console.log("Error", response.error);
+      Toaster.success("Great!", "Event saved successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+      Toaster.fail("Oops!", "Something went wrong. Please try again after sometime");
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
+};
+
+
+const handlePublishApproval = (e) => {
+  e.preventDefault();
+  setSubmitting(true);
+  console.log("Event Details Before Submit :: 📺 ", eventDetails);
+  createOrUpdateEvent({eventSatusId: 1, loggedinUserId: currentUser.userId, ...eventDetails})
+    .then((response) => {
+      console.log("Error", response.error);
+      Toaster.success("Great!", "Event saved successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+      Toaster.fail("Oops!", "Something went wrong. Please try again after sometime");
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
+};
+
+
+const handleCloseRequest = (e) => {
+  e.preventDefault();
+  setSubmitting(true);
+  console.log("Event Details Before Submit :: 📺 ", eventDetails);
+  createOrUpdateEvent({eventSatusId: 1, loggedinUserId: currentUser.userId, ...eventDetails})
+    .then((response) => {
+      console.log("Error", response.error);
+      Toaster.success("Great!", "Event saved successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+      Toaster.fail("Oops!", "Something went wrong. Please try again after sometime");
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
+};
+
+
+const handleCloseApproval = (e) => {
+  e.preventDefault();
+  setSubmitting(true);
+  console.log("Event Details Before Submit :: 📺 ", eventDetails);
+  createOrUpdateEvent({eventSatusId: 1, loggedinUserId: currentUser.userId, ...eventDetails})
+    .then((response) => {
+      console.log("Error", response.error);
+      Toaster.success("Great!", "Event saved successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+      Toaster.fail("Oops!", "Something went wrong. Please try again after sometime");
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
+};
+
+
+
+
+
+
   const handleApprove = (e) => {
     e.preventDefault();
     // console.log("Submit");
     setSubmitting(true);
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
-    eventDetails['eventSatusId'] = 2;
-    eventDetails['loggedinUserId'] = currentUser.userId;
+    eventDetails["eventSatusId"] = 5;
+    eventDetails["loggedinUserId"] = currentUser.userId;
     createOrUpdateEvent(eventDetails)
       .then((response) => {
         console.log("Error", response.error);
         if (response.error) {
-          console.log("errororor",response);
+          console.log("errororor", response);
           setToastAttr({
             ...toastAttr,
             title: "Opps!",
@@ -125,6 +198,7 @@ function EventDetails() {
           });
           setShowToast(true);
         } else {
+          setShowConfetti(true);
           setToastAttr({
             ...toastAttr,
             title: "Great!",
@@ -132,7 +206,7 @@ function EventDetails() {
             state: ToastStates.SUCCESS,
           });
           setShowToast(true);
-          setTimeout(() => history.push("../"),2000)
+          setTimeout(() => history.push("../"), 4000);
         }
       })
       .catch((error) => {
@@ -150,14 +224,13 @@ function EventDetails() {
       });
   };
 
-
   const handleClose = (e) => {
     e.preventDefault();
     // console.log("Submit");
     setSubmitting(true);
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
-    eventDetails['eventSatusId'] = 4;
-    eventDetails['loggedinUserId'] = currentUser.userId;
+    eventDetails["eventSatusId"] = 4;
+    eventDetails["loggedinUserId"] = currentUser.userId;
     createOrUpdateEvent(eventDetails)
       .then((response) => {
         console.log("Error", response.error);
@@ -188,34 +261,19 @@ function EventDetails() {
     e.preventDefault();
     setSubmitting(true);
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
-    eventDetails['eventSatusId'] = 1;
-    eventDetails['loggedinUserId'] = currentUser.userId;
-    createOrUpdateEvent(eventDetails)
+    createOrUpdateEvent({eventSatusId: 1, loggedinUserId: currentUser.userId, ...eventDetails})
       .then((response) => {
         console.log("Error", response.error);
-        setToastAttr({
-          ...toastAttr,
-          title: "Great!",
-          message: "Event saved successfully",
-          state: ToastStates.SUCCESS,
-        });
-        setShowToast(true);
+        Toaster.success("Great!", "Event saved successfully");
       })
       .catch((error) => {
         console.error(error);
-        setToastAttr({
-          ...toastAttr,
-          title: "Oops!",
-          message: "Something went wrong. Please try again after sometime",
-          state: ToastStates.FAIL,
-        });
-        setShowToast(true);
+        Toaster.fail("Oops!", "Something went wrong. Please try again after sometime");
       })
       .finally(() => {
         setSubmitting(false);
       });
-  }
-
+  };
 
   const handleSupplier = (e) => {
     let values = JSON.parse(e.target.value);
@@ -237,16 +295,18 @@ function EventDetails() {
       setEventNature(data.eventNature);
       setEventStatus(data.eventStatus);
       setEventType(data.eventType);
-
       getAllSuppliers().then((suppliersReturned) => {
         console.log(":: Resp Suppliers ::", suppliersReturned.data);
 
         setSuppliersList(suppliersReturned.data);
-
         getEventDetail(eventId).then((values) => {
-
-          console.log("Duration", Math.abs(new Date(values.EventEndDateTime || 0).getTime() - new Date(values.EventStartDateTime).getTime())/60000);
-
+          console.log(
+            "Duration",
+            Math.abs(
+              new Date(values.EventEndDateTime || 0).getTime() -
+                new Date(values.EventStartDateTime).getTime()
+            ) / 60000
+          );
           setLoading(false);
           console.log("Incoming Values", values);
           setEvent({
@@ -255,8 +315,11 @@ function EventDetails() {
             eventTitle: values.EventTitle,
             eventStartDateTime: formatDate(values.EventStartDateTime),
             eventEndDateTime: formatDate(values.EventEndDateTime),
-            eventDuration: 
-              Math.abs(new Date(values.EventEndDateTime || 0).getTime() - new Date(values.EventStartDateTime).getTime())/60000,
+            eventDuration:
+              Math.abs(
+                new Date(values.EventEndDateTime || 0).getTime() -
+                  new Date(values.EventStartDateTime).getTime()
+              ) / 60000,
             maxParticipants: values.MaxParticipants,
             eventTags: values.EventTags,
             hostId: values.HostId,
@@ -268,17 +331,16 @@ function EventDetails() {
             hostType: values.HostType,
             eventNature: values.EventNature,
             presenterId: values.PresenterId,
-            presenterSupplierId: values.PresenterSupplierId, 
+            presenterSupplierId: values.PresenterSupplierId,
             isAgeRestricted: values.IsAgeRistriction,
             isRegistrationRequired: values.IsRegistrationRequired,
             isEvenAvailableToView: values.IsEvenAvailableToView,
             isCollectFeedback: values.IsCollectFeedback,
-          })
+          });
           setInitialValues(values);
-        })
+        });
       });
     });
-
   }, []);
 
   useEffect(() => {
@@ -287,6 +349,16 @@ function EventDetails() {
 
   return (
     <>
+      {showConfetti && (
+        <Confetti
+          width={window.screen.width}
+          height={window.screen.height}
+          numberOfPieces={1000}
+          gravity={0.1}
+          initialVelocityY={20}
+          confettiSource={{x:0, y:0}}
+        />
+      )}
       <Toast
         toastState={toastAttr.state}
         title={toastAttr.title}
@@ -303,427 +375,444 @@ function EventDetails() {
               </a>
               <h2>Event Details</h2>
             </div>
-            {loading ? <Spinner/>
-            :
-            <div className="settings-form-wrapper">
-              <form className="settings-form">
-                <div className="columns is-multiline">
-                  <div className="column is-6">
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Event Title</label>
-                      <div className="control has-icon">
-                        <input
-                          type="text"
-                          className="input is-fade"
-                          name="eventTitle"
-                          onChange={handleInput}
-                          value={eventDetails.eventTitle}
-                          required
-                        />
-                        <div className="form-icon">
-                          <i data-feather="user" />
+            {loading ? (
+              <Spinner />
+            ) : (
+              <div className="settings-form-wrapper">
+                <form className="settings-form">
+                  <div className="columns is-multiline">
+                    <div className="column is-6">
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Event Title</label>
+                        <div className="control has-icon">
+                          <input
+                            type="text"
+                            className="input is-fade"
+                            name="eventTitle"
+                            onChange={handleInput}
+                            value={eventDetails.eventTitle}
+                            required
+                          />
+                          <div className="form-icon">
+                            <i data-feather="user" />
+                          </div>
+                        </div>
+                      </div>
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Max Participants</label>
+                        <div className="control has-icon">
+                          <input
+                            type="number"
+                            className="input is-fade"
+                            name="maxParticipants"
+                            onChange={handleInput}
+                            value={eventDetails.maxParticipants}
+                            required
+                          />
+                          <div className="form-icon">
+                            <i data-feather="mail" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Max Participants</label>
-                      <div className="control has-icon">
-                        <input
-                          type="number"
-                          className="input is-fade"
-                          name="maxParticipants"
-                          onChange={handleInput}
-                          value={eventDetails.maxParticipants}
-                          required
-                        />
-                        <div className="form-icon">
-                          <i data-feather="mail" />
+                    <div className="column is-6">
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Date & Time</label>
+                        <div className="control has-icon">
+                          <input
+                            type="datetime-local"
+                            className="input is-fade"
+                            name="eventStartDateTime"
+                            onChange={handleInput}
+                            value={eventDetails.eventStartDateTime}
+                            required
+                          />
+                          <div className="form-icon">
+                            <i data-feather="link" />
+                          </div>
+                        </div>
+                      </div>
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Event Duration</label>
+                        <div className="control has-icon">
+                          <select
+                            type="text"
+                            className="input is-fade"
+                            name="eventDuration"
+                            onChange={handleInput}
+                            value={eventDetails.eventDuration}
+                            required
+                          >
+                            <option value={15}>15 minutes</option>
+                            <option value={20}>20 minutes</option>
+                            <option value={25}>25 minutes</option>
+                            <option value={30}>30 minutes</option>
+                            <option value={35}>35 minutes</option>
+                            <option value={40}>40 minutes</option>
+                            <option value={45}>45 minutes</option>
+                            <option value={50}>50 minutes</option>
+                            <option value={60}>1 hour</option>
+                            <option value={65}>1 hour 5 minutes</option>
+                            <option value={70}>1 hour 10 minutes</option>
+                            <option value={75}>1 hour 15 minutes</option>
+                            <option value={80}>1 hour 20 minutes</option>
+                            <option value={85}>1 hour 25 minutes</option>
+                            <option value={90}>1 hour 30 minutes</option>
+                          </select>
+                          <div className="form-icon">
+                            <i data-feather="clock" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="column is-6">
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Date & Time</label>
-                      <div className="control has-icon">
-                        <input
-                          type="datetime-local"
-                          className="input is-fade"
-                          name="eventStartDateTime"
-                          onChange={handleInput}
-                          value={eventDetails.eventStartDateTime}
-                          required
-                        />
-                        <div className="form-icon">
-                          <i data-feather="link" />
+                    <div className="column is-12">
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Description</label>
+                        <div className="control">
+                          <textarea
+                            type="text"
+                            className="textarea is-fade"
+                            rows={1}
+                            placeholder="Description for event..."
+                            style={{ height: "70px" }}
+                            name="description"
+                            onChange={handleInput}
+                            value={eventDetails.description}
+                            name="description"
+                            required
+                          />
                         </div>
                       </div>
                     </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Event Duration</label>
-                      <div className="control has-icon">
-                        <input
-                          type="number"
-                          className="input is-fade"
-                          name="eventDuration"
-                          placeholder="Duration of event in minutes"
-                          onChange={handleInput}
-                          value={eventDetails.eventDuration}
-                          required
-                        />
-                        <div className="form-icon">
-                          <i data-feather="clock" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="column is-12">
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Description</label>
-                      <div className="control">
-                        <textarea
-                          type="text"
-                          className="textarea is-fade"
-                          rows={1}
-                          placeholder="Description for event..."
-                          style={{ height: "70px" }}
-                          name="description"
-                          onChange={handleInput}
-                          value={eventDetails.description}
-                          name="description"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="column is-6">
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Event Type</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          className="input is-fade"
-                          name="eventType"
-                          onChange={handleInput}
-                          value={eventDetails.eventType}
-                          required>
-                          <option disabled selected value="null">
-                            {" "}
-                            -- Select a Event type --{" "}
-                          </option>
-                          {eventType.map((item) => (
-                            <option value={item.EventType} key={map.key}>
-                              {item.EventType}
+                    <div className="column is-6">
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Event Type</label>
+                        <div className="control has-icon">
+                          <select
+                            type="text"
+                            className="input is-fade"
+                            name="eventType"
+                            onChange={handleInput}
+                            value={eventDetails.eventType}
+                            required
+                          >
+                            <option disabled selected value="null">
+                              {" "}
+                              -- Select a Event type --{" "}
                             </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
+                            {eventType.map((item) => (
+                              <option value={item.EventType} key={map.key}>
+                                {item.EventType}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="field field-group">
-                      <label>Event Nature</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          className="input is-fade"
-                          name="eventNature"
-                          onChange={handleInput}
-                          value={eventDetails.eventNature}
-                          defaultValue={"null"}
-                          required>
-                          <option disabled selected value="null">
-                            {" "}
-                            -- Select a Event Nature --{" "}
-                          </option>
-                          {eventNature.map((item) => (
-                            <option value={item.EventNature} key={map.key}>
-                              {item.EventNature}
+                      <div className="field field-group">
+                        <label>Event Nature</label>
+                        <div className="control has-icon">
+                          <select
+                            type="text"
+                            className="input is-fade"
+                            name="eventNature"
+                            onChange={handleInput}
+                            value={eventDetails.eventNature}
+                            defaultValue={"null"}
+                            required
+                          >
+                            <option disabled selected value="null">
+                              {" "}
+                              -- Select a Event Nature --{" "}
                             </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
+                            {eventNature.map((item) => (
+                              <option value={item.EventNature} key={map.key}>
+                                {item.EventNature}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
+                        </div>
+                      </div>
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Select Yes/No</label>
+                        <div className="control has-icon">
+                          <div
+                            className="switch-block mb-3"
+                            style={{ justifyContent: "space-between" }}
+                          >
+                            <label className="mr-5 pl-5 ml-4">
+                              Is event age restricted?
+                            </label>
+                            <label className="f-switch is-accent">
+                              <input
+                                type="checkbox"
+                                name="isAgeRestricted"
+                                className="is-switch"
+                                onChange={handleSwitch}
+                                checked={eventDetails.isAgeRestricted}
+                              />
+                              <i></i>
+                            </label>
+                          </div>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
+                        </div>
+                      </div>
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Select Yes/No</label>
+                        <div className="control has-icon">
+                          <div
+                            className="switch-block mb-3"
+                            style={{ justifyContent: "space-between" }}
+                          >
+                            <label className="mr-5 pl-5 ml-4">
+                              Should event be availble to view after live stream
+                            </label>
+                            <label className="f-switch is-accent">
+                              <input
+                                type="checkbox"
+                                name="isEvenAvailableToView"
+                                className="is-switch"
+                                onChange={handleSwitch}
+                                checked={eventDetails.isEvenAvailableToView}
+                              />
+                              <i></i>
+                            </label>
+                          </div>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Is event age restricted?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isAgeRestricted"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                              checked={eventDetails.isAgeRestricted}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Should event be availble to view after live stream
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isEvenAvailableToView"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                              checked={eventDetails.isEvenAvailableToView}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-    
-                  </div>
-                  <div className="column is-6">
-                    {/*Field*/}
-                    {/* <div className="field field-group">
-                      <label>Event Status</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          className="input is-fade"
-                          name="eventSatusId"
-                          onChange={handleInput}
-                          required>
-                          <option disabled selected value>
-                            {" "}
-                            -- Select a Event Status --{" "}
-                          </option>
-                          {eventStatus.map((item) => (
-                            <option value={item.EventStatusId} key={map.key}>
-                              {item.EventStatus}
+                    <div className="column is-6">
+
+                      {/*Field*/}
+                      <div
+                        className="field field-group"
+                        style={{ display: "none" }}
+                      >
+                        <label>Presenter Type</label>
+                        <div className="control has-icon">
+                          <select
+                            type="text"
+                            disabled={
+                              !(eventDetails.hostId === currentUser.userId)
+                            }
+                            className="input is-fade"
+                            name="presenterType"
+                            onChange={handleSupplier}
+                            required
+                          >
+                            <option disabled selected>
+                              {" "}
+                              -- Select a Presenter Type --{" "}
                             </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
+
+                            {suppliersList.map((sup) => (
+                              <option
+                                selected={
+                                  eventDetails.presenterId == sup.SupplierID
+                                }
+                                value={JSON.stringify({
+                                  supplierId: sup.SupplierID,
+                                  supplierType: sup.SupplierType,
+                                })}
+                                key={map.key}
+                              >
+                                {sup.SupplierName} | {sup.SupplierType}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
                         </div>
                       </div>
-                    </div> */}
+                      {/*Field*/}
 
-                    {/*Field*/}
-                    <div className="field field-group" style={{display:'none'}}>
-                      <label>Presenter Type</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          disabled={!(eventDetails.hostId === currentUser.userId)}
-                          className="input is-fade"
-                          name="presenterType"
-                          onChange={handleSupplier}
-                          required>
-                          <option disabled selected>
-                            {" "}
-                            -- Select a Presenter Type --{" "}
-                          </option>
-
-                          {suppliersList.map((sup) => (
-                            <option
-                            selected={eventDetails.presenterId == sup.SupplierID}
-                              value={JSON.stringify({
-                                supplierId: sup.SupplierID,
-                                supplierType: sup.SupplierType,
-                              })}
-                              key={map.key}>
-                              {sup.SupplierName} | {sup.SupplierType}
+                      <div
+                        className="field field-group"
+                        style={{ display: "none" }}
+                      >
+                        <label>Presenter Contact</label>
+                        <div className="control has-icon">
+                          <select
+                            type="text"
+                            disabled={
+                              !(eventDetails.hostId === currentUser.userId)
+                            }
+                            className="input is-fade"
+                            name="presenterId"
+                            onChange={handleInput}
+                            required
+                          >
+                            <option disabled selected value>
+                              {" "}
+                              -- Select a Presenter Contact --{" "}
                             </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                    {/*Field*/}
 
-                    <div className="field field-group" style={{display:'none'}}>
-                      <label>Presenter Contact</label>
-                      <div className="control has-icon">
-                        <select
-                          type="text"
-                          disabled={!(eventDetails.hostId === currentUser.userId)}
-                          className="input is-fade"
-                          name="presenterId"
-                          onChange={handleInput}
-                          required>
-                          <option disabled selected value>
-                            {" "}
-                            -- Select a Presenter Contact --{" "}
-                          </option>
+                            {suppliersContacts.map((sup) => (
+                              <option value={sup.ContactId} key={map.key}>
+                                {sup.FirstName} {sup.LastName} | {sup.Email} |{" "}
+                                {sup.StoreName}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
+                        </div>
+                      </div>
 
-                          {suppliersContacts.map((sup) => (
-                            <option value={sup.ContactId} key={map.key}>
-                              {sup.FirstName} {sup.LastName} | {sup.Email} |{" "}
-                              {sup.StoreName}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Select Yes/No</label>
+                        <div className="control has-icon">
+                          <div
+                            className="switch-block mb-3"
+                            style={{ justifyContent: "space-between" }}
+                          >
+                            <label className="mr-5 pl-5 ml-4">
+                              Do you want to collect feedbacks?
+                            </label>
+                            <label className="f-switch is-accent">
+                              <input
+                                type="checkbox"
+                                name="isCollectFeedback"
+                                className="is-switch"
+                                onChange={handleSwitch}
+                                checked={eventDetails.isCollectFeedback}
+                              />
+                              <i></i>
+                            </label>
+                          </div>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Select Yes/No</label>
+                        <div className="control has-icon">
+                          <div
+                            className="switch-block mb-3"
+                            style={{ justifyContent: "space-between" }}
+                          >
+                            <label className="mr-5 pl-5 ml-4">
+                              Should user be necessarily registered to attend
+                              the event?
+                            </label>
+                            <label className="f-switch is-accent">
+                              <input
+                                type="checkbox"
+                                name="isCollectFeedback"
+                                className="is-switch"
+                                onChange={handleSwitch}
+                                checked={eventDetails.isCollectFeedback}
+                              />
+                              <i></i>
+                            </label>
+                          </div>
+                          <div className="form-icon">
+                            <i data-feather="settings" />
+                          </div>
+                        </div>
+                      </div>
 
-
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Do you want to collect feedbacks?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isCollectFeedback"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                              checked={eventDetails.isCollectFeedback}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
+                      {/*Field*/}
+                      <div className="field field-group">
+                        <label>Event Tags</label>
+                        <div className="control has-icon">
+                          <input
+                            type="text"
+                            className="input is-fade"
+                            name="eventTags"
+                            placeholder="Enter tags separated with commas"
+                            onChange={handleInput}
+                            value={eventDetails.eventTags}
+                            required
+                          />
+                          <div className="form-icon">
+                            <i data-feather="tag" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Select Yes/No</label>
-                      <div className="control has-icon">
-                        <div
-                          className="switch-block mb-3"
-                          style={{ justifyContent: "space-between" }}>
-                          <label className="mr-5 pl-5 ml-4">
-                            Should user be necessarily registered to attend the
-                            event?
-                          </label>
-                          <label className="f-switch is-accent">
-                            <input
-                              type="checkbox"
-                              name="isCollectFeedback"
-                              className="is-switch"
-                              onChange={handleSwitch}
-                              checked={eventDetails.isCollectFeedback}
-                            />
-                            <i></i>
-                          </label>
-                        </div>
-                        <div className="form-icon">
-                          <i data-feather="settings" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/*Field*/}
-                    <div className="field field-group">
-                      <label>Event Tags</label>
-                      <div className="control has-icon">
-                        <input
-                          type="text"
-                          className="input is-fade"
-                          name="eventTags"
-                          placeholder="Enter tags separated with commas"
-                          onChange={handleInput}
-                          value={eventDetails.eventTags}
-                          required
-                        />
-                        <div className="form-icon">
-                          <i data-feather="tag" />
-                        </div>
-                      </div>
-                    </div>
-                  {/* </div>
+                      {/* </div>
 
                   <div className="column is-6"> */}
-                    
-                  </div>
+                    </div>
 
-                  <div className="column is-12">
-                    {(eventDetails.hostId === currentUser.userId) &&  <div className="buttons">
-                        <button
-                          type="submit"
-                          className="button is-solid accent-button form-button"
-                          onClick={handleApprove}
-                          disabled={submitting}>
-                          {submitting ? "Publishing..." : "Publish"}
-                        </button>
-                        <button
-                          type="submit"
-                          className="button is-solid danger-btn form-button"
-                          onClick={handleClose}
-                          disabled={submitting}>
-                          {submitting ? "Closing..." : "Close"}
-                        </button>
-                        <button
-                          type="submit"
-                          className="button is-solid danger-btn form-button"
-                          onClick={handleApprovalRequest}
-                          disabled={submitting}>
-                          {submitting ? "Sending..." : "Send for Review"}
-                        </button>
-                      </div>
-                    }
-                    {(eventDetails.presenterId === currentUser.userId) &&  <div className="buttons">
-                        <button
-                          type="submit"
-                          className="button is-solid accent-button form-button"
-                          onClick={handleApprove}
-                          disabled={submitting}>
-                          {submitting ? "Sending..." : "Send for publish"}
-                        </button>
-                        <button
-                          type="submit"
-                          className="button is-solid danger-btn form-button"
-                          onClick={handleClose}
-                          disabled={submitting}>
-                          {submitting ? "Sending..." : "Send for Closing"}
-                        </button>
-                      </div>
-                    }
+                    <div className="column is-12">
+                      {eventDetails.hostId === currentUser.userId && (
+                        <div className="buttons">
+                          <button
+                            type="submit"
+                            className="button is-solid accent-button form-button"
+                            onClick={handleApprove}
+                            disabled={submitting}
+                          >
+                            {submitting ? "Publishing..." : "Publish"}
+                          </button>
+                          <button
+                            type="submit"
+                            className="button is-solid danger-btn form-button"
+                            onClick={handleClose}
+                            disabled={submitting}
+                          >
+                            {submitting ? "Closing..." : "Close"}
+                          </button>
+                          <button
+                            type="submit"
+                            className="button is-solid danger-btn form-button"
+                            onClick={handleApprovalRequest}
+                            disabled={submitting}
+                          >
+                            {submitting ? "Sending..." : "   Review"}
+                          </button>
+                        </div>
+                      )}
+                      {eventDetails.presenterId === currentUser.userId && (
+                        <div className="buttons">
+                          <button
+                            type="submit"
+                            className="button is-solid accent-button form-button"
+                            onClick={handleApprove}
+                            disabled={submitting}
+                          >
+                            {submitting ? "Please wait.." : "Request to be published"}
+                          </button>
+                          <button
+                            type="submit"
+                            className="button is-solid danger-btn form-button"
+                            onClick={handleClose}
+                            disabled={submitting}
+                          >
+                            {submitting ? "Please wait..." : "Request to be closed"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </form>
-            </div>}
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </div>

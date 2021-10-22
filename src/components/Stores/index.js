@@ -3,13 +3,15 @@ import StoreList from './StoreList';
 import NewStore from './NewStore';
 import EditStore from './EditStore';
 import { Switch, Route } from 'react-router';
+import { PrivateRoute } from '../../utils/Router';
+import { userPermissions } from '../../utils/user';
 
 function Stores({match}) {
     return (
         <Switch>
-            <Route path={`${match.path}/new`} component={NewStore} />
-            <Route exact path={`${match.path}/`} component={StoreList} />
-            <Route exact path={`${match.path}/edit/:orgId`} component={EditStore} />
+            <PrivateRoute permission={userPermissions.EDIT_STORES} path={`${match.path}/new`} component={NewStore} />
+            <PrivateRoute permission={userPermissions.VIEW_STORES}  exact path={`${match.path}/`} component={StoreList} />
+            <PrivateRoute permission={userPermissions.EDIT_STORES}  exact path={`${match.path}/edit/:storeId`} component={EditStore} />
         </Switch>
     )
 }

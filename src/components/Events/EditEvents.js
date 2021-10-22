@@ -15,16 +15,20 @@ import { getAllContacts } from "../../services/contacts.services";
 
 import Toast, { ToastStates } from "../core/Toast";
 import { useParams } from "react-router-dom";
+import { formatDateTimeforInput } from "../../utils/Utils";
+import { getCurrentUser } from "../../utils/user";
 
 function NewEvent() {
 
-  const { eventId } = useParams();
+  const currentUser = getCurrentUser();
 
+  const { eventId } = useParams();
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastAttr, setToastAttr] = useState({});
   const [eventDetails, setEvent] = useState({
-    loggedInUserId: 73,
+    loggedInUserId: currentUser.userId,
+    presenterSupplierId: currentUser.supplierId || 1,
     isActive: 1,
     eventSatusId: 1,
     hostType: "Retailer",
@@ -42,9 +46,16 @@ function NewEvent() {
   const [suppliersContacts, setSuppliersContacts] = useState([]);
 
   const handleInput = (e) => {
-    const newEvent = { ...eventDetails };
-    newEvent[e.target.name] = e.target.value;
-    setEvent(newEvent);
+    if(e.target.name === "presenterType") {
+      let values = JSON.parse(e.target.value);
+      console.log("Values", values);
+      setEvent({ ...eventDetails, presenterType: values.supplierType, supplierId: values.supplierId });
+    }
+    else {
+      const newEvent = { ...eventDetails };
+      newEvent[e.target.name] = e.target.value;
+      setEvent(newEvent);
+    }
   };
 
   const handleSwitch = (e) => {
@@ -59,7 +70,6 @@ function NewEvent() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("Submit");
     setSubmitting(true);
     console.log("Event Details Before Submit :: 📺 ", eventDetails);
     createOrUpdateEvent(eventDetails)
@@ -99,19 +109,6 @@ function NewEvent() {
       });
   };
 
-  const handleSupplier = (e) => {
-    let values = JSON.parse(e.target.value);
-    setEvent({ ...eventDetails, presenterType: values.supplierType });
-
-    let dataToSend = { supplierId: values.supplierId };
-
-    console.log("Data to Send :: ", dataToSend);
-    getAllContacts({ supplierId: values.supplierId }).then(
-      (supplierContacts) => {
-        setSuppliersContacts(supplierContacts.data);
-      }
-    );
-  };
 
   useEffect(() => {
     getAllEventsFields().then((data) => {
@@ -151,7 +148,17 @@ function NewEvent() {
   }, []);
 
   useEffect(() => {
-    console.log("Event Details", eventDetails);
+    console.log("eventDetails", eventDetails)
+    if(eventDetails.presenterType) {
+      const { supplierId } = eventDetails;
+      getAllContacts({ supplierId })
+        .then(
+          (supplierContacts) => {
+            console.log("Suppliers Contact", supplierContacts)
+            setSuppliersContacts(supplierContacts);
+          }
+        );
+      }
   }, [eventDetails]);
 
   return (
@@ -221,7 +228,7 @@ function NewEvent() {
                           className="input is-fade"
                           name="eventStartDateTime"
                           onChange={handleInput}
-                          value={eventDetails.eventStartDateTime}
+                          value={formatDateTimeforInput(eventDetails.eventStartDateTime)}
                           required
                         />
                         <div className="form-icon">
@@ -412,21 +419,20 @@ function NewEvent() {
                           type="text"
                           className="input is-fade"
                           name="presenterType"
-                          onChange={handleSupplier}
+                          onChange={handleInput}
+                          value={JSON.stringify({supplierId : eventDetails.presenterId, supplierType : eventDetails.presenterType})}
                           required>
-                          <option disabled selected>
-                            {" "}
-                            -- Select a Presenter Type --{" "}
-                          </option>
-
+                            <option disabled selected>
+                              {" "}-- Select a Presenter Type --{" "}
+                            </option>
                           {suppliersList.map((sup) => (
                             <option
-                            selected={eventDetails.presenterId == sup.SupplierID}
                               value={JSON.stringify({
                                 supplierId: sup.SupplierID,
                                 supplierType: sup.SupplierType,
                               })}
-                              key={map.key}>
+                              key={map.key}
+                            >
                               {sup.SupplierName} | {sup.SupplierType}
                             </option>
                           ))}
@@ -446,6 +452,7 @@ function NewEvent() {
                           className="input is-fade"
                           name="presenterId"
                           onChange={handleInput}
+                          value={eventDetails.presenterId}
                           required>
                           <option disabled selected value>
                             {" "}

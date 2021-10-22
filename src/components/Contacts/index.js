@@ -9,7 +9,7 @@ const Events = ({match}) => {
     <Switch>
         <Route path={`${match.path}/new`} component={NewContact} />
         <Route exact path={`${match.path}/`} component={ContactList} />
-        <Route exact path={`${match.path}/edit/:eventId`} component={EditContacts} />
+        <Route exact path={`${match.path}/edit/:contactId`} component={EditContacts} />
     </Switch>
     )
 }

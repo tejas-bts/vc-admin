@@ -5,26 +5,26 @@ import { FiEdit } from 'react-icons/fi'
 function ContactListItem({contact, match}) {
     return (
         <div class="flex-table-item">
-            <div className="name">
+            <div className="w-15">
                 <span>{contact.FirstName}</span>
             </div>
-            <div className="location">
+            <div className="w-15">
                 <span>{contact.LastName}</span>
             </div>
-            <div className="type">
+            <div className="w-15">
                 <span>{contact.ContactType}</span>
             </div>
-            <div className="category">
+            <div className="w-25">
                 <span>{contact.Email}</span>
             </div>
-            <div className="events-count">
+            <div className="w-25">
                 <span>{contact.StoreName}</span>
             </div>
-            <div className="edit" style={{display: 'flex', alignItems: 'center'}}>
+            <div className="w-5" style={{display: 'flex', alignItems: 'center'}}>
             <Link 
                 key={contact.ContactId}
                 to={{
-                    pathname: `${match.url}/edit/${contact.ContactId}`,
+                    pathname: `${match.url}/edit/${contact.UserId}`,
                     state: contact
                 }}
             >

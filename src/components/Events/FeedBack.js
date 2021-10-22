@@ -42,7 +42,7 @@ var Feedback = () => {
       getEventFeedback(eventId)
         .then((feedbacks) => {
           console.log("Feedbacks", feedbacks);
-          setFeedbackList(feedbacks.data);
+          setFeedbackList(feedbacks);
           setAverageRating(feedbacks.avgData);
           setLoading(false);
         } )

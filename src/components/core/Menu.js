@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { getCurrentUser, userPermissions } from "../../utils/user";
 
 function Menu(props) {
   const path = props.location.pathname;
   console.log("Menu Props");
   const { page } = props;
+  const currentUser = getCurrentUser();
+
+
   return (
     // <div className="view-wrapper is-full">
       <div className="videos-wrapper is-home">
@@ -16,7 +20,7 @@ function Menu(props) {
               </a>
               <div className="avatar-wrap">
                 <img
-                  src="https://pbs.twimg.com/profile_images/857713360527216640/g02lZ85F_400x400.jpg"
+                  src={currentUser.profileImage}
                   data-demo-src="assets/img/avatars/jenna.png"
                   data-user-popover={0}
                   alt=""
@@ -25,8 +29,8 @@ function Menu(props) {
                   <i data-feather="check" />
                 </div>
               </div>
-              <h4>Tradewinds Speciality</h4>
-              <p>Washington, DC</p>
+              <h4>{currentUser.firstName} {currentUser.lastName}</h4>
+              <p>{currentUser.orgName}</p>
               {/* <div className="user-stats">
                   <div className="stat-block">
                     <span>Videos</span>
@@ -42,31 +46,60 @@ function Menu(props) {
               <div className="user-menu-inner has-slimscroll">
                 <div className="menu-block">
                   <ul>
-                    <li className={path.includes("contacts") ? "is-active" : null}>
-                      <Link to="/home/contacts">
-                        <span>User Management</span>
-                      </Link>
-                    </li>
-                    <li className={path.includes("events") ? "is-active" : null}>
-                      <Link to="/home/events">
-                        <span>Event Management</span>
-                      </Link>
-                    </li>
-                    <li className={path.includes("suppliers") ? "is-active" : null}>
-                      <Link to="/home/suppliers">
-                        <span>Suppliers Management</span>
-                      </Link>
-                    </li>
-                    <li className={path.includes("organizations") ? "is-active" : null}>
-                      <Link to="/home/organizations">
-                        <span>Organizations Management</span>
-                      </Link>
-                    </li>
-                    <li className={path.includes("stores") ? "is-active" : null}>
-                      <Link to="/home/stores">
-                        <span>Stores Management</span>
-                      </Link>
-                    </li>
+                    {
+                      currentUser?.permissions?.includes(userPermissions.VIEW_USERS) && (
+                        <li className={path.includes("contacts") ? "is-active" : null}>
+                          <Link to="/home/contacts">
+                            <span>User Management</span>
+                          </Link>
+                        </li>
+                      )
+                    }
+                    {
+                      currentUser?.permissions?.includes(userPermissions.VIEW_EVENTS) && (
+                        <li className={path.includes("events") ? "is-active" : null}>
+                          <Link to="/home/events">
+                            <span>Event Management</span>
+                          </Link>
+                        </li>
+                      )
+                    }
+                    {
+                      currentUser?.permissions?.includes(userPermissions.VIEW_SUPPLIERS) && (
+                        <li className={path.includes("suppliers") ? "is-active" : null}>
+                          <Link to="/home/suppliers">
+                            <span>Suppliers Management</span>
+                          </Link>
+                        </li>
+                      )
+                    }
+                    {
+                      currentUser?.permissions?.includes(userPermissions.VIEW_ORGS) && (
+                        <li className={path.includes("organizations") ? "is-active" : null}>
+                          <Link to="/home/organizations">
+                            <span>Organizations Management</span>
+                          </Link>
+                        </li>
+                      )  
+                    }
+                    {
+                      currentUser?.permissions?.includes(userPermissions.VIEW_STORES) && (
+                        <li className={path.includes("stores") ? "is-active" : null}>
+                          <Link to="/home/stores">
+                            <span>Stores Management</span>
+                          </Link>
+                        </li>
+                      )
+                    }
+                    {
+                      currentUser?.permissions?.includes(userPermissions) && (
+                        <li className={path.includes("analytics") ? "is-active" : null}>
+                          <Link to="/analytics">
+                            <span>Analytics</span>
+                          </Link>
+                        </li>
+                      )
+                    } 
                   </ul>
                 </div>
 

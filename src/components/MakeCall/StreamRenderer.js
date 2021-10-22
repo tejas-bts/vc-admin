@@ -33,7 +33,7 @@ export default class StreamRenderer extends React.Component {
      * Start stream after DOM has rendered
      */
     async componentDidMount() {
-        document.getElementById(this.componentId).hidden = true;
+        // document.getElementById(this.componentId).hidden = true;
 
         this.remoteParticipant.on('isSpeakingChanged', () => {
             this.setState({ isSpeaking: this.remoteParticipant.isSpeaking });
@@ -107,7 +107,7 @@ export default class StreamRenderer extends React.Component {
             if(!this.view.target) {
                 throw new Error(`[App][StreamMedia][id=${this.stream.id}][attachRenderer] target is undefined. Must create renderer first`);
             }
-            document.getElementById(this.componentId).hidden = false;
+            // document.getElementById(this.componentId).hidden = false;
             document.getElementById(this.videoContainerId).appendChild(this.view.target);
         } catch (e) {
             console.error(e);
@@ -126,14 +126,11 @@ export default class StreamRenderer extends React.Component {
 
     render() {
         return (
-            <div id={this.componentId} className={`py-3 ms-Grid-col ms-sm-12 ms-lg12 ms-xl12 ${this.stream.mediaStreamType === 'ScreenSharing' ? `ms-xxl12` : `ms-xxl4`}`}>
-                <div className={`${this.state.isSpeaking ? `speaking-border-for-video` : ``}`}
+            // <div id={this.componentId} >
+                <div className={`${this.stream.mediaStreamType === 'ScreenSharing' ? `screen-sharing` : ``}`}
                     id={this.videoContainerId}>
-                    <h4 className="video-title">
-                        {this.state.displayName ? this.state.displayName : utils.getIdentifierText(this.remoteParticipant.identifier)}
-                    </h4>
                 </div>
-            </div>
+            // </div>
         );
     }
 }

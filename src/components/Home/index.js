@@ -7,6 +7,8 @@ import Contacts from '../Contacts';
 import Events from '../Events';
 import NavBar from "../../components/core/NavBar/NavBar";
 import Menu from "../core/Menu";
+import { PrivateRoute } from '../../utils/Router';
+import { userPermissions } from '../../utils/user';
 
 
 const index = (props) => {
@@ -16,11 +18,12 @@ const index = (props) => {
             <NavBar />
             <Menu  {...props} />
             <Switch>
-                <Route path={`${match.path}/organizations`} component={Organizations} />
-                <Route path={`${match.path}/suppliers`} component={Suppliers} />
-                <Route path={`${match.path}/stores`} component={Stores} />
-                <Route path={`${match.path}/contacts`} component={Contacts} />
-                <Route path={`${match.path}/events`} component={Events} />
+                <PrivateRoute permission={userPermissions.VIEW_ORGS} path={`${match.path}/organizations`} component={Organizations} />
+                <PrivateRoute permission={userPermissions.VIEW_SUPPLIERS}  path={`${match.path}/suppliers`} component={Suppliers} />
+                <PrivateRoute permission={userPermissions.VIEW_STORES}  path={`${match.path}/stores`} component={Stores} />
+                <PrivateRoute permission={userPermissions.VIEW_USERS}  path={`${match.path}/contacts`} component={Contacts} />
+                <PrivateRoute permission={userPermissions.VIEW_EVENTS}  path={`${match.path}/events`} component={Events} />
+                {/* <PrivateRoute permission={12}  path={`${match.path}/report`} component={frame} /> */}
             </Switch>
         </div>
     )

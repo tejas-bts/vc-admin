@@ -95,3 +95,27 @@ export const utils = {
     }
   },
 };
+
+
+
+export const formatDateforInput = (in_date) => {
+  let date_ob = new Date(in_date);
+  let date = ("0" + date_ob.getDate()).slice(-2);
+  let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+  let year = date_ob.getFullYear();
+  const returnDate = year + "-" + month + "-" + date;
+  return returnDate;
+}
+
+export const formatDateTimeforInput = (in_date) => {
+  let date_ob = new Date(in_date);
+  let hours = ("0" + date_ob.getHours()).slice(-2);
+  let minutes = ("0" + date_ob.getMinutes()).slice(-2);
+  let seconds = date_ob.getSeconds();
+  let date = ("0" + date_ob.getDate()).slice(-2);
+  let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+  let year = date_ob.getFullYear();
+  const returnDate = year + "-" + month + "-" + date + "T" + hours + ":" + minutes;
+  console.log("Formatted Date", returnDate);
+  return returnDate;
+}

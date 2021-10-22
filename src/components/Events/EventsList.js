@@ -9,8 +9,10 @@ import {
   FiChevronDown,
   FiSearch,
 } from "react-icons/fi";
-import { getAllEvents, getAllEventsFields } from "../../services/events.services";
+import { getUserEvents, getAllEventsFields } from "../../services/events.services";
 import Spinner from "../../components/core/Spinner";
+import { getCurrentUser, userPermissions } from "../../utils/user";
+import { RenderWithPermission } from "../../utils/ConditionalRenderer";
 
 const initalSearchParams = {
   eventTitle: "",
@@ -36,17 +38,17 @@ function EventList({ match }) {
   const [events, setEvents] = useState([]);
   const [searchParams, setSearchParams] = useState(initalSearchParams);
   const [eventFields, setEventFields] = useState(initialEventFields)
-  const [paginationData, setPaginationData] = useState({})
+  // const [paginationData, setPaginationData] = useState({})
 
   const fetchEvents = () => {
     setLoading(true);
-    getAllEvents(searchParams)
+    getUserEvents(searchParams)
       .then((response) => {
-        console.log("Respo",response);
-        const eventsList = response.data;
-        setEvents(eventsList);
+        console.log("Event Req Respo",response);
+        setEvents(response.upcomingEvents);
+        console.log("Upcoming Events",response.upcomingEvents)
         setLoading(false);
-        setPaginationData(response.pageDetails);
+        // setPaginationData(response.pageDetails);
       }
     );
   }
@@ -54,22 +56,27 @@ function EventList({ match }) {
   const handleSearch = (e) => {
     fetchEvents();
   } 
+  
+  const handleReset = () => {
+    setSearchParams(initalSearchParams);
+    fetchEvents(initalSearchParams);
+  }
 
   const handleSort = async (e) => {
     const column = e.target.getAttribute("column");
     if(searchParams.sortCol === column) {
-      setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")});
-      fetchEvents();
+      setSearchParams({...searchParams, sortOrder: (searchParams.sortOrder === "ASC" ? "DESC" : "ASC")})
+      fetchEvents(searchParams);
     }
     else {
       setSearchParams({...searchParams, sortCol: column, sortOrder: searchParams.sortOrder });
-      fetchEvents();
+      fetchEvents(searchParams);
     }
   }
 
-  useEffect(() => {
-    console.log("paginationData", paginationData);
-  }, [paginationData])
+  // useEffect(() => {
+  //   console.log("paginationData", paginationData);
+  // }, [paginationData])
 
   useEffect(() => {
     getAllEventsFields()
@@ -79,7 +86,7 @@ function EventList({ match }) {
         getAllCategories()
         .then((response) => {
           setOptions(response.data.filter((item) => item.ParentCategoryId === 0))
-          fetchEvents();
+          fetchEvents(initalSearchParams);
         });
     })
   }, []);
@@ -88,45 +95,44 @@ function EventList({ match }) {
     <div>
       <div className="settings-wrapper">
         <div className="list-controls">
-          <div className="d-flex">          
-            <Link to={`${match.path}new`} style={{ float: "right" }}>
-              <button className="button is-solid accent-button ml-5">New Event</button>
-            </Link>
-            <Link to={`${match.path}requests`} style={{ float: "right" }}>
-              <button className="button is-solid accent-button">Event requests</button>
-            </Link>
+        <h1 className="admin-title">Events</h1>
+          <div className="d-flex">
+            <RenderWithPermission permission={userPermissions.EDIT_EVENTS}>
+              <Link to={`${match.path}new`} style={{ float: "right" }}>
+                <button className="button is-solid accent-button ml-5">New Event</button>
+              </Link>
+            </RenderWithPermission>
           </div>
-          <h1 className="admin-title">Events</h1>
         </div>
-        <div className="list-controls">
-          <div className="small-input">
-            <button
-              className="input is-rounded admin-search-button"
-              placeholder="Type"
-              onClick={handleSearch}
-            >
-              {" "}
-              <FiSearch className="mr-2" />
-              Search
-            </button>
-          </div>
-          <div className="small-input">
+        <div className="list-controls justify-content-center">
+        <div className="d-flex flex-row">     
+          <div className="small-input w-20">
             <input
-              type="datetime-local"
               className="input is-rounded"
-              name="eventStartDate"
-              placeholder="Email"
+              name="eventTitle"
+              type="text"
+              placeholder="Title"
               onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
             />
             <div className="search-icon">
               <FiSearch />
             </div>
-          </div>
+          </div>         
           <div className="small-input">
+            <input
+              type="date"
+              className="input is-rounded"
+              name="eventStartDate"
+              placeholder="Email"
+              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
+            />
+          </div>
+          <div className="small-input w-15">
             <select
                 className="input is-rounded"
                 type="text"
                 name="eventStatus"
+                value={searchParams.eventStatus}
                 style={{ paddingLeft: "30px", textAlign: "center" }}
                 onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
               >
@@ -138,10 +144,10 @@ function EventList({ match }) {
                 ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>
-          <div className="small-input">
+          <div className="small-input w-15">
             <select
               className="input is-rounded"
               type="text"
@@ -157,10 +163,10 @@ function EventList({ match }) {
               ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>
-          <div className="small-input">
+          <div className="small-input w-15">
             <select
                 className="input is-rounded"
                 type="text"
@@ -176,7 +182,7 @@ function EventList({ match }) {
                 ))}
             </select>
             <div className="search-icon">
-              <FiSearch />
+              <FiChevronDown />
             </div>
           </div>          
           <div className="small-input">
@@ -199,22 +205,30 @@ function EventList({ match }) {
             </div>
           </div>
           <div className="small-input">
-            <input
+            <button
+              className="input is-rounded admin-search-button"
+              placeholder="Type"
+              onClick={handleSearch}
+            >
+              <FiSearch className="mr-2"/>
+              Search
+            </button>
+          </div>   
+          <div className="small-input">
+            <button
               className="input is-rounded"
-              name="eventTitle"
-              type="text"
-              placeholder="Title"
-              onChange = {(e) => setSearchParams({...searchParams, [e.target.name] : e.target.value})}
-            />
-            <div className="search-icon">
-              <FiSearch />
-            </div>
+              placeholder="Type"
+              onClick={handleReset}
+            >
+              Reset
+            </button>
           </div>
+        </div>
         </div>
         <div class="flex-table">
           <div class="flex-table-header">
             <span
-              class="name sort-column"
+              class="w-20 sort-column"
               onClick={handleSort}
               column="EventTitle">
               Name
@@ -226,7 +240,7 @@ function EventList({ match }) {
                 ))}
             </span>
             <span
-              class="location sort-column"
+              class="w-10 sort-column"
               onClick={handleSort}
               column="EventStartDateTime">
               Date
@@ -238,7 +252,7 @@ function EventList({ match }) {
                 ))}
             </span>
             <span
-              class="type sort-column"
+              class="w-10 sort-column"
               onClick={handleSort}
               column="eventTitle">
               Type
@@ -250,7 +264,7 @@ function EventList({ match }) {
                 ))}
             </span>
             <span
-              class="category sort-column"
+              class="w-10 sort-column"
               onClick={handleSort}
               column="PresenterType">
               Presenter Type
@@ -262,7 +276,7 @@ function EventList({ match }) {
                 ))}
             </span>
             <span
-              class="events-count sort-column"
+              class="w-10 sort-column"
               onClick={handleSort}
               column="EventNature">
               Event Nature
@@ -273,9 +287,23 @@ function EventList({ match }) {
                   <FiArrowDown className="ml-2" />
                 ))}
             </span>
-            <span class="w-10" column="PresenterType">
-              Edit
+            <span
+              class="w-20 sort-column"
+              onClick={handleSort}
+              column="EventSatusId">
+              Event Status
+              {searchParams.sortBy === "EventNature" &&
+                (searchParams.sortDirection ? (
+                  <FiArrowUp className="ml-2" />
+                ) : (
+                  <FiArrowDown className="ml-2" />
+                ))}
             </span>
+            <RenderWithPermission permission={[userPermissions.EDIT_EVENTS, userPermissions.PRESENT_EVENTS]}>
+              <span class="w-10" column="PresenterType">
+                Edit
+              </span>
+            </RenderWithPermission>
             <span class="w-10">
               QR
             </span>
@@ -287,13 +315,13 @@ function EventList({ match }) {
             <Spinner />
           ) : (
             events.map((item) => (
-              <a href={`https://dev.virtualcata.com/landing/${item.EventId}`}>
+              <a href={`preview/${item.EventId}`}>
                 <EventItem event={item} key={item.EventId} match={match} />
               </a>
             ))
           )}
         </div>
-        <ReactPaginate
+        {/* <ReactPaginate
           previousLabel={"Prev"}
           nextLabel={"Next"}
           breakLabel={"..."}
@@ -306,7 +334,7 @@ function EventList({ match }) {
           }
           containerClassName={"pagination"}
           activeClassName={"active"}
-        />
+        /> */}
       </div>
     </div>
   );

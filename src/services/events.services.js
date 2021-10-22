@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 import { getCurrentUser } from "../utils/user";
 
-const user = getCurrentUser();  
+
 
 export const getAllEventsFields = async () => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/EventFields?code=v5rGI/xtZaQp1L1npN0AVZlTg7jsPlWpunBs9G/vXlzDh6giFq0jIg=="
@@ -27,10 +27,10 @@ export const getAllEvents = async (searchParams) => {
 }
 
 export const getUserEvents = async (searchParams) => {
-    const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchMyEvents?code=LQHKaPRkoJNiBO7hCVqhpUSErls/DgiufLzmneinK0Fsm/3NdUpZfA=="
+    const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchMyEvents?code=LQHKaPRkoJNiBO7hCVqhpUSErls/DgiufLzmneinK0Fsm/3NdUpZfA==";
+    const user = getCurrentUser();  
     return new Promise((resolve, reject) => {
         axios.post(url, JSON.stringify({...searchParams,
-            // token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0NCwiZmlyc3ROYW1lIjoiRXN0ZWJlIiwibGFzdE5hbWUiOiJTYWxnYWRvIiwiYmlydGhZZWFyIjoiMTk4Ny0xMC0xMlQwMDowMDowMC4wMDBaIiwiZW1haWxDb25maXJtZWQiOmZhbHNlLCJpc0FjdGl2ZSI6dHJ1ZSwicHJvZmlsZUNvbXBsZXRlZCI6ZmFsc2UsInByb2ZpbGVJbWFnZSI6Imh0dHBzOi8vZGV2LnZpcnR1YWxjYXRhLmNvbS9hc3NldHMvaW1nL2F2YXRhcnMvZGVmYXVsdC1wcm9maWxlLWltYWdlLnBuZyIsImxvZ2luIjpmYWxzZSwiZW1haWwiOiJlc3RlYmVzYWxnYWRvQGdtYWlsLmNvbSIsInVzZXJUeXBlIjoiUmV0YWlsZXIiLCJpYXQiOjE2MzAxODAxMzV9.X1qASiIw2O4z9pQm21apM_jDdgwQJSUgZE9oduf8ew8"
             token: user.token
         }))
         .then((res) => {

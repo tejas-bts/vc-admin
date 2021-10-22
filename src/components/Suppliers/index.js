@@ -7,8 +7,8 @@ import { Switch, Route } from 'react-router';
 function Suppliers({match}) {
     return (
         <Switch>
-            <Route path={`${match.path}/new`} component={NewSupplier} />
             <Route exact path={`${match.path}/`} component={SuppliersList} />
+            <Route path={`${match.path}/new`} component={NewSupplier} />
             <Route exact path={`${match.path}/edit/:supplierId`} component={EditSupplier} />
         </Switch>
     )

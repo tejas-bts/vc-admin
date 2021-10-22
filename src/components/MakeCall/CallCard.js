@@ -4,17 +4,16 @@ import {
   MessageBarType,
   DefaultButton,
 } from "office-ui-fabric-react";
+import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
+import { Panel, PanelType } from "office-ui-fabric-react/lib/Panel";
+
 import StreamRenderer from "./StreamRenderer";
 import AddParticipantPopover from "./AddParticipantPopover";
 import RemoteParticipantCard from "./RemoteParticipantCard";
-import { Panel, PanelType } from "office-ui-fabric-react/lib/Panel";
-import { Icon } from "@fluentui/react/lib/Icon";
 import LocalVideoPreviewCard from "./LocalVideoPreviewCard";
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
 import { LocalVideoStream, Features } from "@azure/communication-calling";
 import { utils } from "./Utils";
 import {
-  FiArrowDown,
   FiMic,
   FiMicOff,
   FiPause,
@@ -693,7 +692,8 @@ export default class CallCard extends React.Component {
               onDismiss={() => {
                 this.setState({ callMessage: undefined });
               }}
-              dismissButtonAriaLabel="Close">
+              dismissButtonAriaLabel="Close"
+            >
               <b>{this.state.callMessage}</b>
             </MessageBar>
           )}
@@ -710,36 +710,17 @@ export default class CallCard extends React.Component {
             {/* {this.call && <h2>Call Id: {this.state.callId}</h2>} */}
           </div>
         </div>
-        <div style={{display:'flex'}}>
-          <div className="participants-panel mt-1 mb-3 w-30">
-            <div className="participants-panel-title custom-row text-center">
-              <AddParticipantPopover call={this.call} />
-            </div>
-            {this.state.remoteParticipants.length === 0 && (
-              <p className="text-center">
-                No other participants currently in the call
-              </p>
-            )}
-            <ul className="participants-panel-list">
-              {this.state.remoteParticipants.map((remoteParticipant) => (
-                <RemoteParticipantCard
-                  key={`${utils.getIdentifierText(
-                    remoteParticipant.identifier
-                  )}`}
-                  remoteParticipant={remoteParticipant}
-                  call={this.call}
-                />
-              ))}
-            </ul>
-          </div>
-          <div className="ms-Grid-row" style={{flex:1}}>
+        <div style={{ display: "flex" }}>
+          <div className="ms-Grid-row" style={{ flex: 1 }}>
             {this.state.callState === "Connected" && (
               <div className="ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl3">
                 <div>
                   {this.state.showLocalVideo && (
                     <div className="mb-3">
                       <LocalVideoPreviewCard
-                        selectedCameraDeviceId={this.state.selectedCameraDeviceId}
+                        selectedCameraDeviceId={
+                          this.state.selectedCameraDeviceId
+                        }
                         deviceManager={this.deviceManager}
                       />
                     </div>
@@ -752,7 +733,8 @@ export default class CallCard extends React.Component {
                 this.state.callState === "Connected"
                   ? `ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl9`
                   : "ms-Grid-col ms-sm12 ms-lg12 ms-xl12 ms-xxl12"
-              }>
+              }
+            >
               {
                 <div className="video-grid-row">
                   {(this.state.callState === "Connected" ||
@@ -760,7 +742,7 @@ export default class CallCard extends React.Component {
                     this.state.callState === "RemoteHold") &&
                     this.state.allRemoteParticipantStreams.map((v) => (
                       <StreamRenderer
-                        style={{flex:1}}
+                        style={{ flex: 1 }}
                         key={`${utils.getIdentifierText(
                           v.participant.identifier
                         )}-${v.stream.mediaStreamType}-${v.stream.id}`}
@@ -775,7 +757,7 @@ export default class CallCard extends React.Component {
                     ))}
                 </div>
               }
-              <div className="my-4" style={{ width: "100%", float: "left" }}>
+              <div className="my-4" style={{ width: "100%", float: "left", display: 'none' }}>
                 {this.state.callState !== "Connected" && (
                   <div className="custom-row">
                     <div className="ringing-loader mb-4"></div>
@@ -787,13 +769,17 @@ export default class CallCard extends React.Component {
                     display: "flex",
                     justifyContent: "space-between",
                     marginTop: "10px",
-                  }}>
+                  }}
+                >
                   <span
                     className="in-call-button"
-                    title={`Turn your video ${this.state.videoOn ? "off" : "on"}`}
+                    title={`Turn your video ${
+                      this.state.videoOn ? "off" : "on"
+                    }`}
                     variant="secondary"
                     style={{ cursor: "pointer" }}
-                    onClick={() => this.handleVideoOnOff()}>
+                    onClick={() => this.handleVideoOnOff()}
+                  >
                     {this.state.videoOn && <FiVideo />}
                     {!this.state.videoOn && <FiVideoOff />}
                   </span>
@@ -804,7 +790,8 @@ export default class CallCard extends React.Component {
                     } your microphone`}
                     variant="secondary"
                     style={{ cursor: "pointer" }}
-                    onClick={() => this.handleMicOnOff()}>
+                    onClick={() => this.handleMicOnOff()}
+                  >
                     {this.state.micMuted && <FiMicOff />}
                     {!this.state.micMuted && <FiMic />}
                   </span>
@@ -818,20 +805,22 @@ export default class CallCard extends React.Component {
                       } call`}
                       variant="secondary"
                       style={{ cursor: "pointer" }}
-                      onClick={() => this.handleHoldUnhold()}>
+                      onClick={() => this.handleHoldUnhold()}
+                    >
                       {this.state.callState === "LocalHold" && <FiPlay />}
                       {(this.state.callState === "Connected" ||
                         this.state.callState === "RemoteHold") && <FiPause />}
                     </span>
                   )}
-                  {this.props.disName === "Admin" ? (
+                  {this.props.disName === "Nishant" ? (
                     <span
                       className="in-call-button"
                       title={`${
                         this.state.screenShareOn ? "Stop" : "Start"
                       } sharing your screen`}
                       variant="secondary"
-                      onClick={() => this.handleScreenSharingOnOff()}>
+                      onClick={() => this.handleScreenSharingOnOff()}
+                    >
                       {!this.state.screenShareOn && <FiMonitor />}
                       {this.state.screenShareOn && <FiTv />}
                     </span>
@@ -841,22 +830,25 @@ export default class CallCard extends React.Component {
                     title="Settings"
                     style={{ cursor: "pointer" }}
                     variant="secondary"
-                    onClick={() => this.setState({ showSettings: true })}>
+                    onClick={() => this.setState({ showSettings: true })}
+                  >
                     <FiSettings />
                   </span>
                   <span
                     className="in-call-button"
                     style={{ cursor: "pointer" }}
-                    onClick={() => this.call.hangUp()}>
+                    onClick={() => this.call.hangUp()}
+                  >
                     <FiPhoneOff />
                   </span>
                   <Panel
                     type={PanelType.medium}
                     // isLightDismiss
-                    isOpen={this.state.showSettings}
+                    isOpen={this.props.showSettings}
                     onDismiss={() => this.setState({ showSettings: false })}
                     closeButtonAriaLabel="Close"
-                    headerText="Settings">
+                    headerText="Settings"
+                  >
                     <div className="pl-2 mt-3">
                       <h3>Video settings</h3>
                       <div className="pl-2">
@@ -868,7 +860,8 @@ export default class CallCard extends React.Component {
                             this.setState({
                               showLocalVideo: !this.state.showLocalVideo,
                             })
-                          }>
+                          }
+                        >
                           Show/Hide
                         </DefaultButton>
                         {this.state.callState === "Connected" && (

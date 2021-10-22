@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 
 export const getAllCategories = () => {
     return new Promise((resolve, reject) => {

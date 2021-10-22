@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 
 export const createNewOrganization = async (data) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/CreateUpdateOrgs?code=nNLRBK8Rv4LQs1IF2AqVLXQOH129BTn1wWI/a/uRi6wv0GLHhlUyGQ=="

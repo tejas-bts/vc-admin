@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 
 export const createNewStore = async (data) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/CreateUpdateStores?code=sWzvN0nZlo91caaHTIHeC2vMpbtHXP5RjC7/6SiCuae3PduhxJZjyA=="
@@ -31,10 +31,12 @@ export const getStoreById = async (storeId) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchAllStoreDetails?code=m29k57VYPyPpQbA0a3XBgQ/LBmYEarUu4GFIpsK1iIvxx3JSb/ym0g=="
     return new Promise((resolve, reject) => {
         axios.get(url,{ params : { storeId }})
-        .then((response) => {
-            console.log("Responsessadasdsdsad", response.data)
-            resolve(response.data.data);
-        })
+        .then((res) => {
+            if(res.data.error)
+                reject(new Error(res.data.data));
+            else
+              resolve(res.data.data[0]);
+          })
         .catch((err) => reject(err))
     })
 }

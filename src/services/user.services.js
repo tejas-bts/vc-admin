@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 
 export const getUserDetails = async (searchParams) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchContacts?code=w9OuziKMFs1NGqHRAKRnd1B3hUxGMSI1G8aeU9kSFA2cqg1BV7oLEw=="

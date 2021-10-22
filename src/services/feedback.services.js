@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 const feedback = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchFeedbacks?code=ZRmzJ5halqx6tLIw/VyA0ivvTmRGwRRmrKpzHSC/2UyzoY80ZwYCgA==";
 
 export const getEventFeedback = async (eventId) => {

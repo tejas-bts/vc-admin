@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './serviceConfiguration';
 
 export const getAllQRcodes = async (eventId) => {
     const url = "https://dev-vcata-webapi-eus.azurewebsites.net/api/FetchQR?code=NZoNwIxm92T8C1xZnRMWVoDOLGOo8/EhEpkulkiAQ9DaFTJ7pykmVg=="
